@@ -1,0 +1,7 @@
+[push]
+	default = simple
+[user]
+	name = Brad
+	email = bradley.frank@gmail.com
+[core]
+	excludesfile = /Users/bfrank/.gitignore
