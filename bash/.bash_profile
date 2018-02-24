@@ -1,7 +1,7 @@
 export DOMAIN=$(echo "$HOSTNAME" | cut -d '.' -f2-)
 
 
-if [[ -x $(which sw_vers) ]]; then
+if [[ -x /usr/bin/sw_vers ]]; then
   export MACOS="true"
 else
   export MACOS="false"
