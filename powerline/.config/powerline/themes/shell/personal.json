@@ -14,19 +14,6 @@
         "priority": 20
       },
       {
-        "function": "powerline.segments.common.time.date",
-        "args": {
-    			"format": "%H:%M:%S",
-    			"istime": true
-        },
-        "priority": 50
-      },
-      {
-        "function": "powerline.segments.common.env.environment",
-        "args": { "variable": "SHLEVEL" },
-        "priority": 30
-      },
-      {
         "function": "powerline.segments.common.env.virtualenv",
         "priority": 50
       },
