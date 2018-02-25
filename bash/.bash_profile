@@ -13,10 +13,19 @@ PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 export PATH
 
 
+if [[ "$MACOS" == "false" ]]; then
+  eval "$("$HOME"/.local/bin/keychain --eval --inherit any-once id_rsa)"
+fi
+
+
+if [[ "$DOMAIN" == "iq.harvard.edu" ]]; then
+  eval "$("$HOME"/.local/bin/keychain --eval --inherit any-once id_ed25519)"
+fi
+
+
 if [[ "$DOMAIN" == "hmdc.harvard.edu" ]]; then
   umask 002
   export PATH="/nfs/tools/lib/anaconda/3/bin:$PATH:$HOME/.rvm/bin"
-  eval "$("$HOME"/.local/bin/keychain --eval --inherit any-once id_rsa)"
 fi
 
 
