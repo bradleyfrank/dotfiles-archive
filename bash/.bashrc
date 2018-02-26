@@ -1,15 +1,29 @@
 [[ -f /etc/bashrc ]] && . /etc/bashrc
 
 
-if [[ "$DOMAIN" == "hmdc.harvard.edu" ]]; then
-  umask 002
+# =============================================================================
+# Aliases
+# -----------------------------------------------------------------------------
+
+# For non-local systems
+if [[ "$_DOMAIN" != "local" ]]; then
   alias mate='rmate'
 fi
 
 
-# =============================================================================
-# Aliases
-# -----------------------------------------------------------------------------
+# Dev/Puppet machine at HMDC
+if [[ "$_HOSTNAME" == "fedoraplex" ]]; then
+  alias cap='bundle exec cap'
+  alias yumdatedev='bundle exec cap development puppet:yumdate'
+  alias yumdatedev7='bundle exec cap development-centos7 puppet:yumdate'
+  alias yumdateqa='bundle exec cap qa deploy puppet:yumdate'
+  alias yumdateprod='bundle exec cap production ROLES=`prodhosts` deploy puppet:yumdate'
+  alias yumdateprod7='bundle exec cap production-centos7 deploy puppet:yumdate'
+  alias yumdateprodrce='bundle exec cap production ROLES=cluster deploy puppet:yumdate'
+  alias patchdvn='ssh opsview.hmdc.harvard.edu "gsh vdc \"sudo yum update -y\""'
+  alias patchops='ssh opsview.hmdc.harvard.edu "gsh opsview \"sudo yum update -y\""'
+fi
+
 # Docker
 alias dcu='docker-compose up -d'
 alias dip='docker inspect --format "{{ .NetworkSettings.IPAddress }}"'
@@ -28,7 +42,7 @@ alias pyupdate='py2update && py3update'
 # System
 alias lutil='sudo ldap_account_util.pl -P /root/pass '
 alias macupdate='sudo softwareupdate -ia'
-alias rvmupdate='rvm get stable && rvm gemset update'
+alias rvmupdate='rvm get stable && rvm gemset update && rvm cleanup all'
 alias steep='brew update && brew upgrade --cleanup && brew prune'
 alias tag='dmidecode -s system-serial-number'
 alias update='steep && pyupdate && powerline-restart && macupdate'
@@ -48,12 +62,16 @@ alias tls='tmux list-sessions'
 # =============================================================================
 # Exports
 # -----------------------------------------------------------------------------
-[[ "$MACOS" == "true" ]] && export EDITOR="/usr/local/bin/mate -w"
+[[ "$_MACOS" == "true" ]] && export EDITOR="/usr/local/bin/mate -w"
 
 
 # =============================================================================
 # Functions
 # -----------------------------------------------------------------------------
+function condor_jobs () {
+  condor_status -constraint 'JobId =!= undefined' -autoformat Machine RemoteOwner JobId | sort
+}
+
 function decrypt () {
   filename=(${1//./ })
   openssl enc -d -aes-256-cbc -in $1 -out $filename.txt
@@ -72,6 +90,10 @@ function exit () {
   fi
 }
 
+function prodhosts () {
+  egrep '^server' ~/Development/hmdc/hmdc-admin/config/deploy/production.rb | awk -F:\ '{print $2}' | tr -d ',' | sort | uniq | awk '{$1=$1};1' | tr '\n' ',' | sed 's/.$//' | sed 's/cluster,//'
+}
+
 function pws () {
   local admin_share="$HOME/shared_space/ci3_admin"
 
@@ -87,10 +109,6 @@ function pws () {
   else
     echo "Usage: pws [list|read|write] [internal|external|physical] [filename]"
   fi
-}
-
-function condor_jobs () {
-  condor_status -constraint 'JobId =!= undefined' -autoformat Machine RemoteOwner JobId | sort
 }
 
 function python_update () {
