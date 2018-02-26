@@ -15,12 +15,8 @@ export PATH
 
 
 if [[ "$_MACOS" == "false" ]]; then
-  eval "$("$HOME"/.local/bin/keychain --eval --inherit any-once id_rsa)"
-fi
-
-
-if [[ "$_DOMAIN" == "iq.harvard.edu" ]]; then
-  eval "$("$HOME"/.local/bin/keychain --eval --inherit any-once id_ed25519)"
+  local keychain="$HOME/.local/bin/keychain"
+  eval "$("$keychain" --eval --ignore-missing id_rsa id_ed25519)"
 fi
 
 
