@@ -132,7 +132,7 @@ POWERLINE_BASH_SELECT=1
 export POWERLINE_COMMAND=powerline
 export POWERLINE_CONFIG_COMMAND=powerline-config
 
-if [[ "$MACOS" == "true" ]]; then
+if [[ "$_MACOS" == "true" ]]; then
   PYLIB="/usr/local/lib/python3.6"
 else
   PYLIB="$HOME/.local/lib/python3.6"
