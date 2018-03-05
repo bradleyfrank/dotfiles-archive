@@ -28,6 +28,7 @@ fi
 alias dcu='docker-compose up -d'
 alias dip='docker inspect --format "{{ .NetworkSettings.IPAddress }}"'
 alias dps='docker ps'
+alias transcode='docker run -itv "`pwd`":/data ntodd/video-transcoding'
 # Git
 alias firstpush='git push --set-upstream origin $(githead)'
 alias githead='git rev-parse --abbrev-ref HEAD'
