@@ -1,4 +1,0 @@
-#!/bin/env bash
-
-chmod 600 ../ssh/.ssh/authorized_keys
-chmod 600 ../ssh/.ssh/known_hosts
