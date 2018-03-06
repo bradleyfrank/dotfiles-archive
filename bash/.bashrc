@@ -75,7 +75,10 @@ eval $(thefuck --alias)
 # =============================================================================
 # Exports
 # -----------------------------------------------------------------------------
-[[ "$_MACOS" == "true" ]] && export EDITOR="/usr/local/bin/mate -w"
+if [[ "$_MACOS" == "true" ]]; then
+  export EDITOR="/usr/local/bin/mate -w"
+  export CLICOLOR=1
+fi
 
 
 # =============================================================================
@@ -129,13 +132,6 @@ function extract {
   fi
 }
 
-function exit () {
-  if [[ -n "$TMUX" ]]; then
-    tmux detach
-  else
-    command exit
-  fi
-}
 
 function prodhosts () {
   egrep '^server' ~/Development/hmdc/hmdc-admin/config/deploy/production.rb | awk -F:\ '{print $2}' | tr -d ',' | sort | uniq | awk '{$1=$1};1' | tr '\n' ',' | sed 's/.$//' | sed 's/cluster,//'
