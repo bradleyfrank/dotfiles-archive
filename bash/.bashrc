@@ -119,6 +119,7 @@ function extract {
                        7z x ./"$n"        ;;
           *.xz)        unxz ./"$n"        ;;
           *.exe)       cabextract ./"$n"  ;;
+          *.cpio)      cpio -id < ./"$n"  ;;
           *)
                        echo "extract: '$n' - unknown archive method"
                        return 1
@@ -137,25 +138,43 @@ function prodhosts () {
   egrep '^server' ~/Development/hmdc/hmdc-admin/config/deploy/production.rb | awk -F:\ '{print $2}' | tr -d ',' | sort | uniq | awk '{$1=$1};1' | tr '\n' ',' | sed 's/.$//' | sed 's/cluster,//'
 }
 
+
 function pws () {
   local admin_share="$HOME/shared_space/ci3_admin"
 
   if [ "$1" == "list" ] || [ "$1" == "l" ]
   then
-    7za l $admin_share/hmdc_${2}_lp.7z
+    7za l "$admin_share"/hmdc_"$2"_lp.7z
   elif [ "$1" == "read" ] || [ "$1" == "r" ]
   then
-    7za x -so $admin_share/hmdc_${2}_lp.7z ${3} 2>/dev/null
+    7za x -so "$admin_share"/hmdc_"$2"_lp.7z "$3" 2>/dev/null
   elif [ "$1" == "write" ] || [ "$1" == "w" ]
   then
-    7za a -p -mhe=on $admin_share/hmdc_${2}_lp.7z $3
+    7za a -p -mhe=on "$admin_share"/hmdc_"$2"_lp.7z "$3"
   else
     echo "Usage: pws [list|read|write] [internal|external|physical] [filename]"
   fi
 }
 
 function python_update () {
-  $1 freeze --user | grep -v '^\-e' | cut -d = -f 1  | xargs $1 install -U --user
+  "$1" freeze --user | grep -v '^\-e' | cut -d = -f 1  | xargs "$1" install -U --user
+}
+
+
+function xrpm () {
+  local file="$1"
+  local basedir=$(pwd)
+  local tmpdir="$(mktemp -d)"
+
+  echo "Extracting: $file" >> "$basedir"/extract.log
+  echo "To: $tmpdir" >> "$basedir"/extract.log
+
+  cp "$file" "$tmpdir"/
+  cd "$tmpdir"
+  extract "$file" >> "$basedir"/extract.log 2>&1
+  local cpiofile=(*.cpio)
+  extract "$cpiofile" >> "$basedir"/extract.log 2>&1
+  rm "$file" "$cpiofile"
 }
 
 
