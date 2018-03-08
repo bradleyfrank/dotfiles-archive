@@ -28,10 +28,11 @@ fi
 alias dcu='docker-compose up -d'
 alias dip='docker inspect --format "{{ .NetworkSettings.IPAddress }}"'
 alias dps='docker ps'
-alias transcode='docker run -itv "`pwd`":/data ntodd/video-transcoding'
 # Git
 alias firstpush='git push --set-upstream origin $(githead)'
 alias githead='git rev-parse --abbrev-ref HEAD'
+# HandBrake
+alias transcode-h265='transcode-video --handbrake-option encoder=x265'
 # Networking
 alias digg='dig +noall +answer'
 alias pingg='ping -c 4'
