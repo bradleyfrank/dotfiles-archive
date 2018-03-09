@@ -163,19 +163,31 @@ function python_update () {
 
 
 function xrpm () {
-  local file="$1"
-  local basedir=$(pwd)
-  local tmpdir="$(mktemp -d)"
+  local rpmfile="$1"
+  local basename="$(echo "$rpmfile" | awk -F '.' '{print $1}')"
+  local cpiofile="$basename.cpio"
 
-  echo "Extracting: $file" >> "$basedir"/extract.log
-  echo "To: $tmpdir" >> "$basedir"/extract.log
+  local xdir="$basename"
+  local suffix=1
 
-  cp "$file" "$tmpdir"/
-  cd "$tmpdir"
-  extract "$file" >> "$basedir"/extract.log 2>&1
-  local cpiofile=(*.cpio)
-  extract "$cpiofile" >> "$basedir"/extract.log 2>&1
-  rm "$file" "$cpiofile"
+  while [ -d "$xdir" ]
+  do
+    xdir="${basename}__${suffix}"
+    suffix=$(($suffix + 1))
+  done
+
+  mkdir "$xdir"
+
+  if ! rpm2cpio "$rpmfile" > "$xdir"/"$cpiofile" 2>/dev/null; then
+    rm -rf "$xdir"
+    echo "Could not extract file $rpmfile"
+    return 1
+  fi
+
+  pushd "$xdir" >/dev/null
+  extract "$cpiofile" >/dev/null 2>&1
+  rm "$cpiofile"
+  popd >/dev/null
 }
 
 
