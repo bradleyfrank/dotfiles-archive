@@ -99,46 +99,9 @@ function encrypt () {
   openssl enc -aes-256-cbc -salt -in $1 -out $filename.enc
 }
 
-function extract {
- if [ -z "$1" ]; then
-    echo "Usage: extract <path/file_name>.<zip|rar|bz2|gz|tar|tbz2|tgz|Z|7z|xz|ex|tar.bz2|tar.gz|tar.xz>"
-    echo "       extract <path/file_name_1.ext> [path/file_name_2.ext] [path/file_name_3.ext]"
- else
-    for n in $@
-    do
-      if [ -f "$n" ]; then
-        case "${n%,}" in
-          *.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar) 
-                       tar xvf "$n"       ;;
-          *.lzma)      unlzma ./"$n"      ;;
-          *.bz2)       bunzip2 ./"$n"     ;;
-          *.rar)       unrar x -ad ./"$n" ;;
-          *.gz)        gunzip ./"$n"      ;;
-          *.zip)       unzip ./"$n"       ;;
-          *.z)         uncompress ./"$n"  ;;
-          *.7z|*.arj|*.cab|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.rpm|*.udf|*.wim|*.xar)
-                       7z x ./"$n"        ;;
-          *.xz)        unxz ./"$n"        ;;
-          *.exe)       cabextract ./"$n"  ;;
-          *.cpio)      cpio -id < ./"$n"  ;;
-          *)
-                       echo "extract: '$n' - unknown archive method"
-                       return 1
-                       ;;
-        esac
-      else
-        echo "'$n' - file does not exist"
-        return 1
-      fi
-    done
-  fi
-}
-
-
 function prodhosts () {
   egrep '^server' ~/Development/hmdc/hmdc-admin/config/deploy/production.rb | awk -F:\ '{print $2}' | tr -d ',' | sort | uniq | awk '{$1=$1};1' | tr '\n' ',' | sed 's/.$//' | sed 's/cluster,//'
 }
-
 
 function pws () {
   local admin_share="$HOME/shared_space/ci3_admin"
@@ -159,35 +122,6 @@ function pws () {
 
 function python_update () {
   "$1" freeze --user | grep -v '^\-e' | cut -d = -f 1  | xargs "$1" install -U --user
-}
-
-
-function xrpm () {
-  local rpmfile="$1"
-  local basename="$(echo "$rpmfile" | awk -F '.' '{print $1}')"
-  local cpiofile="$basename.cpio"
-
-  local xdir="$basename"
-  local suffix=1
-
-  while [ -d "$xdir" ]
-  do
-    xdir="${basename}__${suffix}"
-    suffix=$(($suffix + 1))
-  done
-
-  mkdir "$xdir"
-
-  if ! rpm2cpio "$rpmfile" > "$xdir"/"$cpiofile" 2>/dev/null; then
-    rm -rf "$xdir"
-    echo "Could not extract file $rpmfile"
-    return 1
-  fi
-
-  pushd "$xdir" >/dev/null
-  extract "$cpiofile" >/dev/null 2>&1
-  rm "$cpiofile"
-  popd >/dev/null
 }
 
 
