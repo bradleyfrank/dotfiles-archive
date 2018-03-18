@@ -70,7 +70,7 @@ alias tls='tmux list-sessions'
 # =============================================================================
 # Evals
 # -----------------------------------------------------------------------------
-if [[ type thefuck ]]; then
+if type thefuck >/dev/null 2>&1; then
   eval $(thefuck --alias)
 fi
 
