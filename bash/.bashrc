@@ -102,7 +102,7 @@ function encrypt () {
 }
 
 function prodhosts () {
-  egrep '^server' ~/Development/hmdc/hmdc-admin/config/deploy/production.rb | awk -F:\ '{print $2}' | tr -d ',' | sort | uniq | awk '{$1=$1};1' | tr '\n' ',' | sed 's/.$//' | sed 's/cluster,//'
+  egrep '^server' ~/Development/hmdc/hmdc-admin/config/deploy/production.rb | awk -F: '{print $2}' | tr -d ',' | sort | uniq | awk '{$1=$1};1' | tr '\n' ',' | sed 's/.$//' | sed 's/cluster,//'
 }
 
 function pws () {
