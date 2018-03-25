@@ -71,6 +71,7 @@ alias tls='tmux list-sessions'
 # =============================================================================
 # Evals
 # -----------------------------------------------------------------------------
+
 if type thefuck >/dev/null 2>&1; then
   eval $(thefuck --alias)
 fi
@@ -79,6 +80,9 @@ fi
 # =============================================================================
 # Exports
 # -----------------------------------------------------------------------------
+
+export PROMPT_DIRTRIM=3
+
 if [[ "$_MACOS" == "true" ]]; then
   export EDITOR="/usr/local/bin/mate -w"
   export CLICOLOR=1
@@ -88,6 +92,18 @@ fi
 # =============================================================================
 # Functions
 # -----------------------------------------------------------------------------
+
+function .. ()
+{
+  local arg=${1:-1};
+  local dir=""
+  while [ $arg -gt 0 ]; do
+    dir="../$dir"
+    arg=$(($arg - 1));
+  done
+  cd $dir >&/dev/null
+}
+
 function condor_jobs () {
   condor_status -constraint 'JobId =!= undefined' -autoformat Machine RemoteOwner JobId | sort
 }
@@ -131,26 +147,39 @@ function python_update () {
 # =============================================================================
 # Sources
 # -----------------------------------------------------------------------------
+
 [[ -x "$HOME"/.rvm/scripts/rvm ]] && . "$HOME"/.rvm/scripts/rvm
 
 
 # =============================================================================
-# Powerline
+# PS1
 # -----------------------------------------------------------------------------
-powerline-daemon -q
-POWERLINE_BASH_SCRIPT="powerline/bindings/bash/powerline.sh"
-POWERLINE_BASH_CONTINUATION=1
-POWERLINE_BASH_SELECT=1
-export POWERLINE_COMMAND=powerline
-export POWERLINE_CONFIG_COMMAND=powerline-config
 
-if [[ "$_MACOS" == "true" ]]; then
-  PYLIB="/usr/local/lib/python3.6"
-else
-  PYLIB="$HOME/.local/lib/python3.6"
-fi
+function ps1_powerline {
+  powerline-daemon -q
+  POWERLINE_BASH_SCRIPT="powerline/bindings/bash/powerline.sh"
+  POWERLINE_BASH_CONTINUATION=1
+  POWERLINE_BASH_SELECT=1
+  export POWERLINE_COMMAND=powerline
+  export POWERLINE_CONFIG_COMMAND=powerline-config
 
-. "$PYLIB"/site-packages/"$POWERLINE_BASH_SCRIPT"
+  if [[ "$_MACOS" == "true" ]]; then
+    PYLIB="/usr/local/lib/python3.6"
+  else
+    PYLIB="$HOME/.local/lib/python3.6"
+  fi
 
+  . "$PYLIB"/site-packages/"$POWERLINE_BASH_SCRIPT"
 
-if [[ -n "$TMUX" ]]; then powerline-config tmux setup; fi
+  if [[ -n "$TMUX" ]]; then powerline-config tmux setup; fi
+}
+
+function ps1_bash-git-prompt {
+  if [[ "$_MACOS" == "true" ]]; then
+    __GIT_PROMPT_DIR=$(brew --prefix)/opt/bash-git-prompt/share
+    . "$(brew --prefix)/opt/bash-git-prompt/share/gitprompt.sh"
+  fi
+}
+
+# Enable a PS1
+ps1_bash-git-prompt
