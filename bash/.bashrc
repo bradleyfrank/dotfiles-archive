@@ -178,8 +178,13 @@ function ps1_bash-git-prompt {
   if [[ "$_MACOS" == "true" ]]; then
     __GIT_PROMPT_DIR=$(brew --prefix)/opt/bash-git-prompt/share
     . "$(brew --prefix)/opt/bash-git-prompt/share/gitprompt.sh"
+  else
+    . "$HOME"/.bash-git-prompt/gitprompt.sh
   fi
 }
 
-# Enable a PS1
-ps1_bash-git-prompt
+if [[ "$_DOMAIN" == "local" ]]; then
+  ps1_powerline
+else
+  ps1_bash-git-prompt
+fi

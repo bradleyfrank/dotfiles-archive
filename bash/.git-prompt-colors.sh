@@ -1,33 +1,31 @@
-# This is an alternative approach. Single line in git repo.
-# Theme optimised for Terminus and PowerLine compatible fonts.
-# This theme for gitprompt.sh is optimized for the "Solarized Dark" and "Solarized Light" color schemes
-# without the indicator of the last command state 
-# tweaked for Ubuntu terminal fonts
-
 define_helpers() {
-  PathShort="${Blue}\u:${Cyan}\w"
+  Orange="\e[38;5;202m"
+  ps1_hostname="${Orange}[\h]"
+  Prompt="${Blue}[\u]${ps1_hostname}${BoldWhite}[\w]"
 }
 
 override_git_prompt_colors() {
+  GreyBG="\e[48;5;236m"
+
   GIT_PROMPT_THEME_NAME="Custom_1"
 
-  GIT_PROMPT_BRANCH=" "
-  GIT_PROMPT_PREFIX="[ "
-  GIT_PROMPT_SUFFIX=" ]"
-  GIT_PROMPT_SEPARATOR=" |"
-  GIT_PROMPT_STAGED=" ${Yellow}● ${ResetColor}"
-  GIT_PROMPT_CONFLICTS=" ${Red}✖ ${ResetColor}"
-  GIT_PROMPT_CHANGED=" ${Blue}✚ ${ResetColor}"
-  GIT_PROMPT_UNTRACKED=" ${Cyan}… ${ResetColor}"
-  GIT_PROMPT_STASHED=" ${BoldMagenta}⚑ ${ResetColor}"
-  GIT_PROMPT_CLEAN=" ${Green}✔ ${ResetColor}"
+  GIT_PROMPT_BRANCH="${Green} "
+  GIT_PROMPT_PREFIX="│"
+  GIT_PROMPT_SUFFIX="│"
+  GIT_PROMPT_SEPARATOR=" "
+  GIT_PROMPT_STAGED=" ${Yellow}● "
+  GIT_PROMPT_CONFLICTS=" ${Red}✖ "
+  GIT_PROMPT_CHANGED=" ${Blue}✚ "
+  GIT_PROMPT_UNTRACKED=" ${Cyan}… "
+  GIT_PROMPT_STASHED=" ${BoldMagenta}⚑ "
+  GIT_PROMPT_CLEAN=" ${Green}✔ "
   GIT_PROMPT_SYMBOLS_NO_REMOTE_TRACKING="✭"
 
-  GIT_PROMPT_COMMAND_FAIL="${Red}✘"
+  GIT_PROMPT_COMMAND_OK=""
+  GIT_PROMPT_COMMAND_FAIL=" ${Red}(✘)${ResetColor}"
 
-  #GIT_PROMPT_START_USER="_LAST_COMMAND_INDICATOR_ ${Yellow}${PathShort}${ResetColor}"
-  GIT_PROMPT_START_USER="${PathShort}${ResetColor}"
-  GIT_PROMPT_END_USER="${BoldBlue} $ ${ResetColor}"
+  GIT_PROMPT_START_USER="${Prompt}${ResetColor}"
+  GIT_PROMPT_END_USER="_LAST_COMMAND_INDICATOR_${Green}\$${ResetColor} "
   GIT_PROMPT_END_ROOT="${BoldRed} # ${ResetColor}"
 }
 
