@@ -179,7 +179,7 @@ function ps1_bash-git-prompt {
   fi
 }
 
-if [[ "$_DOMAIN" == "local" ]]; then
+if [[ "$_DOMAIN" == "local" ]] || [[ "$_DOMAIN" == "iq.harvard.edu" ]]; then
   ps1_powerline
 else
   ps1_bash-git-prompt
