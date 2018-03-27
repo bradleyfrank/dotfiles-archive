@@ -23,7 +23,7 @@ fi
 # RCE specific configs
 if [[ "$_DOMAIN" == "hmdc.harvard.edu" ]]; then
   umask 002
-  export PATH="/nfs/tools/lib/anaconda/3/bin:$PATH:$HOME/.rvm/bin"
+  export PATH="$PATH:$HOME/.rvm/bin"
 fi
 
 
