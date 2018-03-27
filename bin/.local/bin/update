@@ -1,0 +1,221 @@
+#!/usr/bin/env bash
+
+set -e
+set -o nounset
+
+# ==============================================================================
+# Functions
+# ==============================================================================
+
+# Update HomeBrew
+function steep {
+  echo ""
+  echo "__ Updating HomeBrew __"
+
+  if ! type brew >/dev/null 2>&1; then
+    echo "HomeBrew not found on system."
+    return
+  fi
+
+  echo -n "Running update... "
+  if brew update >/dev/null 2>&1; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+
+  echo -n "Running upgrade and cleanup... "
+  if brew upgrade --cleanup >/dev/null 2>&1; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+
+  echo -n "Pruning old taps... "
+  if brew prune >/dev/null 2>&1; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+}
+
+
+# Update RVM
+function shine {
+  echo ""
+  echo "__ Updating RVM & Gems __"
+
+  if ! type rvm >/dev/null 2>&1; then
+    echo "No RVM installation found."
+    return
+  fi
+
+  echo -n "Fetching stable build... "
+  if rvm get stable >/dev/null 2>&1; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+
+  echo -n "Updating gemset... "
+  if rvm gemset update >/dev/null 2>&1; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+
+  echo -n "Cleaning up... "
+  if rvm cleanup all >/dev/null 2>&1; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+}
+
+
+# Update Python
+function shed {
+  echo ""
+  echo "__ Updating Python __"
+
+  pip_upgrade "pip"
+  pip_upgrade "pip2"
+  pip_upgrade "pip3"
+}
+
+function pip_upgrade {
+  local pip
+  pip="$1"
+
+  # Bail if not present
+  if ! type "$pip" >/dev/null 2>&1; then
+    echo "Version $pip not found."
+    return
+  fi
+
+  echo -n "Upgrading $pip... "
+  if "$pip" install -U pip >/dev/null 2>&1; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+
+  echo -n "Upgrading packages... "
+  if "$pip" freeze --user | grep -v '^\-e' | cut -d = -f 1 | xargs -n 1 "$pip" install -U --user >/dev/null 2>&1; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+}
+
+
+# Update MacOS
+function macos {
+  echo ""
+  echo "__ Updating MacOS __"
+
+  # Bail if not present
+  if ! type softwareupdate >/dev/null 2>&1; then
+    echo "MacOS system not detected."
+    return
+  fi
+
+  local pwfile
+  local pw
+  pwfile="$HOME/.password"
+  pw=$(< "$pwfile")
+
+  echo -n "Running software update... "
+  if echo "$pw" | sudo -S softwareupdate -ia >/dev/null 2>&1; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+}
+
+
+# Update Linux OS
+function linux_os {
+  echo ""
+  echo "__ Updating Linux __"
+
+  local pkg_manager
+
+  # Find package manager
+  if type yum >/dev/null 2>&1; then
+    pkg_manager="yum"
+  elif type dnf >/dev/null 2>&1; then
+    pkg_manager="dnf"
+  else
+    echo "No Linux package manager found."
+    return
+  fi
+
+  echo -n "Performing system updates... "
+  sudo "$pkg_manager" upgrade -yq >/dev/null 2>&1
+  echo "done"
+}
+
+
+# Update Git projects
+function projects {
+  echo ""
+}
+
+
+# Update dotfiles
+function dotfiles {
+  echo ""
+}
+
+
+# ==============================================================================
+# Main
+# ==============================================================================
+
+UPDATES="brpml"
+
+while getopts 'hasui:' flag; do
+  case "${flag}" in
+    h )
+      echo "update.sh -- Updates various system environments."
+      echo ""
+      echo "Usage: update -h | -a | -s | -u | [-i $UPDATES]"
+      echo ""
+      echo "Options:"
+      echo "-h    print help menu and exit"
+      echo "-a    perform all updates (default);  implies -i brpml"
+      echo "-s    system updates only;            implies -i ml"
+      echo "-u    user updates only;              implies -i brp"
+      echo "-i    update individual subsystem:"
+      echo "      b    HomeBrew"
+      echo "      r    Ruby"
+      echo "      p    Python"
+      echo "      m    Mac OS"
+      echo "      l    Linux OS"
+      echo ""
+      exit 0
+      ;;
+    a ) UPDATES="$UPDATES" ;;
+    s ) UPDATES="ml" ;;
+    u ) UPDATES="brp" ;;
+    i ) UPDATES="$OPTARG" ;;
+    : ) echo "Missing argument: $OPTARG requires an argument" 1>&2 ;;
+    \?) echo "Invalid option: $OPTARG" 1>&2 ;;
+  esac
+done
+
+
+for (( i=0; i<${#UPDATES}; i++ )); do
+  update="${UPDATES:$i:1}"
+  case "$update" in
+    b ) steep ;;
+    r ) shine ;;
+    p ) shed ;;
+    m ) macos ;;
+    l ) linux_os ;;
+    * ) echo "Invalid option: $update" 1>&2 ;;
+  esac    
+done
+
+echo ""

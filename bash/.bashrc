@@ -44,12 +44,8 @@ alias py3update='python_update pip3'
 alias pyupdate='py2update && py3update'
 # System
 alias lutil='sudo ldap_account_util.pl -P /root/pass '
-alias macupdate='sudo softwareupdate -ia'
 alias powerline-restart='powerline-daemon --replace'
-alias rvmupdate='rvm get stable && rvm gemset update && rvm cleanup all'
-alias steep='brew update && brew upgrade --cleanup && brew prune'
 alias tag='dmidecode -s system-serial-number'
-alias update='steep && pyupdate && powerline-restart && macupdate'
 # Terminal
 alias bb='bbedit'
 alias du="ncdu"
