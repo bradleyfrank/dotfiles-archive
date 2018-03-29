@@ -3,12 +3,15 @@
 set -e
 set -o nounset
 
+PIPS=("pip" "pip2" "pip3")
+
+
 # ==============================================================================
 # Functions
 # ==============================================================================
 
 # Update HomeBrew
-function steep {
+function brew_up {
   echo ""
   echo "__ Updating HomeBrew __"
 
@@ -41,7 +44,7 @@ function steep {
 
 
 # Update RVM
-function shine {
+function ruby_up {
   echo ""
   echo "__ Updating RVM & Gems __"
 
@@ -73,39 +76,48 @@ function shine {
 }
 
 
+# Update Anaconda
+
+
 # Update Python
-function shed {
+function py_up {
   echo ""
   echo "__ Updating Python __"
 
-  pip_upgrade "pip"
-  pip_upgrade "pip2"
-  pip_upgrade "pip3"
+  for pip in "${PIPS[@]}"
+  do
+    if ! type "$pip" >/dev/null 2>&1; then
+      echo "Version $pip not found."
+      break
+    fi
+
+    echo -n "Upgrading packages... "
+    if "$pip" freeze --user | grep -v '^\-e' | cut -d = -f 1 | xargs -n 1 "$pip" install -U --user --disable-pip-version-check >/dev/null 2>&1; then
+      echo "done"
+    else
+      echo "failed"
+    fi
+  done
 }
 
-function pip_upgrade {
-  local pip
-  pip="$1"
+function pip_up {
+  echo ""
+  echo "__ Updating Pip __"
 
-  # Bail if not present
-  if ! type "$pip" >/dev/null 2>&1; then
-    echo "Version $pip not found."
-    return
-  fi
+  for pip in "${PIPS[@]}"
+  do
+    if ! type "$pip" >/dev/null 2>&1; then
+      echo "Version $pip not found."
+      break
+    fi
 
-  echo -n "Upgrading $pip... "
-  if "$pip" install -U pip >/dev/null 2>&1; then
-    echo "done"
-  else
-    echo "failed"
-  fi
-
-  echo -n "Upgrading packages... "
-  if "$pip" freeze --user | grep -v '^\-e' | cut -d = -f 1 | xargs -n 1 "$pip" install -U --user >/dev/null 2>&1; then
-    echo "done"
-  else
-    echo "failed"
-  fi
+    echo -n "Upgrading $pip... "
+    if "$pip" install -U pip >/dev/null 2>&1; then
+      echo "done"
+    else
+      echo "failed"
+    fi
+  done
 }
 
 
@@ -209,9 +221,9 @@ done
 for (( i=0; i<${#UPDATES}; i++ )); do
   update="${UPDATES:$i:1}"
   case "$update" in
-    b ) steep ;;
-    r ) shine ;;
-    p ) shed ;;
+    b ) brew_up ;;
+    r ) ruby_up ;;
+    p ) py_up ;;
     m ) macos ;;
     l ) linux_os ;;
     * ) echo "Invalid option: $update" 1>&2 ;;
