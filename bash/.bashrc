@@ -39,6 +39,7 @@ alias digg='dig +noall +answer'
 alias pingg='ping -c 4'
 alias pubip='dig +short myip.opendns.com @resolver1.opendns.com'
 # Python
+alias anaconda3='source /usr/local/anaconda3/bin/activate root'
 alias py2update='python_update pip2'
 alias py3update='python_update pip3'
 alias pyupdate='py2update && py3update'
