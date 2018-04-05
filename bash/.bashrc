@@ -80,7 +80,7 @@ fi
 
 export PROMPT_DIRTRIM=3
 
-if [[ "$_MACOS" == "true" ]]; then
+if [[ "$_MACOS" -eq 0 ]]; then
   export EDITOR="/usr/local/bin/mate -w"
   export CLICOLOR=1
 fi
@@ -160,19 +160,19 @@ function ps1_powerline {
   export POWERLINE_COMMAND=powerline
   export POWERLINE_CONFIG_COMMAND=powerline-config
 
-  if [[ "$_MACOS" == "true" ]]; then
-    PYLIB="/usr/local/lib/python3.6"
+  if [[ "$_MACOS" -eq 0 ]]; then
+    _PYLIB="$HOME/Library/Python/3.6/lib/python"
   else
-    PYLIB="$HOME/.local/lib/python3.6"
+    _PYLIB="$HOME/.local/lib/python3.6"
   fi
 
-  . "$PYLIB"/site-packages/"$POWERLINE_BASH_SCRIPT"
+  . "$_PYLIB"/site-packages/"$POWERLINE_BASH_SCRIPT"
 
   if [[ -n "$TMUX" ]]; then powerline-config tmux setup; fi
 }
 
 function ps1_bash-git-prompt {
-  if [[ "$_MACOS" == "true" ]]; then
+  if [[ "$_MACOS" -eq 0 ]]; then
     __GIT_PROMPT_DIR=$(brew --prefix)/opt/bash-git-prompt/share
     . "$(brew --prefix)/opt/bash-git-prompt/share/gitprompt.sh"
   else
