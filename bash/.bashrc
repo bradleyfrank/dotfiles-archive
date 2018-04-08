@@ -122,14 +122,11 @@ function prodhosts () {
 function pws () {
   local admin_share="$HOME/shared_space/ci3_admin"
 
-  if [ "$1" == "list" ] || [ "$1" == "l" ]
-  then
+  if [ "$1" == "list" ] || [ "$1" == "l" ]; then
     7za l "$admin_share"/hmdc_"$2"_lp.7z
-  elif [ "$1" == "read" ] || [ "$1" == "r" ]
-  then
+  elif [ "$1" == "read" ] || [ "$1" == "r" ]; then
     7za x -so "$admin_share"/hmdc_"$2"_lp.7z "$3" 2>/dev/null
-  elif [ "$1" == "write" ] || [ "$1" == "w" ]
-  then
+  elif [ "$1" == "write" ] || [ "$1" == "w" ]; then
     7za a -p -mhe=on "$admin_share"/hmdc_"$2"_lp.7z "$3"
   else
     echo "Usage: pws [list|read|write] [internal|external|physical] [filename]"
