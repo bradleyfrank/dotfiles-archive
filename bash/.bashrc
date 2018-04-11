@@ -1,12 +1,14 @@
 [[ -f /etc/bashrc ]] && . /etc/bashrc
 
+domain=$(echo "$HOSTNAME" | cut -d '.' -f2-)
+hostname=$(echo "$HOSTNAME" | cut -d '.' -f1)
+
 
 # =============================================================================
 # Aliases
 # -----------------------------------------------------------------------------
 
-# For non-local systems
-if [[ "$_DOMAIN" != "local" ]]; then
+if [[ "$domain" != "local" ]]; then
   alias mate='rmate'
 fi
 
@@ -65,7 +67,7 @@ fi
 
 export PROMPT_DIRTRIM=3
 
-if [[ "$_MACOS" -eq 0 ]]; then
+if type /usr/bin/sw_vers >/dev/null 2>&1; then
   export EDITOR="/usr/local/bin/mate -w"
   export CLICOLOR=1
 fi
@@ -116,19 +118,20 @@ function ps1_powerline {
   export POWERLINE_COMMAND=powerline
   export POWERLINE_CONFIG_COMMAND=powerline-config
 
-  if [[ "$_MACOS" -eq 0 ]]; then
-    _PYLIB="$HOME/Library/Python/3.6/lib/python"
-  else
-    _PYLIB="$HOME/.local/lib/python3.6"
-  fi
+  pylib_mac="$HOME/Library/Python/3.6/lib/python/site-packages"
+  pylib_fed="$HOME/.local/lib/python3.6/site-packages"
 
-  . "$_PYLIB"/site-packages/"$POWERLINE_BASH_SCRIPT"
+  if [[ -f "$pylib_mac"/"$POWERLINE_BASH_SCRIPT" ]]; then
+    . "$pylib_mac"/"$POWERLINE_BASH_SCRIPT"
+  elif [[ -f "$pylib_fed"/"$POWERLINE_BASH_SCRIPT" ]]; then
+    . "$pylib_fed"/"$POWERLINE_BASH_SCRIPT"
+  fi
 
   if [[ -n "$TMUX" ]]; then powerline-config tmux setup; fi
 }
 
 function ps1_bash-git-prompt {
-  if [[ "$_MACOS" -eq 0 ]]; then
+  if type brew >/dev/null 2>&1; then
     __GIT_PROMPT_DIR=$(brew --prefix)/opt/bash-git-prompt/share
     . "$(brew --prefix)/opt/bash-git-prompt/share/gitprompt.sh"
   else
@@ -136,7 +139,7 @@ function ps1_bash-git-prompt {
   fi
 }
 
-if [[ "$_DOMAIN" == "local" ]]; then
+if [[ "$domain" == "local" ]] || [[ "$hostname" == "bfrank-ws" ]]; then
   ps1_powerline
 else
   ps1_bash-git-prompt
