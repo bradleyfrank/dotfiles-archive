@@ -1,7 +1,6 @@
 #!/usr/bin/env bash
 
-set -e
-set -o nounset
+set -eu
 
 PIPS=("pip" "pip2" "pip3")
 
@@ -138,7 +137,7 @@ function macos {
   pw=$(< "$pwfile")
 
   echo -n "Running software update... "
-  if echo "$pw" | sudo -S softwareupdate -ia >/dev/null 2>&1; then
+  if sudo softwareupdate -ia >/dev/null 2>&1; then
     echo "done"
   else
     echo "failed"
