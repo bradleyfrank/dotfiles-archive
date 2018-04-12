@@ -10,10 +10,4 @@ fi
 export PATH
 
 
-# Linux specific configs
-if ! type sw_vers >/dev/null 2>&1; then
-  eval "$(keychain --eval --ignore-missing id_rsa id_ed25519)"
-fi
-
-
 [[ -f "$HOME/.bashrc" ]] && . "$HOME/.bashrc"
