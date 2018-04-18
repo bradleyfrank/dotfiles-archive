@@ -22,7 +22,7 @@ override_git_prompt_colors() {
   GIT_PROMPT_SYMBOLS_NO_REMOTE_TRACKING="✭"
 
   GIT_PROMPT_COMMAND_OK=""
-  GIT_PROMPT_COMMAND_FAIL=" ${Red}(✘)${ResetColor}"
+  GIT_PROMPT_COMMAND_FAIL="${Red}(✘)${ResetColor}"
 
   GIT_PROMPT_START_USER="${Prompt}${ResetColor}"
   GIT_PROMPT_END_USER="_LAST_COMMAND_INDICATOR_${Green}\$${ResetColor} "
