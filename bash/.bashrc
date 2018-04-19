@@ -124,9 +124,14 @@ function ps1_powerline {
   pylib_fed="$HOME/.local/lib/python3.6/site-packages"
 
   if [[ -f "$pylib_mac"/"$POWERLINE_BASH_SCRIPT" ]]; then
-    . "$pylib_mac"/"$POWERLINE_BASH_SCRIPT"
+    POWERLINE_SOURCE="$pylib_mac/$POWERLINE_BASH_SCRIPT"
   elif [[ -f "$pylib_fed"/"$POWERLINE_BASH_SCRIPT" ]]; then
-    . "$pylib_fed"/"$POWERLINE_BASH_SCRIPT"
+    POWERLINE_SOURCE="$pylib_fed/$POWERLINE_BASH_SCRIPT"
+  fi
+
+  # Work-around to scp printing powerline output?
+  if [[ $- == *i* ]]; then
+    . "$POWERLINE_SOURCE"
   fi
 
   if [[ -n "$TMUX" ]]; then powerline-config tmux setup; fi
