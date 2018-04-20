@@ -50,6 +50,8 @@ alias tat='tmux attach -t'
 alias tka='tmux kill-server'
 alias tks='tmux kill-session'
 alias tls='tmux list-sessions'
+# Misc
+alias orch='javaws ~/.local/java/orchestrator.jnlp'
 
 
 # =============================================================================
