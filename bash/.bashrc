@@ -62,7 +62,9 @@ if type thefuck >/dev/null 2>&1; then
   eval $(thefuck --alias)
 fi
 
-eval "$(keychain --eval --ignore-missing id_rsa id_ed25519)"
+if type keychain >/dev/null 2>&1; then
+  eval "$(keychain --eval --ignore-missing id_rsa id_ed25519)"
+fi
 
 
 # =============================================================================
