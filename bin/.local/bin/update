@@ -9,6 +9,25 @@ PIPS=("pip" "pip2" "pip3")
 # Functions
 # ==============================================================================
 
+
+# Update Dotfiles repo
+function dotfiles_pull {
+  local repo="$HOME/.dotfiles"
+
+  if [[ -d "$repo" ]]; then
+    pushd "$repo" >/dev/null 2>&1
+    echo -n "Pulling latest dotfiles changes... "
+    if git pull >/dev/null 2>&1; then
+      echo "done"
+    else
+      echo "failed"
+    fi
+    popd >/dev/null 2>&1
+  else
+    echo "Dotfiles repo not present, skipping... "
+  fi
+}
+
 # Update HomeBrew
 function brew_up {
   echo ""
@@ -179,7 +198,7 @@ function dotfiles {
 # Main
 # ==============================================================================
 
-UPDATES="brpml"
+UPDATES="bdrpml"
 
 while getopts 'hasui:' flag; do
   case "${flag}" in
@@ -190,11 +209,12 @@ while getopts 'hasui:' flag; do
       echo ""
       echo "Options:"
       echo "-h    print help menu and exit"
-      echo "-a    perform all updates (default);  implies -i brpml"
+      echo "-a    perform all updates (default);  implies -i $UPDATES"
       echo "-s    system updates only;            implies -i ml"
-      echo "-u    user updates only;              implies -i brp"
+      echo "-u    user updates only;              implies -i bdrp"
       echo "-i    update individual subsystem:"
       echo "      b    HomeBrew"
+      echo "      d    Dotfiles"
       echo "      r    Ruby"
       echo "      p    Python"
       echo "      m    Mac OS"
@@ -204,7 +224,7 @@ while getopts 'hasui:' flag; do
       ;;
     a ) UPDATES="$UPDATES" ;;
     s ) UPDATES="ml" ;;
-    u ) UPDATES="brp" ;;
+    u ) UPDATES="bdrp" ;;
     i ) UPDATES="$OPTARG" ;;
     : ) echo "Missing argument: $OPTARG requires an argument" 1>&2 ;;
     \?) echo "Invalid option: $OPTARG" 1>&2 ;;
@@ -216,6 +236,7 @@ for (( i=0; i<${#UPDATES}; i++ )); do
   update="${UPDATES:$i:1}"
   case "$update" in
     b ) brew_up ;;
+    d ) dotfiles_pull ;;
     r ) ruby_up ;;
     p ) py_up ;;
     m ) macos ;;

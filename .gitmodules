@@ -1,3 +1,6 @@
 [submodule "bash/.bash-git-prompt"]
 	path = bash/.bash-git-prompt
 	url = https://github.com/magicmonty/bash-git-prompt.git
+[submodule "bin/.local/bin/bins"]
+	path = bin/.local/bin/bins
+	url = https://github.com/bradleyfrank/bins.git
