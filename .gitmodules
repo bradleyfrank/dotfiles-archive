@@ -3,4 +3,4 @@
 	url = https://github.com/magicmonty/bash-git-prompt.git
 [submodule "bin/.local/bin"]
 	path = bin/.local/bin
-	url = https://github.com/bradleyfrank/bins.git
+	url = git@github.com:bradleyfrank/bins.git
