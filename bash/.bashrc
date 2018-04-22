@@ -1,4 +1,4 @@
-[[ -f /etc/bashrc ]] && . /etc/bashrc
+if [[ -f /etc/bashrc ]]; then . /etc/bashrc; fi
 
 domain=$(echo "$HOSTNAME" | cut -d '.' -f2-)
 hostname=$(echo "$HOSTNAME" | cut -d '.' -f1)
@@ -37,7 +37,7 @@ alias tag='dmidecode -s system-serial-number'
 # Terminal
 alias bb='bbedit'
 alias du="ncdu"
-alias df="pydf"
+if type pydf >/dev/null 2>&1; then alias df="pydf"; fi
 alias ll='ls -lhF'
 alias mkdir='mkdir -pv'
 alias ps='ps auxf'
@@ -109,7 +109,7 @@ function encrypt () {
 # Sources
 # -----------------------------------------------------------------------------
 
-[[ -x "$HOME"/.rvm/scripts/rvm ]] && . "$HOME"/.rvm/scripts/rvm
+if [[ -x "$HOME"/.rvm/scripts/rvm ]]; then . "$HOME"/.rvm/scripts/rvm; fi
 
 
 # =============================================================================
