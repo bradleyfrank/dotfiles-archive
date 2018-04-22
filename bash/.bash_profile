@@ -10,4 +10,13 @@ fi
 export PATH
 
 
+# Keep dotfiles updates
+update_script="$HOME/.local/bin/update"
+if [[ -x "$update_script" ]]; then
+  if ! "$update_script" -i d >/dev/null 2>&1; then
+    echo "Unable to update dotfiles!"
+  fi
+fi
+
+
 [[ -f "$HOME/.bashrc" ]] && . "$HOME/.bashrc"
