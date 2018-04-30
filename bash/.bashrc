@@ -8,10 +8,10 @@ hostname=$(echo "$HOSTNAME" | cut -d '.' -f1)
 # Aliases
 # -----------------------------------------------------------------------------
 
-if [[ "$domain" != "local" ]]; then
-  alias mate='rmate'
-fi
-
+# Apps
+alias bb='bbedit'
+if type rmate >/dev/null 2>&1; then alias mate='rmate'; fi
+alias typora="open -a typora"
 # Docker
 alias dcu='docker-compose up -d'
 alias dip='docker inspect --format "{{ .NetworkSettings.IPAddress }}"'
@@ -35,7 +35,6 @@ alias pyupdate='py2update && py3update'
 alias powerline-restart='powerline-daemon --replace'
 alias tag='dmidecode -s system-serial-number'
 # Terminal
-alias bb='bbedit'
 alias du="ncdu"
 if type pydf >/dev/null 2>&1; then alias df="pydf"; fi
 alias ll='ls -lhF'
@@ -50,7 +49,7 @@ alias tat='tmux attach -t'
 alias tka='tmux kill-server'
 alias tks='tmux kill-session'
 alias tls='tmux list-sessions'
-# Misc
+# ESAI
 alias orch='javaws ~/.local/java/orchestrator.jnlp'
 
 
@@ -83,8 +82,15 @@ fi
 # Functions
 # -----------------------------------------------------------------------------
 
-function .. ()
-{
+function nsm () {
+  if ! vmctl -l | grep 'centos7-vm-01' >/dev/null 2>&1; then
+    vmctl -v centos7-vm-01 -s start
+  fi
+  ssh centosvm "~/.local/bin/nsm"
+}
+
+
+function .. () {
   local arg=${1:-1};
   local dir=""
   while [ $arg -gt 0 ]; do
