@@ -1,7 +1,11 @@
 if [[ -f /etc/bashrc ]]; then . /etc/bashrc; fi
 
+#
+# Variables
+#
 domain=$(echo "$HOSTNAME" | cut -d '.' -f2-)
 hostname=$(echo "$HOSTNAME" | cut -d '.' -f1)
+keys="esai id_home id_rsa id_ed25519"
 
 
 # =============================================================================
@@ -28,16 +32,13 @@ alias pingg='ping -c 4'
 alias pubip='dig +short myip.opendns.com @resolver1.opendns.com'
 # Python
 alias anaconda3='source /usr/local/anaconda3/bin/activate root'
-alias py2update='python_update pip2'
-alias py3update='python_update pip3'
-alias pyupdate='py2update && py3update'
 # System
 alias powerline-restart='powerline-daemon --replace'
 alias tag='dmidecode -s system-serial-number'
 # Terminal
 alias du="ncdu"
 if type pydf >/dev/null 2>&1; then alias df="pydf"; fi
-alias ll='ls -lhF'
+alias ll='ls -lAhF'
 alias mkdir='mkdir -pv'
 alias ps='ps auxf'
 alias psg='ps aux | grep -v grep | grep -i -e VSZ -e'
@@ -62,7 +63,7 @@ if type thefuck >/dev/null 2>&1; then
 fi
 
 if type keychain >/dev/null 2>&1; then
-  eval "$(keychain --eval --ignore-missing id_rsa id_ed25519)"
+  eval "$(keychain --eval --ignore-missing --inherit any $keys)"
 fi
 
 
@@ -159,5 +160,5 @@ function ps1_bash-git-prompt {
 if [[ "$domain" == "local" ]] || [[ "$hostname" == "bfrank-ws" ]]; then
   ps1_powerline
 else
-  ps1_bash-git-prompt
+	ps1_bash-git-prompt
 fi
