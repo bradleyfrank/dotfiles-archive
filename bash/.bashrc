@@ -20,10 +20,6 @@ alias typora="open -a typora"
 alias dcu='docker-compose up -d'
 alias dip='docker inspect --format "{{ .NetworkSettings.IPAddress }}"'
 alias dps='docker ps'
-# Git
-alias firstpush='git push --set-upstream origin $(githead)'
-alias githead='git rev-parse --abbrev-ref HEAD'
-alias lastcommit='git rev-parse --verify HEAD'
 # HandBrake
 alias transcode-h265='transcode-video --handbrake-option encoder=x265'
 # Networking
