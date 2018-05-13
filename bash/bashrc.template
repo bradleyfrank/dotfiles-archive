@@ -1,0 +1,86 @@
+if [[ -f /etc/bashrc ]]; then . /etc/bashrc; fi
+
+
+# -----------------------------------------------------------------------------
+
+
+# Apps
+alias bb='bbedit'
+%% alias_rmate
+alias typora='open -a typora'
+# Docker
+alias dcu='docker-compose up -d'
+alias dip='docker inspect --format "{{ .NetworkSettings.IPAddress }}"'
+alias dps='docker ps'
+# HandBrake
+alias transcode-h265='transcode-video --handbrake-option encoder=x265'
+# Networking
+alias digg='dig +noall +answer'
+alias pingg='ping -c 4'
+alias pubip='dig +short myip.opendns.com @resolver1.opendns.com'
+# Python
+%% alias_anaconda
+# System
+alias powerline-restart='powerline-daemon --replace'
+alias tag='dmidecode -s system-serial-number'
+# Terminal
+%% alias_ncdu
+%% alias_pydf
+alias ll='ls -lAhF'
+alias mkdir='mkdir -pv'
+alias ps='ps auxf'
+alias psg='ps aux | grep -v grep | grep -i -e'
+alias sane='stty sane'
+alias t='tree'
+alias wget='wget -c'
+# Tmux
+alias tat='tmux attach -t'
+alias tka='tmux kill-server'
+alias tks='tmux kill-session'
+alias tls='tmux list-sessions'
+# ESAI
+alias orch='javaws ~/.local/java/orchestrator.jnlp'
+
+
+# -----------------------------------------------------------------------------
+
+
+%% eval_thefuck
+%% eval_keychain
+%%
+
+export PROMPT_DIRTRIM=3
+%% export_termopts
+%%
+
+%% source_rvm
+%%
+
+# -----------------------------------------------------------------------------
+
+
+function .. () {
+  local arg=${1:-1};
+  local dir=""
+  while [ $arg -gt 0 ]; do
+    dir="../$dir"
+    arg=$(($arg - 1));
+  done
+  cd $dir >&/dev/null
+}
+
+function decrypt () {
+  filename=(${1//./ })
+  openssl enc -d -aes-256-cbc -in $1 -out $filename.txt
+}
+
+function encrypt () {
+  filename=(${1//./ })
+  openssl enc -aes-256-cbc -salt -in $1 -out $filename.enc
+}
+
+
+# -----------------------------------------------------------------------------
+
+
+%% ps1_select
