@@ -2,3 +2,12 @@ syntax on
 set number
 set relativenumber
 set tabstop=2 shiftwidth=2 expandtab
+set laststatus=2
+set showmatch
+set hlsearch
+
+if has("python3")
+  python3 from powerline.vim import setup as powerline_setup
+  python3 powerline_setup()
+  python3 del powerline_setup
+endif
