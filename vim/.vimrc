@@ -5,6 +5,7 @@ set tabstop=2 shiftwidth=2 expandtab
 set laststatus=2
 set showmatch
 set hlsearch
+set backspace=indent,eol,start
 
 if has("python3")
   python3 from powerline.vim import setup as powerline_setup
