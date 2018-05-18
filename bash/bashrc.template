@@ -26,6 +26,7 @@ alias tag='dmidecode -s system-serial-number'
 # Terminal
 %% alias_ncdu
 %% alias_pydf
+alias groot='$(git rev-parse --show-toplevel)'
 alias ll='ls -lAhF'
 alias mkdir='mkdir -pv'
 alias ps='ps auxf'
