@@ -6,6 +6,7 @@ set laststatus=2
 set showmatch
 set hlsearch
 set backspace=indent,eol,start
+set autoindent
 
 if has("python3")
   python3 from powerline.vim import setup as powerline_setup
