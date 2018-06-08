@@ -11,7 +11,7 @@ if [[ -f /etc/bashrc ]]; then . /etc/bashrc; fi
 # Apps
 alias bb='bbedit'
 %% alias_rmate
-%% alias_safari
+alias safari='open -a Safari'
 alias typora='open -a typora'
 # Docker
 alias dcu='docker-compose up -d'
