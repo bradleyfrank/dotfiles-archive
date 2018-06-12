@@ -2,7 +2,9 @@ PATH="/usr/local/sbin:/usr/local/bin:$PATH"
 PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 %% mac_py36_bin
 export PATH
-
+%%
+%% mac_manpath
+%%
 %% update_dotfiles
 %%
 if [[ -f "$HOME/.bashrc" ]]; then . "$HOME/.bashrc"; fi
