@@ -1,9 +1,10 @@
 PATH="/usr/local/sbin:/usr/local/bin:$PATH"
 PATH="$HOME/.local/bin:$HOME/bin:$PATH"
-%% mac_py36_bin
+%% mac_path_anaconda
+%% mac_path_brewgnu
 export PATH
 
-%% mac_manpath
+%% mac_manpath_brewgnu
 %%
 
 %% update_dotfiles
