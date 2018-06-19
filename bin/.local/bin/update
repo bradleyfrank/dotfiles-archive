@@ -1,0 +1,369 @@
+#!/usr/bin/env bash
+
+set -eu
+
+PIPS=("pip" "pip2" "pip3")
+BASH_DOTFILES_SCRIPT="$HOME/.local/bin/generate-dotfiles"
+
+
+# ==============================================================================
+# Functions
+# ==============================================================================
+
+
+# Update Anaconda
+function anaconda_up {
+  echo ""
+  echo "__ Updating Anaconda __"
+
+  # shellcheck source=/dev/null
+  if ! source /usr/local/anaconda3/bin/activate root &>/dev/null; then
+    echo "Anaconda3 not found on system."
+    return
+  fi
+
+  echo -n "Running base update... "
+  if conda update -n base conda -y &>/dev/null; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+
+  echo -n "Running package update... "
+  if conda update --prefix /usr/local/anaconda3 anaconda -y &>/dev/null; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+
+  echo -n "Running cleanup... "
+  if conda clean --all -y &>/dev/null; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+
+  # shellcheck source=/dev/null
+  source deactivate
+}
+
+
+# Update HomeBrew
+function brew_up {
+  echo ""
+  echo "__ Updating HomeBrew __"
+
+  if ! type brew &>/dev/null; then
+    echo "HomeBrew not found on system."
+    return
+  fi
+
+  # Generic Brew update
+  echo -n "Running formula update... "
+  if brew update &>/dev/null; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+
+  # Upgrade and cleanup
+  echo -n "Running formula upgrade and cleanup... "
+  if brew upgrade --cleanup &>/dev/null; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+
+  # Upgrade casks
+  echo -n "Running cask upgrade... "
+  if brew cask upgrade &>/dev/null; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+
+  # Cleanup casks
+  echo -n "Running cask cleanup... "
+  if brew cask cleanup &>/dev/null; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+
+  # Prune old taps
+  echo -n "Pruning old taps... "
+  if brew prune &>/dev/null; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+}
+
+
+# Update Dotfiles repo
+function dotfiles_pull {
+  echo ""
+  echo "__ Updating Dotfiles Repo __"
+
+	local stashed=0
+	local output=""
+  local repo="$HOME/.dotfiles"
+
+  if [[ -d "$repo" ]]; then
+    pushd "$repo" &>/dev/null
+
+		echo -n "Stashing any changes... "
+		output=$(git stash)
+		if echo "$output" | grep -q "Saved working directory"; then
+			stashed=1
+      echo "done"
+    elif echo "$output" | grep -q "No local changes"; then
+    	echo "done"
+    else
+      echo "failed"
+    fi
+
+    echo -n "Pulling latest dotfiles changes... "
+    if pull_result=$(git pull 2>&1); then
+      echo "done"
+      if echo "$pull_result" | grep -q -E 'bash(rc|_profile)\.template'; then
+        echo -n "Re-generating Bash startup files... "
+        if "$BASH_DOTFILES_SCRIPT" &>/dev/null; then
+          echo "done"
+        else
+          echo "failed"
+        fi
+      fi
+    else
+      echo "failed"
+    fi
+
+		echo -n "Updating submodules... "
+		if git submodule update &>/dev/null; then
+      echo "done"
+    else
+      echo "failed"
+    fi
+
+		if [[ "$stashed" -eq 1 ]]; then
+			echo -n "Popping the stash... "
+			if git stash pop &>/dev/null; then
+      	echo "done"
+    	else
+      	echo "failed"
+      fi
+    fi
+
+    echo -n "Re-stowing dotfiles... "
+    shopt -s nullglob
+    stow_packages=(*/)
+    for pkg in "${stow_packages[@]}"; do
+     stow "$(echo "$pkg" | cut -d '/' -f 1)"
+    done
+    echo "done"
+
+    popd &>/dev/null
+  else
+    echo "Dotfiles repo not present, skipping... "
+  fi
+}
+
+
+# Update RVM
+function ruby_up {
+  echo ""
+  echo "__ Updating RVM & Gems __"
+
+  if ! type rvm &>/dev/null; then
+    echo "No RVM installation found."
+    return
+  fi
+
+  echo -n "Fetching stable build... "
+  if rvm get stable &>/dev/null; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+
+  echo -n "Updating gemset... "
+  if rvm gemset update &>/dev/null; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+
+  echo -n "Cleaning up... "
+  if rvm cleanup all &>/dev/null; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+}
+
+
+# Update Python
+function py_up {
+  echo ""
+  echo "__ Updating Python __"
+
+  for pip in "${PIPS[@]}"
+  do
+    if ! type "$pip" &>/dev/null; then
+      echo "Version $pip not found."
+      break
+    fi
+
+    echo -n "Upgrading $pip packages... "
+    if "$pip" freeze --user --disable-pip-version-check | grep -v '^\-e' | cut -d = -f 1 | xargs -n 1 "$pip" install -U --user &>/dev/null; then
+      echo "done"
+    else
+      echo "failed"
+    fi
+  done
+}
+
+
+# Update Pip
+function pip_up {
+  echo ""
+  echo "__ Updating Pip __"
+
+  for pip in "${PIPS[@]}"
+  do
+    if ! type "$pip" &>/dev/null; then
+      echo "Version $pip not found."
+      break
+    fi
+
+    echo -n "Upgrading $pip... "
+    if "$pip" install -U pip &>/dev/null; then
+      echo "done"
+    else
+      echo "failed"
+    fi
+  done
+}
+
+
+# Update Shell (bash startup files)
+function shell_gen {
+  echo ""
+  echo "__ Updating Bash __"
+
+  if [ ! -x "$HOME"/.local/bin/generate-bash-startup ]; then
+    echo "Script missing to generate startup files."
+    return
+  fi
+
+  echo -n "Generate Bash startup files... "
+  if generate-bash-startup &>/dev/null; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+}
+
+
+# Update MacOS
+function macos {
+  echo ""
+  echo "__ Updating MacOS __"
+
+  # Bail if not present
+  if ! type softwareupdate &>/dev/null; then
+    echo "MacOS system not detected."
+    return
+  fi
+
+  echo -n "Running software update... "
+  if sudo softwareupdate -ia &>/dev/null; then
+    echo "done"
+  else
+    echo "failed"
+  fi
+}
+
+
+# Update Linux OS
+function linux_os {
+  echo ""
+  echo "__ Updating Linux __"
+
+  local pkg_manager
+
+  # Find package manager
+  if type yum &>/dev/null; then
+    pkg_manager="yum"
+  elif type dnf &>/dev/null; then
+    pkg_manager="dnf"
+  else
+    echo "No Linux package manager found."
+    return
+  fi
+
+  echo -n "Performing system updates... "
+  sudo "$pkg_manager" upgrade -yq &>/dev/null
+  echo "done"
+}
+
+
+# ==============================================================================
+# Main
+# ==============================================================================
+
+UPDATES="abdiprslm"
+
+while getopts 'hasui:' flag; do
+  case "${flag}" in
+    h )
+      echo "update.sh -- Updates various system environments."
+      echo ""
+      echo "Usage: update -h | -a | -s | -u | [-i $UPDATES]"
+      echo ""
+      echo "Options:"
+      echo "-h    print help menu and exit"
+      echo "-a    perform all updates (default);  implies -i $UPDATES"
+      echo "-s    system updates only;            implies -i lm"
+      echo "-u    user updates only;              implies -i bdprs"
+      echo "-i    update individual subsystem:"
+      echo "      a    Anaconda"
+      echo "      b    HomeBrew"
+      echo "      d    Dotfiles"
+      echo "      i    Pip"
+      echo "      p    Python"
+      echo "      r    Ruby"
+      echo "      s    Shell"
+      echo "      -------------"
+      echo "      l    Linux OS"
+      echo "      m    Mac OS"
+      echo ""
+      exit 0
+      ;;
+    a ) UPDATES="$UPDATES" ;;
+    s ) UPDATES="ml" ;;
+    u ) UPDATES="bdprs" ;;
+    i ) UPDATES="$OPTARG" ;;
+    : ) echo "Missing argument: $OPTARG requires an argument" 1>&2 ;;
+    \?) echo "Invalid option: $OPTARG" 1>&2 ;;
+  esac
+done
+
+
+for (( i=0; i<${#UPDATES}; i++ )); do
+  update="${UPDATES:$i:1}"
+  case "$update" in
+    a ) anaconda_up ;;
+    b ) brew_up ;;
+    d ) dotfiles_pull ;;
+    i ) pip_up ;;
+    p ) py_up ;;
+    r ) ruby_up ;;
+    s ) shell_gen ;;
+    l ) linux_os ;;
+    m ) macos ;;
+    * ) echo "Invalid option: $update" 1>&2 ;;
+  esac    
+done
+
+echo ""

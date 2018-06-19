@@ -1,0 +1,333 @@
+#!/bin/bash
+
+set -eu
+
+OS=""
+OUTPUT=""
+PIP="NaN"
+DATE=$(date +%Y%m%d%H%M%S)
+
+PROFILE_TEMPLATE="$(find -L  "$HOME"/.config -name bash_profile.template | head -1)"
+RC_TEMPLATE="$(find -L "$HOME"/.config -name bashrc.template | head -1)"
+
+DOTFILES_DIR="$HOME/.config/dotfiles"
+
+PROFILE="$HOME/.bash_profile"
+RC="$HOME/.bashrc"
+
+
+# =============================================================================
+# FUNCTIONS
+# =============================================================================
+
+# -----------------------------------------------------------------------------
+# Common functions
+# -----------------------------------------------------------------------------
+
+function skip () {
+  return 1
+}
+
+function convert_template () {
+  local bash_template
+  local bash_config
+
+  bash_template="$1"
+  bash_config="$2"
+
+  IFS=''
+  while read -r line || [[ -n "$line" ]]; do
+    if echo "$line" | grep -qE '%%'; then
+      # get variable - which serves as a function
+      func=$(echo "$line" | sed -e 's/^[ ]*//' | cut -d ' ' -f 2)
+
+      # set an empty line to 'skip' so the line isn't printed
+      if [[ "$func" == "%%" ]]; then func="skip"; fi
+
+      # find the corresponding function to print content
+      if eval "$func"; then
+        echo "$OUTPUT" >> "$bash_config"
+      fi
+    else
+      echo "$line" >> "$bash_config"
+    fi
+  done < "$bash_template"
+}
+
+
+# -----------------------------------------------------------------------------
+# bash_profile functions
+# -----------------------------------------------------------------------------
+
+#
+# Mac needs to add ~/Library Python 3.6 to PATH
+#
+function mac_path_anaconda () {
+  if [[ "$OS" == "macos" ]] && [[ -d "$HOME/Library/Python/3.6/bin" ]]; then
+    OUTPUT="PATH=\"\$HOME/Library/Python/3.6/bin:\$PATH\""
+  else
+    return 1
+  fi
+}
+
+#
+# Add GNU packages to Mac's PATH
+#
+function mac_path_brewgnu () {
+  if [[ "$OS" != "macos" ]]; then return 1; fi
+
+  local tmpout=""
+  local binpath=""
+
+  # Find GNU packages installed by Homebrew
+  while read -r formula; do
+    binpath=$(printf "PATH=\"%s:\$PATH\"" "$formula")
+    # The "X" is a placeholder so that the newline isn't removed
+    tmpout=$(printf "%s%s\\nX" "$tmpout" "$binpath")
+    tmpout=${tmpout%X}
+  done <<< "$(find -L "$(brew --prefix)"/opt -type d -name 'gnubin')"
+
+  OUTPUT="$tmpout"
+}
+
+#
+# Add GNU packages to Mac's MANPATH
+#
+function mac_manpath_brewgnu () {
+  if [[ "$OS" != "macos" ]]; then return 1; fi
+
+  local tmpout=""
+  local manpath=""
+
+  # Find GNU manpages installed by Homebrew
+  while read -r formula; do
+    manpath=$(printf "MANPATH=\"\$MANPATH:%s\"" "$formula")
+    # The "X" is a placeholder so that the newline isn't removed
+    tmpout=$(printf "%s%s\\nX" "$tmpout" "$manpath")
+    tmpout=${tmpout%X}
+  done <<< "$(find -L "$(brew --prefix)"/opt -type d -name 'gnuman')"
+
+  OUTPUT="$(printf "%sexport MANPATH" "$tmpout")"
+}
+
+#
+# Non-local hosts should try to update dotfiles
+#
+function update_dotfiles () {
+  if [[ "$OS" == "macos" ]]; then return 1; fi
+
+  OUTPUT=$(printf '%s\n' \
+    "if [[ -x \"$HOME/.local/bin/update\" ]]; then" \
+    "  if ! \"$HOME/.local/bin/update\" -i d &>/dev/null; then" \
+    "    echo \"Unable to update dotfiles!\"" \
+    "  fi" \
+    "fi"
+  )
+}
+
+
+# -----------------------------------------------------------------------------
+# bashrc functions
+# -----------------------------------------------------------------------------
+
+#
+# Various aliases
+#
+function alias_anaconda () {
+  if [ -f /usr/local/anaconda3/bin/activate ]; then
+    OUTPUT="alias anaconda='source /usr/local/anaconda3/bin/activate root'"
+  else
+    return 1
+  fi
+}
+
+function alias_ncdu () {
+  if type ncdu &>/dev/null; then
+    OUTPUT="alias du='ncdu'"
+  else
+    return 1
+  fi
+}
+
+function alias_pydf () {
+  if type pydf &>/dev/null; then
+    OUTPUT="alias df='pydf'"
+  else
+    return 1
+  fi
+}
+
+function alias_rmate () {
+  if type rmate &>/dev/null; then
+    OUTPUT="alias mate='rmate'"
+  else
+    return 1
+  fi
+}
+
+#
+# Enables thefuck alias if installed
+#
+function eval_thefuck () {
+  if type thefuck &>/dev/null; then
+    OUTPUT="eval \$(thefuck --alias)"
+  else
+    return 1
+  fi
+}
+
+#
+# Use keychain if installed with specific per-system options
+#
+function eval_keychain () {
+  if ! type keychain &>/dev/null; then return 1; fi
+
+  local inherit=""
+  local flags="--eval --ignore-missing --quiet"
+  local keys="id_esai id_home id_rsa id_ed25519"
+
+  if [[ "$OS" == "macos" ]]; then
+    inherit="--inherit any "
+  fi
+
+  OUTPUT="eval \"\$(keychain $flags $inherit$keys)\""
+}
+
+#
+# Enable MacOS terminal options
+#
+function export_termopts () {
+  if [[ "$OS" != "macos" ]]; then return 1; fi
+
+  OUTPUT=$(printf '%s\n' \
+    "export EDITOR=\"/usr/local/bin/mate -w\"" \
+    "export CLICOLOR=1"
+  )
+}
+
+#
+# Source RVM scripts if present
+#
+function source_rvm () {
+  if [[ -x "$HOME"/.rvm/scripts/rvm ]]; then
+    OUTPUT=". \"$HOME\"/.rvm/scripts/rvm"
+  else
+    return 1
+  fi
+}
+
+#
+# Sets PS1 to use Powerline (usually reserved for local hosts)
+#
+function source_powerline () {
+  # Skip if Pip not found on system
+  if [[ "$PIP" == "NaN" ]]; then return 1; fi
+
+  local plroot
+  plroot=$("$PIP" show powerline-status \
+    | grep 'Location' \
+    | cut -d ' ' -f 2
+  )
+
+  OUTPUT=$(printf '%s\n' \
+    "powerline-daemon -q" \
+    "POWERLINE_BASH_SCRIPT=\"powerline/bindings/bash/powerline.sh\"" \
+    "POWERLINE_BASH_CONTINUATION=1" \
+    "POWERLINE_BASH_SELECT=1" \
+    "export POWERLINE_COMMAND=powerline" \
+    "export POWERLINE_CONFIG_COMMAND=powerline-config" \
+    "export POWERLINE_ROOT=\"$plroot\"" \
+    "" \
+    ". \"\${POWERLINE_ROOT}/\${POWERLINE_BASH_SCRIPT}\"" \
+    "" \
+    "# Converts tmux status bar to powerline status" \
+    "# (powerline.readthedocs.io/en/master/usage/other.html#tmux-statusline)" \
+    "if [[ -n \"\$TMUX\" ]]; then powerline-config tmux setup; fi"
+  )
+}
+
+#
+# Sets PS1 to use more simplistic bash-git-prompt (usually for remote hosts)
+#
+function source_gitprompt () {
+  if type brew &>/dev/null; then
+    OUTPUT=$(printf '%s\n' \
+      "__GIT_PROMPT_DIR=\$(brew --prefix)/opt/bash-git-prompt/share" \
+      ". \"\$(brew --prefix)/opt/bash-git-prompt/share/gitprompt.sh\""
+    )
+  else
+    OUTPUT=". \"\$HOME\"/.bash-git-prompt/gitprompt.sh"
+  fi
+}
+
+#
+# Wrapper function for loading appropriate PS1 function
+#
+function ps1_select () {
+  if [[ "$_DOMAIN" == "local" ]] || [[ "$OS" == "fedora" ]]; then
+    source_powerline
+  else
+	  source_gitprompt
+  fi
+}
+
+
+# =============================================================================
+# Main Exec
+# =============================================================================
+
+#
+# Determine OS
+#
+case "$(uname -s)" in
+  Darwin) OS="macos" ;;
+  Linux)
+    if [ -f /etc/fedora-release ]; then
+      OS="fedora"
+    elif [ -f /etc/centos-release ]; then
+      OS="centos"
+    elif [ -f /etc/redhat-release ]; then
+      OS="redhat"
+    else
+      echo "OS detection failed"
+      exit 1
+    fi
+    ;;
+  *)
+    echo "OS not supported"
+    exit 1
+    ;;
+esac
+
+#
+# Get hostname info
+#
+_DOMAIN=$(echo "$HOSTNAME" | cut -d '.' -f 2-)
+
+#
+# Find Pip executable
+#
+if type pip3 &>/dev/null; then
+  PIP="pip3"
+elif type pip &>/dev/null; then
+  PIP="pip"
+fi
+
+#
+# Ensure ~/.config directory exists
+#
+if [ ! -d "$HOME"/.config ]; then mkdir -p "$ARCHIVE"; fi
+
+#
+# Parse bash_profile template
+#
+mv "$PROFILE" "$DOTFILES_DIR"/bash_profile."$DATE"
+touch "$PROFILE"
+convert_template "$PROFILE_TEMPLATE" "$PROFILE"
+
+#
+# Parse bashrc template
+#
+mv "$RC" "$DOTFILES_DIR"/bashrc."$DATE"
+touch "$RC"
+convert_template "$RC_TEMPLATE" "$RC"

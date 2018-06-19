@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+DELIM="-"
+
+function usage () {
+  echo "Usage: gmkpasswd <num> [<delim>]"
+  echo "       <num> any number > 0"
+  echo "       <delim> demlimator symbol (optional); default is '-'"
+}
+
+if [[ "$1" == "-h" ]] || [[ "$1" == "--help" ]]; then
+  usage
+  exit 0
+elif [[ "$1" == "" ]] || [[ "$1" -lt 1 ]]; then
+  echo "Error: incorrect arguments"
+  usage
+  exit 1
+else
+  NUM="$1"
+fi
+
+if [[ "$2" != "" ]]; then
+  DELIM="$2"
+fi
+
+gshuf --random-source=/dev/random -n "$NUM" ~/.local/share/dict/words | tr '[:upper:]' '[:lower:]' | sed -e ':a' -e 'N' -e '$!ba' -e "s/\\n/$DELIM/g"
