@@ -2,6 +2,9 @@
 
 set -eu
 
+TRUE=0
+FALSE=1
+
 PIPS=("pip" "pip2" "pip3")
 BASH_DOTFILES_SCRIPT="$HOME/.local/bin/generate-dotfiles"
 
@@ -105,7 +108,7 @@ function dotfiles_pull {
   echo ""
   echo "__ Updating Dotfiles Repo __"
 
-	local stashed=0
+	local stashed=$FALSE
 	local output=""
   local repo="$HOME/.dotfiles"
 
@@ -115,7 +118,7 @@ function dotfiles_pull {
 		echo -n "Stashing any changes... "
 		output=$(git stash)
 		if echo "$output" | grep -q "Saved working directory"; then
-			stashed=1
+			stashed=$TRUE
       echo "done"
     elif echo "$output" | grep -q "No local changes"; then
     	echo "done"
@@ -138,14 +141,7 @@ function dotfiles_pull {
       echo "failed"
     fi
 
-		echo -n "Updating submodules... "
-		if git submodule update &>/dev/null; then
-      echo "done"
-    else
-      echo "failed"
-    fi
-
-		if [[ "$stashed" -eq 1 ]]; then
+		if [[ "$stashed" -eq $TRUE ]]; then
 			echo -n "Popping the stash... "
 			if git stash pop &>/dev/null; then
       	echo "done"

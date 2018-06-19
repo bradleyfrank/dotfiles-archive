@@ -7,10 +7,12 @@ OUTPUT=""
 PIP="NaN"
 DATE=$(date +%Y%m%d%H%M%S)
 
-PROFILE_TEMPLATE="$(find -L  "$HOME"/.config -name bash_profile.template | head -1)"
-RC_TEMPLATE="$(find -L "$HOME"/.config -name bashrc.template | head -1)"
+CONF_DIR="$HOME/.config"
+DOTFILES_CONF_DIR="$CONF_DIR/dotfiles"
+DOTFILES_ARCHIVE="$DOTFILES_CONF_DIR/archive"
 
-DOTFILES_DIR="$HOME/.config/dotfiles"
+PROFILE_TEMPLATE="$(find -L "$CONF_DIR" -name bash_profile.template | head -1)"
+RC_TEMPLATE="$(find -L "$CONF_DIR" -name bashrc.template | head -1)"
 
 PROFILE="$HOME/.bash_profile"
 RC="$HOME/.bashrc"
@@ -70,6 +72,7 @@ function mac_path_anaconda () {
   fi
 }
 
+
 #
 # Add GNU packages to Mac's PATH
 #
@@ -90,6 +93,7 @@ function mac_path_brewgnu () {
   OUTPUT="$tmpout"
 }
 
+
 #
 # Add GNU packages to Mac's MANPATH
 #
@@ -109,6 +113,7 @@ function mac_manpath_brewgnu () {
 
   OUTPUT="$(printf "%sexport MANPATH" "$tmpout")"
 }
+
 
 #
 # Non-local hosts should try to update dotfiles
@@ -165,6 +170,7 @@ function alias_rmate () {
   fi
 }
 
+
 #
 # Enables thefuck alias if installed
 #
@@ -175,6 +181,7 @@ function eval_thefuck () {
     return 1
   fi
 }
+
 
 #
 # Use keychain if installed with specific per-system options
@@ -193,6 +200,7 @@ function eval_keychain () {
   OUTPUT="eval \"\$(keychain $flags $inherit$keys)\""
 }
 
+
 #
 # Enable MacOS terminal options
 #
@@ -205,6 +213,7 @@ function export_termopts () {
   )
 }
 
+
 #
 # Source RVM scripts if present
 #
@@ -215,6 +224,7 @@ function source_rvm () {
     return 1
   fi
 }
+
 
 #
 # Sets PS1 to use Powerline (usually reserved for local hosts)
@@ -246,6 +256,7 @@ function source_powerline () {
   )
 }
 
+
 #
 # Sets PS1 to use more simplistic bash-git-prompt (usually for remote hosts)
 #
@@ -259,6 +270,7 @@ function source_gitprompt () {
     OUTPUT=". \"\$HOME\"/.bash-git-prompt/gitprompt.sh"
   fi
 }
+
 
 #
 # Wrapper function for loading appropriate PS1 function
@@ -289,7 +301,7 @@ case "$(uname -s)" in
     elif [ -f /etc/redhat-release ]; then
       OS="redhat"
     else
-      echo "OS detection failed"
+      echo "Linux detection failed"
       exit 1
     fi
     ;;
@@ -299,10 +311,12 @@ case "$(uname -s)" in
     ;;
 esac
 
+
 #
 # Get hostname info
 #
 _DOMAIN=$(echo "$HOSTNAME" | cut -d '.' -f 2-)
+
 
 #
 # Find Pip executable
@@ -313,21 +327,24 @@ elif type pip &>/dev/null; then
   PIP="pip"
 fi
 
+
 #
 # Ensure ~/.config directory exists
 #
-if [ ! -d "$HOME"/.config ]; then mkdir -p "$ARCHIVE"; fi
+if [ ! -d "$CONF_DIR" ]; then mkdir -p "$DOTFILES_ARCHIVE"; fi
+
 
 #
 # Parse bash_profile template
 #
-mv "$PROFILE" "$DOTFILES_DIR"/bash_profile."$DATE"
+mv "$PROFILE" "$DOTFILES_ARCHIVE"/bash_profile."$DATE"
 touch "$PROFILE"
 convert_template "$PROFILE_TEMPLATE" "$PROFILE"
+
 
 #
 # Parse bashrc template
 #
-mv "$RC" "$DOTFILES_DIR"/bashrc."$DATE"
+mv "$RC" "$DOTFILES_ARCHIVE"/bashrc."$DATE"
 touch "$RC"
 convert_template "$RC_TEMPLATE" "$RC"
