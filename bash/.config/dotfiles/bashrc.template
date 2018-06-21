@@ -55,6 +55,7 @@ alias orch='javaws ~/.local/java/orchestrator.jnlp'
 %% eval_keychain
 %%
 
+export PAGER=most
 export PROMPT_DIRTRIM=3
 %% export_termopts
 %%
