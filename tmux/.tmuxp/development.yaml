@@ -1,13 +1,15 @@
 session_name: development
+
 windows:
+
 - layout: even-vertical
   options:
     automatic-rename: 'off'
   panes:
   - focus: 'true'
-    shell_command: bash
   start_directory: /Users/bfrank/Development/Home/bootstrap
   window_name: bootstrap
+
 - layout: main-horizontal
   options:
     automatic-rename: 'off'
@@ -15,23 +17,24 @@ windows:
   - focus: 'true'
     shell_command:
     - cd /Users/bfrank/.dotfiles
-    - bash
+    - clear
   - shell_command:
     - cd /Users/bfrank/Development/Home/bins
-    - bash
+    - clear
   - shell_command:
     - cd /Users/bfrank/Development/Home/dotfiles
-    - bash
-  main-pane-height: 25
+    - clear
+  main-pane-height: 55
   window_name: dotfiles
+
 - layout: even-vertical
   options:
     automatic-rename: 'off'
   panes:
   - focus: 'true'
-    shell_command: bash
   start_directory: /Users/bfrank/Development/Home/franklybrad
   window_name: franklybrad
+
 - layout: even-vertical
   options:
     automatic-rename: 'off'
@@ -39,16 +42,16 @@ windows:
   - focus: 'true'
     shell_command:
     - cd /Users/bfrank/Development/Home/puppet-manifest
-    - bash
+    - clear
   - shell_command:
     - cd /Users/bfrank/Development/Home/puppet-manifest/modules/bmf
-    - bash
+    - clear
   window_name: puppet
+
 - layout: even-vertical
   options:
     automatic-rename: 'off'
   panes:
   - focus: 'true'
-    shell_command: bash
   start_directory: /Users/bfrank/Development/Clients/dataprivacy-puppet
   window_name: dataprivacy
