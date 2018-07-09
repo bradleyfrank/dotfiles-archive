@@ -65,8 +65,8 @@ function convert_template () {
 # Mac needs to add ~/Library Python 3.6 to PATH
 #
 function mac_path_anaconda () {
-  if [[ "$OS" == "macos" ]] && [[ -d "$HOME/Library/Python/3.6/bin" ]]; then
-    OUTPUT="PATH=\"\$HOME/Library/Python/3.6/bin:\$PATH\""
+  if [[ "$OS" == "macos" ]] && [[ -d "$HOME/Library/Python/3.7/bin" ]]; then
+    OUTPUT="PATH=\"\$HOME/Library/Python/3.7/bin:\$PATH\""
   else
     return 1
   fi
@@ -234,10 +234,7 @@ function source_powerline () {
   if [[ "$PIP" == "NaN" ]]; then return 1; fi
 
   local plroot
-  plroot=$("$PIP" show powerline-status \
-    | grep 'Location' \
-    | cut -d ' ' -f 2
-  )
+  plroot=$("$PIP" show powerline-status | grep 'Location' | cut -d ' ' -f 2)
 
   OUTPUT=$(printf '%s\n' \
     "powerline-daemon -q" \
