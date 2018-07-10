@@ -5,6 +5,7 @@
 	email = bradley.frank@gmail.com
 [core]
 	excludesfile = /Users/bfrank/.gitignore
+	editor = vim
 [alias]
   #
   # Creating Graphs
@@ -26,3 +27,9 @@
   brch = rev-parse --abbrev-ref HEAD
   fp = push --set-upstream origin brch
   lc = rev-parse --verify HEAD
+[difftool "sourcetree"]
+	cmd = opendiff \"$LOCAL\" \"$REMOTE\"
+	path = 
+[mergetool "sourcetree"]
+	cmd = /Applications/Sourcetree.app/Contents/Resources/opendiff-w.sh \"$LOCAL\" \"$REMOTE\" -ancestor \"$BASE\" -merge \"$MERGED\"
+	trustExitCode = true
