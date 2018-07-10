@@ -19,9 +19,6 @@ windows:
     - cd /Users/bfrank/.dotfiles
     - clear
   - shell_command:
-    - cd /Users/bfrank/Development/Home/bins
-    - clear
-  - shell_command:
     - cd /Users/bfrank/Development/Home/dotfiles
     - clear
   main-pane-height: 55
