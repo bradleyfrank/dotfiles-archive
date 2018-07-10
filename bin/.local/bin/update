@@ -247,13 +247,13 @@ function shell_gen {
   echo ""
   echo "__ Updating Bash __"
 
-  if [ ! -x "$HOME"/.local/bin/generate-bash-startup ]; then
+  if [ ! -x "$BASH_DOTFILES_SCRIPT" ]; then
     echo "Script missing to generate startup files."
     return
   fi
 
   echo -n "Generate Bash startup files... "
-  if generate-bash-startup &>/dev/null; then
+  if "$BASH_DOTFILES_SCRIPT" &>/dev/null; then
     echo "done"
   else
     echo "failed"
