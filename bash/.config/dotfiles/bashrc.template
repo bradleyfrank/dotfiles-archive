@@ -32,7 +32,7 @@ alias tag='dmidecode -s system-serial-number'
 %% alias_ncdu
 %% alias_pydf
 alias groot='cd $(git rev-parse --show-toplevel)'
-alias ll='ls -lAhF'
+alias ll='ls -lAhFG --color=auto'
 alias mkdir='mkdir -pv'
 alias ps='ps auxf'
 alias psg='ps aux | grep -v grep | grep -i -e'
