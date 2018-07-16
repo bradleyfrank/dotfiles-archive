@@ -55,6 +55,21 @@ alias orch='javaws ~/.local/java/orchestrator.jnlp'
 %% eval_keychain
 %%
 
+# Bash tab-completion settings
+bind "set completion-ignore-case on"
+bind "set completion-map-case on"
+bind "set show-all-if-ambiguous on"
+bind "set mark-symlinked-directories on"
+
+# Bash history settings
+shopt -s histappend
+export HISTFILESIZE=
+export HISTSIZE=
+export HISTCONTROL="erasedups:ignoreboth"
+export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear"
+export HISTTIMEFORMAT='%F %T '
+
+# Bash output settings
 export PAGER=most
 export PROMPT_DIRTRIM=3
 %% export_termopts
