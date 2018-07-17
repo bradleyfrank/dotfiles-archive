@@ -63,11 +63,19 @@ bind "set mark-symlinked-directories on"
 
 # Bash history settings
 shopt -s histappend
+export HH_CONFIG=hicolor
 export HISTFILESIZE=
 export HISTSIZE=
-export HISTCONTROL="erasedups:ignoreboth"
+export HISTCONTROL="erasedups:ignoreboth:ignorespace"
 export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear"
 export HISTTIMEFORMAT='%F %T '
+
+# hstr bindings
+# https://github.com/dvorka/hstr/blob/master/CONFIGURATION.md
+if [[ $- =~ .*i.* ]]; then
+  bind '"\C-r": "\C-a hh -- \C-j"'
+  bind '"\C-xk": "\C-a hh -k \C-j"'
+fi
 
 # Bash output settings
 export PAGER=most
