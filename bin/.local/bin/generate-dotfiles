@@ -14,6 +14,9 @@ DOTFILES_ARCHIVE="$DOTFILES_CONF_DIR/archive"
 PROFILE_TEMPLATE="$(find -L "$CONF_DIR" -name bash_profile.template | head -1)"
 RC_TEMPLATE="$(find -L "$CONF_DIR" -name bashrc.template | head -1)"
 
+PROFILE_TEMP="$(mktemp)"
+RC_TEMP="$(mktemp)"
+
 PROFILE="$HOME/.bash_profile"
 RC="$HOME/.bashrc"
 
@@ -62,7 +65,7 @@ function convert_template () {
 # -----------------------------------------------------------------------------
 
 #
-# Mac needs to add ~/Library Python 3.6 to PATH
+# Mac needs to add ~/Library Python 3.7 to PATH
 #
 function mac_path_anaconda () {
   if [[ "$OS" == "macos" ]] && [[ -d "$HOME/Library/Python/3.7/bin" ]]; then
@@ -326,22 +329,29 @@ fi
 
 
 #
-# Ensure ~/.config directory exists
+# Parse templates
 #
-if [ ! -d "$CONF_DIR" ]; then mkdir -p "$DOTFILES_ARCHIVE"; fi
+convert_template "$PROFILE_TEMPLATE" "$PROFILE_TEMP"
+convert_template "$RC_TEMPLATE" "$RC_TEMP"
 
 
 #
-# Parse bash_profile template
+# Backup existing profiles
 #
+if [[ ! -d "$DOTFILES_ARCHIVE" ]];
+  then mkdir -p "$DOTFILES_ARCHIVE"
+fi
+
 mv "$PROFILE" "$DOTFILES_ARCHIVE"/bash_profile."$DATE"
-touch "$PROFILE"
-convert_template "$PROFILE_TEMPLATE" "$PROFILE"
-
-
-#
-# Parse bashrc template
-#
 mv "$RC" "$DOTFILES_ARCHIVE"/bashrc."$DATE"
-touch "$RC"
-convert_template "$RC_TEMPLATE" "$RC"
+
+
+#
+# Move new profiles into place
+#
+command cp "$PROFILE_TEMP" "$PROFILE"
+command cp "$RC_TEMP" "$RC"
+chown "$USER" "$PROFILE" "$RC"
+chmod 644 "$PROFILE" "$RC"
+
+exit 0
