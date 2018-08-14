@@ -94,17 +94,17 @@ function .. () {
     dir="../$dir"
     arg=$(($arg - 1));
   done
-  cd $dir >&/dev/null
+  cd $dir >&/dev/null || return
 }
 
 function decrypt () {
-  filename=(${1//./ })
-  openssl enc -d -aes-256-cbc -in $1 -out $filename.txt
+  filename=("${1//./ }")
+  openssl enc -d -aes-256-cbc -in $1 -out "${filename[0]}".txt
 }
 
 function encrypt () {
-  filename=(${1//./ })
-  openssl enc -aes-256-cbc -salt -in $1 -out $filename.enc
+  filename=("${1//./ }")
+  openssl enc -aes-256-cbc -salt -in $1 -out "${filename[0]}".enc
 }
 
 
