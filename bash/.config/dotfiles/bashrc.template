@@ -17,8 +17,6 @@ alias typora='open -a typora'
 alias dcu='docker-compose up -d'
 alias dip='docker inspect --format "{{ .NetworkSettings.IPAddress }}"'
 alias dps='docker ps'
-# HandBrake
-alias transcode-h265='transcode-video --handbrake-option encoder=x265'
 # Networking
 alias digg='dig +noall +answer'
 alias pingg='ping -c 4'
