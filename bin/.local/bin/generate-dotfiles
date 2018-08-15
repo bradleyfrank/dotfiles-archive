@@ -115,9 +115,9 @@ function mac_manpath_brewgnu () {
   done <<< "$(find -L "$(brew --prefix)"/opt -type d -name 'gnuman')"
 
   OUTPUT=$(printf '%s\n' \
-    "if [[ -z \"\$MANPATH\" ]]; then MANPATH=\"\"; fi"
+    "if [[ -z \"\$MANPATH\" ]]; then MANPATH=\"\"; fi" \
     "$tmpout" \
-    "export MANPATH" \
+    "export MANPATH"
   )
 }
 
