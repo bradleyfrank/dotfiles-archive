@@ -342,6 +342,7 @@ if [[ ! -d "$DOTFILES_ARCHIVE" ]];
   then mkdir -p "$DOTFILES_ARCHIVE"
 fi
 
+touch "$PROFILE" "$RC" # Ensure files exist or 'mv' will fail
 mv "$PROFILE" "$DOTFILES_ARCHIVE"/bash_profile."$DATE"
 mv "$RC" "$DOTFILES_ARCHIVE"/bashrc."$DATE"
 
