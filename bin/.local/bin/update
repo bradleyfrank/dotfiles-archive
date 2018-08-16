@@ -1,4 +1,4 @@
-#!/usr/bin/env bash
+#!/bin/bash
 
 set -eu
 
@@ -7,6 +7,7 @@ FALSE=1
 
 PIPS=("pip" "pip2" "pip3")
 BASH_DOTFILES_SCRIPT="$HOME/.local/bin/generate-dotfiles"
+UPDATES="abdiprslm"
 
 
 # ==============================================================================
@@ -304,44 +305,45 @@ function linux_os {
 }
 
 
+function usage {
+  echo "update.sh -- Updates various system environments."
+  echo ""
+  echo "Usage: update -h | -a | -s | -u | [-i $UPDATES]"
+  echo ""
+  echo "Options:"
+  echo "-h    print help menu and exit"
+  echo "-a    perform all updates (default);  implies -i $UPDATES"
+  echo "-s    system updates only;            implies -i lm"
+  echo "-u    user updates only;              implies -i bdprs"
+  echo "-i    update individual subsystem:"
+  echo "      a    Anaconda"
+  echo "      b    HomeBrew"
+  echo "      d    Dotfiles"
+  echo "      i    Pip"
+  echo "      p    Python"
+  echo "      r    Ruby"
+  echo "      s    Shell"
+  echo "      -------------"
+  echo "      l    Linux OS"
+  echo "      m    Mac OS"
+  echo ""
+  exit 0
+}
+
+
 # ==============================================================================
 # Main
 # ==============================================================================
 
-UPDATES="abdiprslm"
-
 while getopts 'hasui:' flag; do
   case "${flag}" in
-    h )
-      echo "update.sh -- Updates various system environments."
-      echo ""
-      echo "Usage: update -h | -a | -s | -u | [-i $UPDATES]"
-      echo ""
-      echo "Options:"
-      echo "-h    print help menu and exit"
-      echo "-a    perform all updates (default);  implies -i $UPDATES"
-      echo "-s    system updates only;            implies -i lm"
-      echo "-u    user updates only;              implies -i bdprs"
-      echo "-i    update individual subsystem:"
-      echo "      a    Anaconda"
-      echo "      b    HomeBrew"
-      echo "      d    Dotfiles"
-      echo "      i    Pip"
-      echo "      p    Python"
-      echo "      r    Ruby"
-      echo "      s    Shell"
-      echo "      -------------"
-      echo "      l    Linux OS"
-      echo "      m    Mac OS"
-      echo ""
-      exit 0
-      ;;
+    h ) usage ;;
     a ) UPDATES="$UPDATES" ;;
     s ) UPDATES="ml" ;;
     u ) UPDATES="bdprs" ;;
     i ) UPDATES="$OPTARG" ;;
-    : ) echo "Missing argument: $OPTARG requires an argument" 1>&2 ;;
-    \?) echo "Invalid option: $OPTARG" 1>&2 ;;
+    : ) echo "Missing argument: $OPTARG requires an argument" 1>&2 ; exit 1 ;;
+    \?) echo "Invalid option: $OPTARG" 1>&2 ; exit 1 ;;
   esac
 done
 
@@ -358,8 +360,9 @@ for (( i=0; i<${#UPDATES}; i++ )); do
     s ) shell_gen ;;
     l ) linux_os ;;
     m ) macos ;;
-    * ) echo "Invalid option: $update" 1>&2 ;;
-  esac    
+    * ) echo "Invalid option: $update" 1>&2 ; exit 1 ;;
+  esac
 done
 
 echo ""
+exit 0
