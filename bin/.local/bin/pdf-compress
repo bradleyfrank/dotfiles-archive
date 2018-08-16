@@ -43,7 +43,7 @@ INPUT_FILE="$PWD"/"$INPUT_FILENAME"
 OUTPUT_FILE="$PWD"/"${INPUT_FILENAME%.*}"_compressed_"$COMPRESS_LEVEL".pdf
 popd &>/dev/null
 
-if ! type gs; then
+if ! type gs &>/dev/null; then
   echo "Error: ghostscript not installed."
   exit 1
 fi
