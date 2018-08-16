@@ -1,0 +1,60 @@
+#!/bin/bash
+
+set -eu
+COMPRESS_LEVEL="ebook"
+INPUT_FILE=""
+
+function usage {
+  echo "Usage: pdf-compress -h | -l [level] -f [file]"
+  echo "  -l  Compression level using one of the following options:"
+  echo "         screen   (screen-view-only quality, 72 dpi)"
+  echo "         ebook    (low quality, 150 dpi)"
+  echo "         printer  (high quality, 300 dpi)"
+  echo "         prepress (high quality, color preserving, 300 dpi)"
+  echo "         default  (default dpi)"
+  echo "  -f  PDF file to compress."
+  echo "  -d  Enable debug mode."
+}
+
+while getopts 'hl:f:' flag; do
+  case "${flag}" in
+    h ) usage ; exit 0 ;;
+    l ) COMPRESS_LEVEL="$OPTARG" ;;
+    f ) INPUT_FILE="$OPTARG" ;;
+    \?) echo "Invalid option: $OPTARG" 1>&2 ; usage ; exit 1 ;;
+  esac
+done
+
+echo
+
+if [[ "$INPUT_FILE" == "" ]]; then
+  echo "Error: Input file not specified."
+  usage
+  exit 1
+elif [[ ! -f "$INPUT_FILE" ]]; then
+  echo "Error: File does not exist, check path to file specified."
+  exit 1
+fi
+
+INPUT_FILENAME="$(basename "$INPUT_FILE")"
+
+pushd "$(dirname "${INPUT_FILE/#\~/$HOME}")" &>/dev/null
+INPUT_FILE="$PWD"/"$INPUT_FILENAME"
+OUTPUT_FILE="$PWD"/"${INPUT_FILENAME%.*}"_compressed_"$COMPRESS_LEVEL".pdf
+popd &>/dev/null
+
+if ! type gs; then
+  echo "Error: ghostscript not installed."
+  exit 1
+fi
+
+echo "Compressing: $INPUT_FILE"
+if gs -sDEVICE=pdfwrite -dCompatibilityLevel=1.4 -dPDFSETTINGS=/"$COMPRESS_LEVEL" -dNOPAUSE -dQUIET -dBATCH -sOutputFile="$OUTPUT_FILE" "$INPUT_FILE" &>/dev/null; then
+  echo "Wrote: $OUTPUT_FILE"
+else
+  echo "Error: ghostscript error."
+  exit 1
+fi
+
+echo
+exit 0
