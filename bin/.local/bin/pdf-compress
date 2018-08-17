@@ -13,7 +13,6 @@ function usage {
   echo "         prepress (high quality, color preserving, 300 dpi)"
   echo "         default  (default dpi)"
   echo "  -f  PDF file to compress."
-  echo "  -d  Enable debug mode."
 }
 
 while getopts 'hl:f:' flag; do
