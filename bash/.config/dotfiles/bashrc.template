@@ -19,7 +19,7 @@ alias dip='docker inspect --format "{{ .NetworkSettings.IPAddress }}"'
 alias dps='docker ps'
 # Networking
 alias digg='dig +noall +answer'
-alias pingg='ping -c 4'
+%% alias_prettyping
 alias pubip='dig +short myip.opendns.com @resolver1.opendns.com'
 # Python
 %% alias_anaconda

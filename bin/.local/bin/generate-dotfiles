@@ -160,6 +160,14 @@ function alias_ncdu () {
   fi
 }
 
+function alias_prettyping () {
+  if type prettyping &>/dev/null; then
+    OUTPUT="alias ping='prettyping'"
+  else
+    return 1
+  fi
+}
+
 function alias_pydf () {
   if type pydf &>/dev/null; then
     OUTPUT="alias df='pydf'"
