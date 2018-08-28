@@ -205,7 +205,7 @@ function eval_keychain () {
 
   local inherit=""
   local flags="--eval --ignore-missing --quiet"
-  local keys="id_esai id_home id_rsa id_ed25519"
+  local keys="id_esai id_home id_develop id_rsa id_ed25519"
 
   if [[ "$OS" == "macos" ]]; then
     inherit="--inherit any "
