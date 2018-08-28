@@ -142,10 +142,10 @@ function update_dotfiles () {
 # -----------------------------------------------------------------------------
 
 #
-# Various aliases
+# Various aliases that replace known/built-in commands
 #
 function alias_anaconda () {
-  if [ -f /usr/local/anaconda3/bin/activate ]; then
+  if [[ -f /usr/local/anaconda3/bin/activate ]]; then
     OUTPUT="alias anaconda='source /usr/local/anaconda3/bin/activate root'"
   else
     return 1

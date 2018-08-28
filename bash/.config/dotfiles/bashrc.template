@@ -18,8 +18,8 @@ alias dcu='docker-compose up -d'
 alias dip='docker inspect --format "{{ .NetworkSettings.IPAddress }}"'
 alias dps='docker ps'
 # Networking
-alias digg='dig +noall +answer'
 %% alias_prettyping
+alias digg='dig +noall +answer'
 alias pubip='dig +short myip.opendns.com @resolver1.opendns.com'
 # Python
 %% alias_anaconda
@@ -30,6 +30,7 @@ alias tag='dmidecode -s system-serial-number'
 %% alias_ncdu
 %% alias_pydf
 alias groot='cd $(git rev-parse --show-toplevel)'
+alias help='tldr'
 alias ll='ls -lAhFG --color=auto'
 alias mkdir='mkdir -pv'
 alias ps='ps auxf'
