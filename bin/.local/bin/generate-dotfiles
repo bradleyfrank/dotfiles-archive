@@ -116,7 +116,6 @@ function mac_manpath_brewgnu () {
 
   OUTPUT=$(printf '%s\n' \
     "$tmpout" \
-    "export MANPATH"
   )
 }
 

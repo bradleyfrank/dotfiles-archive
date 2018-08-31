@@ -6,8 +6,8 @@ export PATH
 
 MANPATH="$HOME/.local/share/man"
 %% mac_manpath_brewgnu
-%%
+export MANPATH
 
 %% update_dotfiles
-%%
+
 if [[ -f "$HOME/.bashrc" ]]; then . "$HOME/.bashrc"; fi
