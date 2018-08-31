@@ -11,6 +11,7 @@
     ]
     titleBar: "custom-inset"
   editor:
+    fontFamily: "Source Code Pro"
     tabType: "soft"
   "exception-reporting":
     userId: "3b2e450f-d74e-4c11-b22e-4f9ed09a6992"
@@ -18,8 +19,7 @@
     shellcheckExecutablePath: "/usr/local/bin/shellcheck"
   "linter-ui-default":
     alwaysTakeMinimumSpace: true
-    hidePanelWhenEmpty: false
-    showPanel: true
+    hidePanelWhenEmpty: true
     statusBarPosition: "Right"
   welcome:
     showOnStartup: false
