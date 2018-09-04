@@ -29,11 +29,11 @@ RC="$HOME/.bashrc"
 # Common functions
 # -----------------------------------------------------------------------------
 
-function skip () {
+skip() {
   return 1
 }
 
-function convert_template () {
+convert_template() {
   local bash_template
   local bash_config
 
@@ -67,7 +67,7 @@ function convert_template () {
 #
 # Mac needs to add ~/Library Python 3.7 to PATH
 #
-function mac_path_anaconda () {
+mac_path_anaconda() {
   if [[ "$OS" == "macos" ]] && [[ -d "$HOME/Library/Python/3.7/bin" ]]; then
     OUTPUT="PATH=\"\$HOME/Library/Python/3.7/bin:\$PATH\""
   else
@@ -79,7 +79,7 @@ function mac_path_anaconda () {
 #
 # Add GNU packages to Mac's PATH
 #
-function mac_path_brewgnu () {
+mac_path_brewgnu() {
   if [[ "$OS" != "macos" ]]; then return 1; fi
 
   local tmpout=""
@@ -99,7 +99,7 @@ function mac_path_brewgnu () {
 #
 # Add GNU packages to Mac's MANPATH
 #
-function mac_manpath_brewgnu () {
+mac_manpath_brewgnu() {
   if [[ "$OS" != "macos" ]]; then return 1; fi
 
   local tmpout=""
@@ -119,7 +119,7 @@ function mac_manpath_brewgnu () {
 #
 # Non-local hosts should try to update dotfiles
 #
-function update_dotfiles () {
+update_dotfiles() {
   if [[ "$OS" == "macos" ]]; then return 1; fi
 
   OUTPUT=$(printf '%s\n' \
@@ -139,7 +139,7 @@ function update_dotfiles () {
 #
 # Various aliases that replace known/built-in commands
 #
-function alias_anaconda () {
+alias_anaconda() {
   if [[ -f /usr/local/anaconda3/bin/activate ]]; then
     OUTPUT="alias anaconda='source /usr/local/anaconda3/bin/activate root'"
   else
@@ -147,7 +147,7 @@ function alias_anaconda () {
   fi
 }
 
-function alias_ncdu () {
+alias_ncdu() {
   if type ncdu &>/dev/null; then
     OUTPUT="alias du='ncdu'"
   else
@@ -155,7 +155,7 @@ function alias_ncdu () {
   fi
 }
 
-function alias_prettyping () {
+alias_prettyping() {
   if type prettyping &>/dev/null; then
     OUTPUT="alias ping='prettyping'"
   else
@@ -163,7 +163,7 @@ function alias_prettyping () {
   fi
 }
 
-function alias_pydf () {
+alias_pydf() {
   if type pydf &>/dev/null; then
     OUTPUT="alias df='pydf'"
   else
@@ -171,7 +171,7 @@ function alias_pydf () {
   fi
 }
 
-function alias_rmate () {
+alias_rmate() {
   if type rmate &>/dev/null; then
     OUTPUT="alias mate='rmate'"
   else
@@ -183,7 +183,7 @@ function alias_rmate () {
 #
 # Enables thefuck alias if installed
 #
-function eval_thefuck () {
+eval_thefuck() {
   if type thefuck &>/dev/null; then
     OUTPUT="eval \$(thefuck --alias)"
   else
@@ -195,7 +195,7 @@ function eval_thefuck () {
 #
 # Use keychain if installed with specific per-system options
 #
-function eval_keychain () {
+eval_keychain() {
   if ! type keychain &>/dev/null; then return 1; fi
 
   local inherit=""
@@ -213,7 +213,7 @@ function eval_keychain () {
 #
 # Enable MacOS terminal options
 #
-function export_termopts () {
+export_termopts() {
   if [[ "$OS" != "macos" ]]; then return 1; fi
 
   OUTPUT=$(printf '%s\n' \
@@ -226,7 +226,7 @@ function export_termopts () {
 #
 # Source RVM scripts if present
 #
-function source_rvm () {
+source_rvm() {
   if [[ -x "$HOME"/.rvm/scripts/rvm ]]; then
     OUTPUT=". \"$HOME\"/.rvm/scripts/rvm"
   else
@@ -238,7 +238,7 @@ function source_rvm () {
 #
 # Sets PS1 to use Powerline (usually reserved for local hosts)
 #
-function source_powerline () {
+source_powerline() {
   # Skip if Pip not found on system
   if [[ "$PIP" == "NaN" ]]; then return 1; fi
 
@@ -266,7 +266,7 @@ function source_powerline () {
 #
 # Sets PS1 to use more simplistic bash-git-prompt (usually for remote hosts)
 #
-function source_gitprompt () {
+source_gitprompt() {
   if type brew &>/dev/null; then
     OUTPUT=$(printf '%s\n' \
       "__GIT_PROMPT_DIR=\$(brew --prefix)/opt/bash-git-prompt/share" \
@@ -281,7 +281,7 @@ function source_gitprompt () {
 #
 # Wrapper function for loading appropriate PS1 function
 #
-function ps1_select () {
+ps1_select() {
   if [[ "$_DOMAIN" == "local" ]] || [[ "$OS" == "fedora" ]]; then
     source_powerline
   else
