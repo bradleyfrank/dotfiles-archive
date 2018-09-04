@@ -85,7 +85,6 @@ function mac_path_brewgnu () {
   local tmpout=""
   local binpath=""
 
-  # Find GNU packages installed by Homebrew
   while read -r formula; do
     binpath=$(printf "PATH=\"%s:\$PATH\"" "$formula")
     # The "X" is a placeholder so that the newline isn't removed
@@ -93,7 +92,7 @@ function mac_path_brewgnu () {
     tmpout=${tmpout%X}
   done <<< "$(find -L "$(brew --prefix)"/opt -type d -name 'gnubin')"
 
-  OUTPUT="$tmpout"
+  OUTPUT="$(echo $tmpout)" # echo removes the final trailing newline
 }
 
 
@@ -106,7 +105,6 @@ function mac_manpath_brewgnu () {
   local tmpout=""
   local manpath=""
 
-  # Find GNU manpages installed by Homebrew
   while read -r formula; do
     manpath=$(printf "MANPATH=\"\$MANPATH:%s\"" "$formula")
     # The "X" is a placeholder so that the newline isn't removed
@@ -114,9 +112,7 @@ function mac_manpath_brewgnu () {
     tmpout=${tmpout%X}
   done <<< "$(find -L "$(brew --prefix)"/opt -type d -name 'gnuman')"
 
-  OUTPUT=$(printf '%s\n' \
-    "$tmpout" \
-  )
+  OUTPUT="$(echo $tmpout)" # echo removes the final trailing newline
 }
 
 
