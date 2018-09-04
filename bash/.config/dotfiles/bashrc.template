@@ -112,4 +112,5 @@ function encrypt () {
 # -----------------------------------------------------------------------------
 
 
-%% ps1_select
+__GIT_PROMPT_DIR=$(brew --prefix)/opt/bash-git-prompt/share
+. "$(brew --prefix)/opt/bash-git-prompt/share/gitprompt.sh"
