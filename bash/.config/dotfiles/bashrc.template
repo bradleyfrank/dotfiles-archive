@@ -49,6 +49,12 @@ alias orch='javaws ~/.local/java/orchestrator.jnlp'
 %%
 
 # output settings
+export PAGER=most
+export PROMPT_DIRTRIM=3
+export CLICOLOR=1
+%% export_termopts
+%%
+
 # tab-completion settings
 bind "set completion-ignore-case on"
 bind "set completion-map-case on"
@@ -69,11 +75,6 @@ export HISTTIMEFORMAT='%F %T '
 bind '"\C-r": "\C-a hh -- \C-j"'
 bind '"\C-xk": "\C-a hh -k \C-j"'
 
-# Bash output settings
-export PAGER=most
-export PROMPT_DIRTRIM=3
-%% export_termopts
-%%
 
 %% source_rvm
 %%
