@@ -1,32 +1,29 @@
-# If not running interactively, don't do anything
+# if not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-# Load the system bashrc
 if [[ -f /etc/bashrc ]]; then . /etc/bashrc; fi
+# load the system bashrc
 
 
-# -----------------------------------------------------------------------------
-
-
-# Apps
+# apps
 alias bb='bbedit'
 %% alias_rmate
 alias safari='open -a Safari'
 alias typora='open -a typora'
-# Docker
+# docker
 alias dcu='docker-compose up -d'
 alias dip='docker inspect --format "{{ .NetworkSettings.IPAddress }}"'
 alias dps='docker ps'
-# Networking
+# networking
 %% alias_prettyping
 alias digg='dig +noall +answer'
 alias pubip='dig +short myip.opendns.com @resolver1.opendns.com'
-# Python
+# python
 %% alias_anaconda
-# System
+# system
 alias powerline-restart='powerline-daemon --replace'
 alias tag='dmidecode -s system-serial-number'
-# Terminal
+# terminal
 %% alias_ncdu
 %% alias_pydf
 alias groot='cd $(git rev-parse --show-toplevel)'
@@ -47,20 +44,18 @@ alias tls='tmux list-sessions'
 alias orch='javaws ~/.local/java/orchestrator.jnlp'
 
 
-# -----------------------------------------------------------------------------
-
-
 %% eval_thefuck
 %% eval_keychain
 %%
 
-# Bash tab-completion settings
+# output settings
+# tab-completion settings
 bind "set completion-ignore-case on"
 bind "set completion-map-case on"
 bind "set show-all-if-ambiguous on"
 bind "set mark-symlinked-directories on"
 
-# Bash history settings
+# history settings
 shopt -s histappend
 export HH_CONFIG=hicolor
 export HISTFILESIZE=
@@ -85,8 +80,6 @@ export PROMPT_DIRTRIM=3
 %% source_rvm
 %%
 
-# -----------------------------------------------------------------------------
-
 
 function .. () {
   local arg=${1:-1};
@@ -107,10 +100,6 @@ function encrypt () {
   filename=("${1//./ }")
   openssl enc -aes-256-cbc -salt -in $1 -out "${filename[0]}".enc
 }
-
-
-# -----------------------------------------------------------------------------
-
 
 __GIT_PROMPT_DIR=$(brew --prefix)/opt/bash-git-prompt/share
 . "$(brew --prefix)/opt/bash-git-prompt/share/gitprompt.sh"
