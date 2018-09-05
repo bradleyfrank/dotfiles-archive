@@ -72,8 +72,8 @@ export HISTTIMEFORMAT='%F %T '
 
 # hstr bindings
 # https://github.com/dvorka/hstr/blob/master/CONFIGURATION.md
-bind '"\C-r": "\C-a hh -- \C-j"'
-bind '"\C-xk": "\C-a hh -k \C-j"'
+bind "'\C-r': '\C-a hh -- \C-j'"
+bind "'\C-xk': '\C-a hh -k \C-j'"
 
 
 %% source_rvm
