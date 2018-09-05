@@ -16,8 +16,8 @@ fgWhite="\[\033[0;37m\]"
 ResetColor="\[\033[0;0m\]"
 
 state=""
-step=""
-total=""
+step=
+total=
 num_staged=0
 num_changed=0
 num_conflicts=0
@@ -27,6 +27,13 @@ clean=0
 
 ps1_git_prompt=""
 ps1_env_prompt=""
+
+
+__git_prompt_read() {
+	local f="$1"
+	shift
+	test -r "$f" && read "$@" <"$f"
+}
 
 
 __git_prompt_state() {
