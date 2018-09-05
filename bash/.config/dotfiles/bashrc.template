@@ -79,17 +79,14 @@ export PROMPT_DIRTRIM=3
 %%
 
 
+decrypt() {
+  openssl enc -d -aes-256-cbc -in "$1" -out "$1.decrypted"
 }
 
-function decrypt () {
-  filename=("${1//./ }")
-  openssl enc -d -aes-256-cbc -in $1 -out "${filename[0]}".txt
+encrypt() {
+  openssl enc -aes-256-cbc -salt -in "$1" -out "$1.encrypted"
 }
 
-function encrypt () {
-  filename=("${1//./ }")
-  openssl enc -aes-256-cbc -salt -in $1 -out "${filename[0]}".enc
-}
 
 __GIT_PROMPT_DIR=$(brew --prefix)/opt/bash-git-prompt/share
 . "$(brew --prefix)/opt/bash-git-prompt/share/gitprompt.sh"
