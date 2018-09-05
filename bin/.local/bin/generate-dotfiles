@@ -219,8 +219,7 @@ export_termopts() {
   if [[ "$OS" != "macos" ]]; then return 1; fi
 
   OUTPUT=$(printf '%s\n' \
-    "export EDITOR=\"/usr/local/bin/mate -w\"" \
-    "export CLICOLOR=1"
+    "export EDITOR=\"/usr/local/bin/mate -w\""
   )
 }
 
