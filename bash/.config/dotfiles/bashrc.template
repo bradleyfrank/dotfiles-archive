@@ -1,8 +1,8 @@
 # if not running interactively, don't do anything
 [[ $- != *i* ]] && return
 
-if [[ -f /etc/bashrc ]]; then . /etc/bashrc; fi
 # load the system bashrc
+[[ -f /etc/bashrc ]] && . /etc/bashrc
 
 
 # apps
