@@ -219,14 +219,14 @@ if [[ $IS_GIT_DIR -eq 0 ]]; then
   fi
 
   _git_branch="${fgGreen}${branch}${state}${ResetColor}"
-  _git_status="${_conflicts}${_staged}${_changed}${_untracked}${_stashed}"
-  ps1_git_prompt=" ${fgWhite}on${ResetColor} ${_git_branch} ${_git_status} "
+  _git_status=" ${_conflicts}${_staged}${_changed}${_untracked}${_stashed}"
+  ps1_git_prompt=" ${fgWhite}on${ResetColor} ${_git_branch}${_git_status}"
 fi
 
 
 if [[ ! -z $CONDA_DEFAULT_ENV ]]; then
   _env_name="${fgTeal}${CONDA_DEFAULT_ENV}${ResetColor}"
-  ps1_env_prompt=" ${fgWhite}in${ResetColor} ${_env_name} "
+  ps1_env_prompt=" ${fgWhite}in${ResetColor} ${_env_name}"
 fi
 
 
@@ -237,4 +237,4 @@ else
 fi
 
 _cwd="${fgYellow}\w${ResetColor}"
-PS1="${ps1_prefix} ${_cwd}${ps1_git_prompt}${ps1_env_prompt}"
+PS1="${ps1_prefix} ${_cwd}${ps1_git_prompt}${ps1_env_prompt} "
