@@ -10,19 +10,24 @@ alias bb='bbedit'
 %% alias_rmate
 alias safari='open -a Safari'
 alias typora='open -a typora'
+
 # docker
 alias dcu='docker-compose up -d'
 alias dip='docker inspect --format "{{ .NetworkSettings.IPAddress }}"'
 alias dps='docker ps'
+
 # networking
 %% alias_prettyping
 alias digg='dig +noall +answer'
 alias pubip='dig +short myip.opendns.com @resolver1.opendns.com'
+
 # python
 %% alias_anaconda
+
 # system
 alias powerline-restart='powerline-daemon --replace'
 alias tag='dmidecode -s system-serial-number'
+
 # terminal
 %% alias_ncdu
 %% alias_pydf
@@ -35,12 +40,14 @@ alias psg='ps aux | grep -v grep | grep -i -e'
 alias sane='stty sane'
 alias t='tree'
 alias wget='wget -c'
-# Tmux
+
+# tmux
 alias tat='tmux attach -t'
 alias tka='tmux kill-server'
 alias tks='tmux kill-session'
 alias tls='tmux list-sessions'
-# ESAI
+
+# tufts
 alias orch='javaws ~/.local/java/orchestrator.jnlp'
 
 
@@ -78,7 +85,6 @@ bind "'\C-xk': '\C-a hh -k \C-j'"
 
 %% source_rvm
 %%
-
 
 decrypt() {
   openssl enc -d -aes-256-cbc -in "$1" -out "$1.decrypted"
