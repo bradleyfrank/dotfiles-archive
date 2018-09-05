@@ -227,6 +227,9 @@ if [[ $IS_GIT_DIR -eq 0 ]]; then
 
   _git_branch="${fgGreen}${branch}${state}${ResetColor}"
   _git_status=" ${_conflicts}${_staged}${_changed}${_untracked}${_stashed}"
+  if [[ ${#_git_status} -gt 0 ]]; then
+    _git_status=$(echo " $_git_status")
+  fi
   ps1_git_prompt=" ${fgWhite}on${ResetColor} ${_git_branch}${_git_status}"
 fi
 
