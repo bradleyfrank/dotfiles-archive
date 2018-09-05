@@ -88,5 +88,7 @@ encrypt() {
 }
 
 
-__GIT_PROMPT_DIR=$(brew --prefix)/opt/bash-git-prompt/share
-. "$(brew --prefix)/opt/bash-git-prompt/share/gitprompt.sh"
+# PS1
+__GIT_PROMPT_DIR=/usr/local/opt/bash-git-prompt/share
+. /usr/local/opt/bash-git-prompt/share/gitprompt.sh
+export __GIT_PROMPT_DIR
