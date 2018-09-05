@@ -226,7 +226,7 @@ if [[ $IS_GIT_DIR -eq 0 ]]; then
   fi
 
   _git_branch="${fgGreen}${branch}${state}${ResetColor}"
-  _git_status=" ${_conflicts}${_staged}${_changed}${_untracked}${_stashed}"
+  _git_status="${_conflicts}${_staged}${_changed}${_untracked}${_stashed}"
   if [[ ${#_git_status} -gt 0 ]]; then
     _git_status=$(echo " $_git_status")
   fi
