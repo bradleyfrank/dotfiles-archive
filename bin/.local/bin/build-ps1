@@ -219,8 +219,8 @@ if [[ $IS_GIT_DIR -eq 0 ]]; then
   fi
 
   _git_branch="${fgGreen}${branch}${state}${ResetColor}"
-  _git_status="${_conflicts}${_staged}${_changed}${_untracked}${_stashed}"
-  ps1_git_prompt=" ${fgWhite}on${ResetColor} ${_git_branch} ${_git_status} "
+  _git_status=" ${_conflicts}${_staged}${_changed}${_untracked}${_stashed}"
+  ps1_git_prompt=" ${fgWhite}on${ResetColor} ${_git_branch}${_git_status} "
 fi
 
 
