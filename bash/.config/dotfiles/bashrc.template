@@ -66,10 +66,8 @@ export HISTTIMEFORMAT='%F %T '
 
 # hstr bindings
 # https://github.com/dvorka/hstr/blob/master/CONFIGURATION.md
-if [[ $- =~ .*i.* ]]; then
-  bind '"\C-r": "\C-a hh -- \C-j"'
-  bind '"\C-xk": "\C-a hh -k \C-j"'
-fi
+bind '"\C-r": "\C-a hh -- \C-j"'
+bind '"\C-xk": "\C-a hh -k \C-j"'
 
 # Bash output settings
 export PAGER=most
