@@ -94,8 +94,9 @@ encrypt() {
   openssl enc -aes-256-cbc -salt -in "$1" -out "$1.encrypted"
 }
 
+source_ps1() {
+  . build-ps1
+}
 
-# PS1
-__GIT_PROMPT_DIR=/usr/local/opt/bash-git-prompt/share
-. /usr/local/opt/bash-git-prompt/share/gitprompt.sh
-export __GIT_PROMPT_DIR
+
+PROMPT_COMMAND=source_ps1
