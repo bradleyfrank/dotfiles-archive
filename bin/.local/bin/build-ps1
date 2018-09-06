@@ -203,33 +203,39 @@ if [[ $IS_GIT_DIR -eq 0 ]]; then
   _untracked=""
   _stashed=""
 
-  _div="${fgDimWhite}|${ResetColor}"
+  _git_status=""
 
   if [[ $num_staged -gt 0 ]]; then
-    _staged="${fgMagenta}⋮${num_staged}${ResetColor}${_div}"
+    _staged="${fgMagenta}⋮${num_staged}${ResetColor}|"
   fi
 
   if [[ $num_conflicts -gt 0 ]]; then
-    _conflicts="${fgRed}✗${num_conflicts}${ResetColor}${_div}"
+    _conflicts="${fgRed}✗${num_conflicts}${ResetColor}|"
   fi
 
   if [[ $num_changed -gt 0 ]]; then
-    _changed="${fgYellow}+${num_changed}${ResetColor}${_div}"
+    _changed="${fgYellow}+${num_changed}${ResetColor}|"
   fi
 
   if [[ $num_untracked -gt 0 ]]; then
-    _untracked="${fgWhite}…${num_untracked}${ResetColor}${_div}"
+    _untracked="${fgWhite}…${num_untracked}${ResetColor}|"
   fi
 
   if [[ $num_stashed -gt 0 ]]; then
-    _stashed="${fgBlue}⚑${num_stashed}${ResetColor}${_div}"
+    _stashed="${fgBlue}⚑${num_stashed}${ResetColor}|"
+  fi
+
+  _div="${fgDimWhite}|${ResetColor}"
+
+  _git_status="${_staged}${_conflicts}${_changed}${_untracked}${_stashed}"
+  _git_status="${_git_status%|*}"
+  _git_status="$(echo $_git_status | sed "s/|/${_div}/g")"
+
+  if [[ "$_git_status" != "" ]]; then
+    _git_status=$(printf " %s" ${_git_status})
   fi
 
   _git_branch="${fgGreen}${branch}${state}${ResetColor}"
-  _git_status="${_conflicts}${_staged}${_changed}${_untracked}${_stashed}"
-  if [[ ${#_git_status} -gt 0 ]]; then
-    _git_status=$(echo " $_git_status")
-  fi
   ps1_git_prompt=" ${fgWhite}on${ResetColor} ${_git_branch}${_git_status}"
 fi
 
