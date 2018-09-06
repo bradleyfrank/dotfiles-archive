@@ -11,7 +11,6 @@ fgYellow="\[\033[0;33m\]"
 fgBlue="\[\033[0;34m\]"
 fgMagenta="\[\033[0;35m\]"
 fgTeal="\[\033[0;36m\]"
-fgDimWhite="\[\033[2;37m\]"
 fgWhite="\[\033[0;37m\]"
 ResetColor="\[\033[0;0m\]"
 
@@ -203,8 +202,6 @@ if [[ $IS_GIT_DIR -eq 0 ]]; then
   _untracked=""
   _stashed=""
 
-  _git_status=""
-
   if [[ $num_staged -gt 0 ]]; then
     _staged="${fgMagenta}⋮${num_staged}${ResetColor}|"
   fi
@@ -225,16 +222,16 @@ if [[ $IS_GIT_DIR -eq 0 ]]; then
     _stashed="${fgBlue}⚑${num_stashed}${ResetColor}|"
   fi
 
-  _div="${fgDimWhite}|${ResetColor}"
-
+  _git_branch="${fgGreen}${branch}${state}${ResetColor}"
   _git_status="${_staged}${_conflicts}${_changed}${_untracked}${_stashed}"
-  _git_status="${_git_status%|*}"
 
   if [[ "$_git_status" != "" ]]; then
-    _git_status=$(echo " ${_git_status}")
+    # this removes the trailing pipe character
+    _git_status="${_git_status%|*}"
+    # this prefixes a space and replaces the pipe with a colorized version
+    _git_status=$(echo " ${_git_status}" | sed 's:|:\\[\\033[2;37m\\]|\\[\\033[0;0m\\]:g')
   fi
 
-  _git_branch="${fgGreen}${branch}${state}${ResetColor}"
   ps1_git_prompt=" ${fgWhite}on${ResetColor} ${_git_branch}${_git_status}"
 fi
 
