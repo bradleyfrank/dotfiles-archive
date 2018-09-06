@@ -20,6 +20,7 @@
   "linter-ui-default":
     alwaysTakeMinimumSpace: true
     hidePanelWhenEmpty: true
+    showPanel: true
     statusBarPosition: "Right"
   welcome:
     showOnStartup: false
