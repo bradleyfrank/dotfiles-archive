@@ -67,9 +67,9 @@ __git_prompt_state() {
     fi
   fi
 
-  #if [ -n "$step" ] && [ -n "$total" ]; then
-  #  state="${state} ${step}/${total}"
-  #fi
+  if [ -n "$step" ] && [ -n "$total" ]; then
+    state="${state} ${step}/${total}"
+  fi
 }
 
 
