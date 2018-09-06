@@ -229,10 +229,9 @@ if [[ $IS_GIT_DIR -eq 0 ]]; then
 
   _git_status="${_staged}${_conflicts}${_changed}${_untracked}${_stashed}"
   _git_status="${_git_status%|*}"
-  _git_status="$(echo $_git_status | sed "s/|/${_div}/g")"
 
   if [[ "$_git_status" != "" ]]; then
-    _git_status=$(printf " %s" ${_git_status})
+    _git_status=$(echo " ${_git_status}")
   fi
 
   _git_branch="${fgGreen}${branch}${state}${ResetColor}"
