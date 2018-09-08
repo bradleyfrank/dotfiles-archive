@@ -40,9 +40,9 @@ build_git_prompt() {
 
   # build the git push/pull prompt
   if [[ "$remote" =~ BEHIND ]]; then
-    git_remote="↓$(echo $remote | sed 's/_BEHIND_//g')|"
+    git_remote=" ↓$(echo $remote | sed 's/_BEHIND_//g')|"
   elif [[ "$remote" =~ AHEAD ]]; then
-    git_remote="↑$(echo $remote | sed 's/_AHEAD_//g')|"
+    git_remote=" ↑$(echo $remote | sed 's/_AHEAD_//g')|"
   fi
 
 
@@ -71,7 +71,7 @@ build_git_prompt() {
     fi
 
     # combine the stats into one string
-    git_changes=" ${_staged}${_conflicts}${_changed}${_untracked}${_stashed}"
+    git_changes="${_staged}${_conflicts}${_changed}${_untracked}${_stashed}"
   fi
 
 
