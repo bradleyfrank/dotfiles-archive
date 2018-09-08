@@ -46,7 +46,7 @@ build_git_prompt() {
 
   # build the changes prompt
   if [[ "$clean" -eq 1 ]]; then
-    local _staged="" _conflicts="" _changed="" _untracked="" _staged=""
+    local _staged="" _conflicts="" _changed="" _untracked="" _stashed=""
 
     if [[ $staged -gt 0 ]]; then
       _staged="${fgMagenta}⋮${staged}${ResetColor}|"
