@@ -26,7 +26,7 @@ build_git_prompt() {
   # import raw git status parse results
   readarray -t git_status <<< "$(parse-git-status)"
 
-  clean="${git_status[0]}"
+  clean=${git_status[0]}
   branch="${git_status[1]}"
   state="${git_status[2]}"
   remote="${git_status[3]}"
