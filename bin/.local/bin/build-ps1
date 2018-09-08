@@ -1,9 +1,6 @@
 #!/bin/bash
-# Forked from: Alan K. Stebbens <aks@stebbens.org> [http://github.com/aks]
 
 LAST_EXIT_STATUS="$?"
-DEBUG=1
-IS_GIT_DIR=1
 
 fgRed="\[\033[0;31m\]"
 fgGreen="\[\033[0;32m\]"
@@ -14,225 +11,85 @@ fgTeal="\[\033[0;36m\]"
 fgWhite="\[\033[0;37m\]"
 ResetColor="\[\033[0;0m\]"
 
-state=""
-step=""
-total=""
-num_staged=0
-num_changed=0
-num_conflicts=0
-num_untracked=0
-num_stashed=0
-clean=0
-
+# elements of the PS1
+_cwd="${fgYellow}\w${ResetColor}"
 ps1_git_prompt=""
 ps1_env_prompt=""
 
 
-__git_prompt_read() {
-	local f="$1"
-	shift
-	test -r "$f" && read "$@" <"$f"
-}
+build_git_prompt() {
+  local git_status git_prompt git_remote="" git_changes="" git_upstream=""
+  local clean branch state remote upstream staged conflicts changed untracked stashed
+
+  # import raw git status parse results
+  readarray -t git_status <<< "$(parse-git-status)"
+
+  clean="${git_status[0]}"
+  branch="${git_status[1]}"
+  state="${git_status[2]}"
+  remote="${git_status[3]}"
+  upstream="${git_status[4]}"
+  staged=${git_status[5]}
+  conflicts=${git_status[6]}
+  changed=${git_status[7]}
+  untracked=${git_status[8]}
+  stashed=${git_status[9]}
 
 
-__git_prompt_state() {
-  if [ -d "${git_dir}/rebase-merge" ]; then
-    __git_prompt_read "${git_dir}/rebase-merge/msgnum" step
-    __git_prompt_read "${git_dir}/rebase-merge/end" total
-    if [ -f "${git_dir}/rebase-merge/interactive" ]; then
-      state="|REBASE-i"
-    else
-      state="|REBASE-m"
+  # build the git push/pull prompt
+  if [[ "$remote" =~ BEHIND ]]; then
+    git_remote="↓$(echo $remote | sed 's/_BEHIND_//g')|"
+  elif [[ "$remote" =~ AHEAD ]]; then
+    git_remote="↑$(echo $remote | sed 's/_AHEAD_//g')|"
+  fi
+
+
+  # build the changes prompt
+  if [[ "$clean" -eq 1 ]]; then
+    local _staged="" _conflicts="" _changed="" _untracked="" _staged=""
+
+    if [[ $staged -gt 0 ]]; then
+      _staged="${fgMagenta}⋮${staged}${ResetColor}|"
     fi
-  else
-    if [ -d "${git_dir}/rebase-apply" ]; then
-      __git_prompt_read "${git_dir}/rebase-apply/next" step
-      __git_prompt_read "${git_dir}/rebase-apply/last" total
-      if [ -f "${git_dir}/rebase-apply/rebasing" ]; then
-        state="|REBASE"
-      elif [ -f "${git_dir}/rebase-apply/applying" ]; then
-        state="|AM"
-      else
-        state="|AM/REBASE"
-      fi
-    elif [ -f "${git_dir}/MERGE_HEAD" ]; then
-      state="|MERGING"
-    elif [ -f "${git_dir}/CHERRY_PICK_HEAD" ]; then
-      state="|CHERRY-PICKING"
-    elif [ -f "${git_dir}/REVERT_HEAD" ]; then
-      state="|REVERTING"
-    elif [ -f "${git_dir}/BISECT_LOG" ]; then
-      state="|BISECTING"
+
+    if [[ $conflicts -gt 0 ]]; then
+      _conflicts="${fgRed}✗${conflicts}${ResetColor}|"
     fi
-  fi
 
-  if [ -n "$step" ] && [ -n "$total" ]; then
-    state="${state} ${step}/${total}"
-  fi
-}
-
-
-__git_prompt_status_counts() {
-  while IFS='' read -r line || [[ -n "$line" ]]; do
-    status=${line:0:2}
-    while [[ -n $status ]]; do
-      case "$status" in
-        #two fixed character matches, loop finished
-        \#\#) branch_line="${line/\.\.\./^}"; break ;;
-        \?\?) ((num_untracked++)); break ;;
-        U?) ((num_conflicts++)); break;;
-        ?U) ((num_conflicts++)); break;;
-        DD) ((num_conflicts++)); break;;
-        AA) ((num_conflicts++)); break;;
-        #two character matches, first loop
-        ?M) ((num_changed++)) ;;
-        ?D) ((num_changed++)) ;;
-        ?\ ) ;;
-        #single character matches, second loop
-        U) ((num_conflicts++)) ;;
-        \ ) ;;
-        *) ((num_staged++)) ;;
-      esac
-      status=${status:0:(${#status}-1)}
-    done
-  done <<< "$gitstatus"
-}
-
-
-__git_prompt_num_stashed() {
-  stash_file="$(git rev-parse --git-dir)/logs/refs/stash"
-  if [[ -e "${stash_file}" ]]; then
-    while IFS='' read -r wcline || [[ -n "$wcline" ]]; do
-      ((num_stashed++))
-    done < ${stash_file}
-  fi
-}
-
-
-__git_prompt_is_clean() {
-  if (( num_changed == 0 && num_staged == 0 && num_untracked == 0 && num_stashed == 0 && num_conflicts == 0)) ; then
-    clean=1
-  fi
-}
-
-
-__git_prompt_branches() {
-  IFS="^" read -ra branch_fields <<< "${branch_line/\#\# }"
-  branch="${branch_fields[0]}"
-  remote=
-  upstream=
-
-  if [[ "$branch" == *"Initial commit on"* ]]; then
-    IFS=" " read -ra fields <<< "$branch"
-    branch="${fields[3]}"
-    remote="_NO_REMOTE_TRACKING_"
-  elif [[ "$branch" == *"No commits yet on"* ]]; then
-    IFS=" " read -ra fields <<< "$branch"
-    branch="${fields[4]}"
-    remote="_NO_REMOTE_TRACKING_"
-  elif [[ "$branch" == *"no branch"* ]]; then
-    tag=$( git describe --tags --exact-match )
-    if [[ -n "$tag" ]]; then
-      branch="$tag"
-    else
-      branch="_PREHASH_$( git rev-parse --short HEAD )"
+    if [[ $changed -gt 0 ]]; then
+      _changed="${fgYellow}+${changed}${ResetColor}|"
     fi
-  else
-    if [[ "${#branch_fields[@]}" -eq 1 ]]; then
-      remote="_NO_REMOTE_TRACKING_"
-    else
-      IFS="[,]" read -ra remote_fields <<< "${branch_fields[1]}"
-      upstream="${remote_fields[0]}"
-      for remote_field in "${remote_fields[@]}"; do
-        if [[ "$remote_field" == "ahead "* ]]; then
-          num_ahead=${remote_field:6}
-          ahead="_AHEAD_${num_ahead}"
-        fi
-        if [[ "$remote_field" == "behind "* ]] || [[ "$remote_field" == " behind "* ]]; then
-          num_behind=${remote_field:7}
-          behind="_BEHIND_${num_behind# }"
-        fi
-      done
-      remote="${behind}${ahead}"
+
+    if [[ $untracked -gt 0 ]]; then
+      _untracked="${fgWhite}…${untracked}${ResetColor}|"
     fi
+
+    if [[ $stashed -gt 0 ]]; then
+      _stashed="${fgBlue}⚑${stashed}${ResetColor}|"
+    fi
+
+    # combine the stats into one string
+    git_changes="${_staged}${_conflicts}${_changed}${_untracked}${_stashed}"
   fi
 
-  if [[ -z "$remote" ]] ; then
-    remote='.'
-  fi
 
-  if [[ -z "$upstream" ]] ; then
-    upstream='^'
-  fi
+  # combine all raw git status elements into one string
+  git_prompt="${git_remote}${git_changes}"
+  # remove the trailing pipe character
+  git_prompt="${git_prompt%|*}"
+  # prefix with a space and replace pipes with a colorized version
+  git_prompt=$(echo " ${git_prompt}" | sed 's:|:\\[\\033[2;37m\\]|\\[\\033[0;0m\\]:g')
+
+  # tack on git branch info
+  git_prompt="${fgGreen}${branch}${state}${ResetColor}${git_prompt}"
+
+  # build final ps1 git prompt
+  ps1_git_prompt=" ${fgWhite}on${ResetColor} ${git_prompt}"
 }
 
 
-if gitstatus=$(LC_ALL=C git status --ignore-submodules --porcelain --branch 2>/dev/null); then
-  IS_GIT_DIR=0
-fi
-
-if ! git_dir="$(git rev-parse --git-dir 2>/dev/null)"; then
-  IS_GIT_DIR=1
-fi
-
-
-if [[ $IS_GIT_DIR -eq 0 ]]; then
-  __git_prompt_state
-  __git_prompt_status_counts
-  __git_prompt_num_stashed
-  __git_prompt_is_clean
-  __git_prompt_branches
-
-  if [[ $DEBUG -eq 0 ]]; then
-    printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n" \
-      "branch: ${branch}${state}" \
-      "remote: $remote" \
-      "upstream: $upstream" \
-      "staged: $num_staged" \
-      "conflicts: $num_conflicts" \
-      "changed: $num_changed" \
-      "untracked: $num_untracked" \
-      "stashed: $num_stashed" \
-      "is clean: $clean"
-  fi
-
-  _staged=""
-  _conflicts=""
-  _changed=""
-  _untracked=""
-  _stashed=""
-
-  if [[ $num_staged -gt 0 ]]; then
-    _staged="${fgMagenta}⋮${num_staged}${ResetColor}|"
-  fi
-
-  if [[ $num_conflicts -gt 0 ]]; then
-    _conflicts="${fgRed}✗${num_conflicts}${ResetColor}|"
-  fi
-
-  if [[ $num_changed -gt 0 ]]; then
-    _changed="${fgYellow}+${num_changed}${ResetColor}|"
-  fi
-
-  if [[ $num_untracked -gt 0 ]]; then
-    _untracked="${fgWhite}…${num_untracked}${ResetColor}|"
-  fi
-
-  if [[ $num_stashed -gt 0 ]]; then
-    _stashed="${fgBlue}⚑${num_stashed}${ResetColor}|"
-  fi
-
-  _git_branch="${fgGreen}${branch}${state}${ResetColor}"
-  _git_status="${_staged}${_conflicts}${_changed}${_untracked}${_stashed}"
-
-  if [[ "$_git_status" != "" ]]; then
-    # this removes the trailing pipe character
-    _git_status="${_git_status%|*}"
-    # this prefixes a space and replaces the pipe with a colorized version
-    _git_status=$(echo " ${_git_status}" | sed 's:|:\\[\\033[2;37m\\]|\\[\\033[0;0m\\]:g')
-  fi
-
-  ps1_git_prompt=" ${fgWhite}on${ResetColor} ${_git_branch}${_git_status}"
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  build_git_prompt
 fi
 
 
@@ -248,5 +105,5 @@ else
   ps1_prefix="${fgRed}⋊>${ResetColor}"
 fi
 
-_cwd="${fgYellow}\w${ResetColor}"
+
 PS1="${ps1_prefix} ${_cwd}${ps1_git_prompt}${ps1_env_prompt} "
