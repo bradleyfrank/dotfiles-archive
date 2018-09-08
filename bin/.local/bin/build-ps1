@@ -12,6 +12,8 @@ fgWhite="\[\033[0;37m\]"
 ResetColor="\[\033[0;0m\]"
 
 # elements of the PS1
+prefix=">>"
+suffix=" \$ "
 _cwd="${fgYellow}\w${ResetColor}"
 ps1_git_prompt=""
 ps1_env_prompt=""
@@ -69,7 +71,7 @@ build_git_prompt() {
     fi
 
     # combine the stats into one string
-    git_changes="${_staged}${_conflicts}${_changed}${_untracked}${_stashed}"
+    git_changes=" ${_staged}${_conflicts}${_changed}${_untracked}${_stashed}"
   fi
 
 
@@ -80,13 +82,13 @@ build_git_prompt() {
   git_prompt="${git_prompt%|*}"
 
   # replace pipes with a colorized version
-  git_prompt=$(echo " ${git_prompt}" | sed 's:|:\\[\\033[2;37m\\]|\\[\\033[0;0m\\]:g')
+  git_prompt=$(echo "${git_prompt}" | sed 's:|:\\[\\033[2;37m\\]|\\[\\033[0;0m\\]:g')
 
   # add git branch info
-  git_prompt="${fgGreen}${branch}${state}${ResetColor}${git_prompt}"
+  git_prompt=" ${fgGreen}${branch}${state}${ResetColor}${git_prompt}"
 
   # build final ps1 git prompt
-  ps1_git_prompt=" ${fgWhite}on${ResetColor} ${git_prompt}"
+  ps1_git_prompt=" ${fgWhite}on${ResetColor}${git_prompt}"
 }
 
 
@@ -102,10 +104,10 @@ fi
 
 
 if [[ $LAST_EXIT_STATUS -eq 0 ]]; then
-  ps1_prefix="${fgWhite}⋊>${ResetColor}"
+  prefix="${fgWhite}${prefix}${ResetColor} "
 else
-  ps1_prefix="${fgRed}⋊>${ResetColor}"
+  prefix="${fgRed}${prefix}${ResetColor} "
 fi
 
 
-PS1="${ps1_prefix} ${_cwd}${ps1_git_prompt}${ps1_env_prompt} "
+PS1="${prefix}${_cwd}${ps1_git_prompt}${ps1_env_prompt}${suffix}"
