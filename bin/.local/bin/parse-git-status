@@ -17,7 +17,7 @@ fi
 git_read() {
 	local f="$1"
 	shift
-	test -r "$f" && read "$@" <"$f"
+	test -r "$f" && read -r "$@" <"$f"
 }
 
 
@@ -73,19 +73,19 @@ while IFS='' read -r line || [[ -n "$line" ]]; do
     case "$status" in
       # two fixed character matches, loop finished
       \#\#) branch_line="${line/\.\.\./^}"; break ;;
-      \?\?) ((num_untracked++)); clean=1; break ;;
-      U?) ((num_conflicts++)); clean=1; break;;
-      ?U) ((num_conflicts++)); clean=1; break;;
-      DD) ((num_conflicts++)); clean=1; break;;
-      AA) ((num_conflicts++)); clean=1; break;;
+      \?\?) ((++num_untracked)); clean=1; break ;;
+      U?) ((++num_conflicts)); clean=1; break ;;
+      ?U) ((++num_conflicts)); clean=1; break ;;
+      DD) ((++num_conflicts)); clean=1; break ;;
+      AA) ((++num_conflicts)); clean=1; break ;;
       # two character matches, first loop
-      ?M) ((num_changed++)); clean=1 ;;
-      ?D) ((num_changed++)); clean=1 ;;
+      ?M) ((++num_changed)); clean=1 ;;
+      ?D) ((++num_changed)); clean=1 ;;
       ?\ ) ;;
       # single character matches, second loop
-      U) ((num_conflicts++)); clean=1 ;;
+      U) ((++num_conflicts)); clean=1 ;;
       \ ) ;;
-      *) ((num_staged++)); clean=1 ;;
+      *) ((++num_staged)); clean=1 ;;
     esac
     status=${status:0:(${#status}-1)}
   done
@@ -96,9 +96,9 @@ stash_file="$(git rev-parse --git-dir)/logs/refs/stash"
 
 if [[ -e "${stash_file}" ]]; then
   while IFS='' read -r wcline || [[ -n "$wcline" ]]; do
-    ((num_stashed++))
+    ((++num_stashed))
     clean=1
-  done < ${stash_file}
+  done < "${stash_file}"
 fi
 
 IFS="^" read -ra branch_fields <<< "${branch_line/\#\# }"
@@ -149,7 +149,7 @@ if [[ $DEBUG -eq 0 ]]; then
 fi
 
 
-printf "%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n%s\n" \
+printf "%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n%s\\n" \
   "$clean" \
   "$branch" \
   "$state" \
