@@ -12,8 +12,8 @@ fgWhite="\[\033[0;37m\]"
 ResetColor="\[\033[0;0m\]"
 
 # elements of the PS1
-prefix=">>"
-suffix=" \$ "
+prefix=">_"
+suffix=" "
 _cwd="${fgYellow}\w${ResetColor}"
 ps1_git_prompt=""
 ps1_env_prompt=""
@@ -40,9 +40,9 @@ build_git_prompt() {
 
   # build the git push/pull prompt
   if [[ "$remote" =~ BEHIND ]]; then
-    git_remote=" ↓$(echo $remote | sed 's/_BEHIND_//g')|"
+    git_remote="↓$(echo $remote | sed 's/_BEHIND_//g')|"
   elif [[ "$remote" =~ AHEAD ]]; then
-    git_remote=" ↑$(echo $remote | sed 's/_AHEAD_//g')|"
+    git_remote="↑$(echo $remote | sed 's/_AHEAD_//g')|"
   fi
 
 
@@ -77,6 +77,11 @@ build_git_prompt() {
 
   # add git push/pull status
   git_prompt="${git_remote}${git_changes}"
+
+  # insert space if non-empty
+  if [[ "$git_prompt" != "" ]]; then
+    git_prompt=$(echo " $git_prompt")
+  fi
 
   # remove the trailing pipe character
   git_prompt="${git_prompt%|*}"
