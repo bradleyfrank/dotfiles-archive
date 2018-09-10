@@ -12,8 +12,9 @@ fgWhite="\[\033[0;37m\]"
 ResetColor="\[\033[0;0m\]"
 
 # elements of the PS1
-prefix=">_"
+prefix=">>"
 suffix=" "
+host_name="${fgBlue}(\h)${ResetColor} "
 _cwd="${fgYellow}\w${ResetColor}"
 ps1_git_prompt=""
 ps1_env_prompt=""
@@ -115,4 +116,9 @@ else
 fi
 
 
-PS1="${prefix}${_cwd}${ps1_git_prompt}${ps1_env_prompt}${suffix}"
+if [[ "$(uname -n)" =~ local ]]; then
+  host_name=""
+fi
+
+
+PS1="${prefix}${host_name}${_cwd}${ps1_git_prompt}${ps1_env_prompt}${suffix}"
