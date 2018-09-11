@@ -2,26 +2,26 @@
 
 LAST_EXIT_STATUS="$?"
 
-fgRed="\[\033[0;31m\]"
-fgGreen="\[\033[0;32m\]"
-fgYellow="\[\033[0;33m\]"
-fgBlue="\[\033[0;34m\]"
-fgMagenta="\[\033[0;35m\]"
-fgTeal="\[\033[0;36m\]"
-fgWhite="\[\033[0;37m\]"
-ResetColor="\[\033[0;0m\]"
+fgRed="\\[\\033[0;31m\\]"
+fgGreen="\\[\\033[0;32m\\]"
+fgYellow="\\[\\033[0;33m\\]"
+fgBlue="\\[\\033[0;34m\\]"
+fgMagenta="\\[\\033[0;35m\\]"
+fgTeal="\\[\\033[0;36m\\]"
+fgWhite="\\[\\033[0;37m\\]"
+ResetColor="\\[\\033[0;0m\\]"
 
 # elements of the PS1
 prefix=">>"
 suffix=" "
-host_name="${fgBlue}(\h)${ResetColor} "
-_cwd="${fgYellow}\w${ResetColor}"
+host_name="${fgBlue}(\\h)${ResetColor} "
+_cwd="${fgYellow}\\w${ResetColor}"
 ps1_git_prompt=""
 ps1_env_prompt=""
 
 
 build_git_prompt() {
-  local git_status git_prompt git_remote="" git_changes="" git_upstream=""
+  local git_status git_prompt git_remote="" git_changes=""
   local clean branch state remote upstream staged conflicts changed untracked stashed
 
   # import raw git status parse results
@@ -41,9 +41,9 @@ build_git_prompt() {
 
   # build the git push/pull prompt
   if [[ "$remote" =~ BEHIND ]]; then
-    git_remote="↓$(echo $remote | sed 's/_BEHIND_//g')|"
+    git_remote="${remote//_BEHIND_/}"
   elif [[ "$remote" =~ AHEAD ]]; then
-    git_remote="↑$(echo $remote | sed 's/_AHEAD_//g')|"
+    git_remote="${remote//_AHEAD_/}"
   fi
 
 
@@ -81,14 +81,14 @@ build_git_prompt() {
 
   # insert space if non-empty
   if [[ "$git_prompt" != "" ]]; then
-    git_prompt=$(echo " $git_prompt")
+    git_prompt=" $git_prompt"
   fi
 
   # remove the trailing pipe character
   git_prompt="${git_prompt%|*}"
 
   # replace pipes with a colorized version
-  git_prompt=$(echo "${git_prompt}" | sed 's:|:\\[\\033[2;37m\\]|\\[\\033[0;0m\\]:g')
+  git_prompt="${git_prompt//|/\\[\\033[2;37m\\]|\\[\\033[0;0m\\]}"
 
   # add git branch info
   git_prompt=" ${fgGreen}${branch}${state}${ResetColor}${git_prompt}"
