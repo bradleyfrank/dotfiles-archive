@@ -41,9 +41,9 @@ build_git_prompt() {
 
   # build the git push/pull prompt
   if [[ "$remote" =~ BEHIND ]]; then
-    git_remote="${remote//_BEHIND_/}"
+    git_remote="↓${remote//_BEHIND_/}"
   elif [[ "$remote" =~ AHEAD ]]; then
-    git_remote="${remote//_AHEAD_/}"
+    git_remote="↑${remote//_AHEAD_/}"
   fi
 
 
