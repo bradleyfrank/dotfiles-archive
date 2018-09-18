@@ -52,23 +52,23 @@ build_git_prompt() {
     local _staged="" _conflicts="" _changed="" _untracked="" _stashed=""
 
     if [[ $staged -gt 0 ]]; then
-      _staged="${fgMagenta}⋮${staged}${ResetColor}|"
+      _staged="${fgMagenta}⋮${staged}${ResetColor}"
     fi
 
     if [[ $conflicts -gt 0 ]]; then
-      _conflicts="${fgRed}✗${conflicts}${ResetColor}|"
+      _conflicts="${fgRed}✗${conflicts}${ResetColor}"
     fi
 
     if [[ $changed -gt 0 ]]; then
-      _changed="${fgYellow}+${changed}${ResetColor}|"
+      _changed="${fgYellow}+${changed}${ResetColor}"
     fi
 
     if [[ $untracked -gt 0 ]]; then
-      _untracked="${fgWhite}…${untracked}${ResetColor}|"
+      _untracked="${fgWhite}…${untracked}${ResetColor}"
     fi
 
     if [[ $stashed -gt 0 ]]; then
-      _stashed="${fgBlue}⚑${stashed}${ResetColor}|"
+      _stashed="${fgBlue}⚑${stashed}${ResetColor}"
     fi
 
     # combine the stats into one string
@@ -83,12 +83,6 @@ build_git_prompt() {
   if [[ "$git_prompt" != "" ]]; then
     git_prompt=" $git_prompt"
   fi
-
-  # remove the trailing pipe character
-  git_prompt="${git_prompt%|*}"
-
-  # replace pipes with a colorized version
-  git_prompt="${git_prompt//|/\\[\\033[2;37m\\]|\\[\\033[0;0m\\]}"
 
   # add git branch info
   git_prompt=" ${fgGreen}${branch}${state}${ResetColor}${git_prompt}"
