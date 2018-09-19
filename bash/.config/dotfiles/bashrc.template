@@ -99,4 +99,4 @@ source_ps1() {
 }
 
 
-PROMPT_COMMAND=source_ps1
+PROMPT_COMMAND=$(. ps1)
