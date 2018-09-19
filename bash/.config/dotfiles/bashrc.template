@@ -95,8 +95,8 @@ encrypt() {
 }
 
 source_ps1() {
-  . build-ps1
+  . ps1
 }
 
 
-PROMPT_COMMAND=$(. ps1)
+PROMPT_COMMAND=source_ps1
