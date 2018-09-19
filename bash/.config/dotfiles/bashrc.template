@@ -95,7 +95,7 @@ encrypt() {
 }
 
 source_ps1() {
-  . build-ps1
+  . ps1
 }
 
 

@@ -2,6 +2,10 @@
 
 LAST_EXIT_STATUS="$?"
 
+bgRed="\\e[48;5;124m"
+bgBlue="\\e[44m"
+bgOrange="\\e[48;5;202m"
+
 fgRed="\\[\\033[0;31m\\]"
 fgGreen="\\[\\033[0;32m\\]"
 fgYellow="\\[\\033[0;33m\\]"
@@ -9,22 +13,19 @@ fgBlue="\\[\\033[0;34m\\]"
 fgMagenta="\\[\\033[0;35m\\]"
 fgTeal="\\[\\033[0;36m\\]"
 fgWhite="\\[\\033[0;37m\\]"
+
 ResetColor="\\[\\033[0;0m\\]"
 
-# elements of the PS1
-prefix=">>"
-suffix=" "
-host_name="${fgBlue}(\\h)${ResetColor} "
-_cwd="${fgYellow}\\w${ResetColor}"
-ps1_git_prompt=""
-ps1_env_prompt=""
 
+##
+## FUNCTIONS
+##
 
 build_git_prompt() {
   local git_status git_prompt git_remote="" git_changes=""
   local clean branch state remote upstream staged conflicts changed untracked stashed
 
-  # import raw git status parse results
+  # import parsed git status
   readarray -t git_status <<< "$(parse-git-status)"
 
   clean=${git_status[0]}
@@ -52,23 +53,23 @@ build_git_prompt() {
     local _staged="" _conflicts="" _changed="" _untracked="" _stashed=""
 
     if [[ $staged -gt 0 ]]; then
-      _staged="${fgMagenta}⋮${staged}${ResetColor}|"
+      _staged="${fgMagenta}⋮${staged}${ResetColor}"
     fi
 
     if [[ $conflicts -gt 0 ]]; then
-      _conflicts="${fgRed}✗${conflicts}${ResetColor}|"
+      _conflicts="${fgRed}✗${conflicts}${ResetColor}"
     fi
 
     if [[ $changed -gt 0 ]]; then
-      _changed="${fgYellow}+${changed}${ResetColor}|"
+      _changed="${fgYellow}+${changed}${ResetColor}"
     fi
 
     if [[ $untracked -gt 0 ]]; then
-      _untracked="${fgWhite}…${untracked}${ResetColor}|"
+      _untracked="${fgWhite}…${untracked}${ResetColor}"
     fi
 
     if [[ $stashed -gt 0 ]]; then
-      _stashed="${fgBlue}⚑${stashed}${ResetColor}|"
+      _stashed="${fgBlue}⚑${stashed}${ResetColor}"
     fi
 
     # combine the stats into one string
@@ -84,12 +85,6 @@ build_git_prompt() {
     git_prompt=" $git_prompt"
   fi
 
-  # remove the trailing pipe character
-  git_prompt="${git_prompt%|*}"
-
-  # replace pipes with a colorized version
-  git_prompt="${git_prompt//|/\\[\\033[2;37m\\]|\\[\\033[0;0m\\]}"
-
   # add git branch info
   git_prompt=" ${fgGreen}${branch}${state}${ResetColor}${git_prompt}"
 
@@ -98,27 +93,59 @@ build_git_prompt() {
 }
 
 
+##
+## MAIN
+##
+
+suffix=" "
+host_name=""
+current_dir=" ${fgYellow}\\w${ResetColor}"
+user_name=""
+ps1_git_prompt=""
+ps1_env_prompt=""
+
+
+#
+# set PS1 prefix
+#
+if [[ $LAST_EXIT_STATUS -eq 0 ]]; then
+  prefix=""
+else
+  prefix="${fgWhite}${bgRed} ${LAST_EXIT_STATUS} ${ResetColor}"
+fi
+
+
+#
+# only display hostname if not on localhost
+#
+if [[ ! -z "$SSH_CONNECTION" ]]; then
+  host_name="${fgWhite}${bgBlue} \\h ${ResetColor}"
+fi
+
+
+#
+# only display username if not local user
+#
+if [[ ! -z "$SUDO_USER" ]]; then
+  user_name="${fgWhite}${bgOrange} \\u ${ResetColor}"
+fi
+
+
+#
+# set Git prompt
+#
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   build_git_prompt
 fi
 
 
+#
+# set Virtual Env prompt
+#
 if [[ ! -z $CONDA_DEFAULT_ENV ]]; then
   _env_name="${fgTeal}${CONDA_DEFAULT_ENV}${ResetColor}"
   ps1_env_prompt=" ${fgWhite}in${ResetColor} ${_env_name}"
 fi
 
 
-if [[ $LAST_EXIT_STATUS -eq 0 ]]; then
-  prefix="${fgWhite}${prefix}${ResetColor} "
-else
-  prefix="${fgRed}${prefix}${ResetColor} "
-fi
-
-
-if [[ "$(uname -n)" =~ local ]]; then
-  host_name=""
-fi
-
-
-PS1="${prefix}${host_name}${_cwd}${ps1_git_prompt}${ps1_env_prompt}${suffix}"
+PS1="${prefix}${user_name}${host_name}${current_dir}${ps1_git_prompt}${ps1_env_prompt}${suffix}"
