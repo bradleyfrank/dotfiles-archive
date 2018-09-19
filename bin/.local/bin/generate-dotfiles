@@ -118,22 +118,6 @@ mac_manpath_brewgnu() {
 }
 
 
-#
-# Non-local hosts should try to update dotfiles
-#
-update_dotfiles() {
-  if [[ "$OS" == "macos" ]]; then return 1; fi
-
-  OUTPUT=$(printf '%s\n' \
-    "if [[ -x \"$HOME/.local/bin/update\" ]]; then" \
-    "  if ! \"$HOME/.local/bin/update\" -i d &>/dev/null; then" \
-    "    echo \"Unable to update dotfiles!\"" \
-    "  fi" \
-    "fi"
-  )
-}
-
-
 # -----------------------------------------------------------------------------
 # bashrc functions
 # -----------------------------------------------------------------------------
