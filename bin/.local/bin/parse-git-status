@@ -2,15 +2,12 @@
 # Forked from: Alan K. Stebbens <aks@stebbens.org> [http://github.com/aks]
 
 set -eu
-DEBUG=1
 
+DEBUG=1
+git_dir="$1"
 
 if ! git_status=$(LC_ALL=C git status --ignore-submodules --porcelain --branch 2>/dev/null); then
-  return 1
-fi
-
-if ! git_dir="$(git rev-parse --git-dir 2>/dev/null)"; then
-  return 1
+  exit 1
 fi
 
 
