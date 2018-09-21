@@ -145,6 +145,10 @@ dotfiles_pull() {
       echo "failed"
     fi
 
+    echo -n "Checking out submodules... "
+    git submodule update --init --recursive >/dev/null 2>&1
+    echo "done"
+
     echo -n "Re-stowing dotfiles... "
     shopt -s nullglob
     stow_packages=(*/)
