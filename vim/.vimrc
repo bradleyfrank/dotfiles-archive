@@ -7,3 +7,4 @@ set showmatch
 set hlsearch
 set backspace=indent,eol,start
 set autoindent
+let g:airline_powerline_fonts = 1
