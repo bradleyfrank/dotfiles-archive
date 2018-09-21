@@ -22,12 +22,14 @@ ResetColor="\\[\\033[0;0m\\]"
 ##
 
 build_git_prompt() {
-  local git_dir="$1"
   local git_status git_prompt git_remote="" git_changes=""
   local clean branch state remote upstream staged conflicts changed untracked stashed
 
   # import parsed git status
-  readarray -t git_status <<< "$(parse-git-status "$git_dir")"
+  readarray -t git_status <<< "$(parse-git-status)"
+  if [[ ${git_status[@]} == "" ]]; then
+    return 1
+  fi
 
   clean=${git_status[0]}
   branch="${git_status[1]}"
@@ -136,11 +138,7 @@ fi
 # set Git prompt
 #
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  if git_dir="$(git rev-parse --git-dir 2>/dev/null)"; then
-    if [[ "$git_dir" != "." ]]; then
-      build_git_prompt "$git_dir"
-    fi
-  fi
+  build_git_prompt
 fi
 
 

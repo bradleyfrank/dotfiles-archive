@@ -4,7 +4,14 @@
 set -eu
 
 DEBUG=1
-git_dir="$1"
+
+if git_dir="$(git rev-parse --git-dir 2>/dev/null)"; then
+  if [[ "$git_dir" == "." ]]; then
+    exit 1
+  fi
+else
+  exit 1
+fi
 
 if ! git_status=$(LC_ALL=C git status --ignore-submodules --porcelain --branch 2>/dev/null); then
   exit 1
