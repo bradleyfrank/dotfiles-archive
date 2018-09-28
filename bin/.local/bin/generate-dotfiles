@@ -51,7 +51,7 @@ convert_template() {
 
       # find the corresponding function to print content
       if eval "$func"; then
-        echo "$OUTPUT" >> "$bash_config"
+        echo -e "$OUTPUT" >> "$bash_config"
       fi
     else
       echo "$line" >> "$bash_config"
@@ -82,18 +82,15 @@ mac_path_anaconda() {
 mac_path_brewgnu() {
   if [[ "$OS" != "macos" ]]; then return 1; fi
 
-  local tmpout=""
-  local binpath=""
+  local tmpout binpath
 
   while read -r formula; do
-    binpath=$(printf "PATH=\"%s:\$PATH\"" "$formula")
-    # The "X" is a placeholder so that the newline isn't removed
-    tmpout=$(printf "%s%s\\nX" "$tmpout" "$binpath")
-    tmpout=${tmpout%X}
+    binpath=$(printf 'PATH=\"%s:\$PATH\"' "$formula")
+    tmpout=$(printf '%s%s\\n' "$tmpout" "$binpath")
   done <<< "$(find -L "$(brew --prefix)"/opt -type d -name 'gnubin')"
 
-  # echo removes the final trailing newline
-  OUTPUT="$(echo $tmpout)"
+  # removes last two characters (newline)
+  OUTPUT="${tmpout%??}"
 }
 
 
@@ -103,18 +100,15 @@ mac_path_brewgnu() {
 mac_manpath_brewgnu() {
   if [[ "$OS" != "macos" ]]; then return 1; fi
 
-  local tmpout=""
-  local manpath=""
+  local tmpout manpath
 
   while read -r formula; do
-    manpath=$(printf "MANPATH=\"\$MANPATH:%s\"" "$formula")
-    # The "X" is a placeholder so that the newline isn't removed
-    tmpout=$(printf "%s%s\\nX" "$tmpout" "$manpath")
-    tmpout=${tmpout%X}
+    manpath=$(printf 'MANPATH=\"\$MANPATH:%s\"' "$formula")
+    tmpout=$(printf '%s%s\\n' "$tmpout" "$manpath")
   done <<< "$(find -L "$(brew --prefix)"/opt -type d -name 'gnuman')"
 
-  # echo removes the final trailing newline
-  OUTPUT="$(echo $tmpout)"
+  # removes last two characters (newline)
+  OUTPUT="${tmpout%??}"
 }
 
 
