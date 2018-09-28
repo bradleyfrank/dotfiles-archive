@@ -250,7 +250,7 @@ case "$(uname -s)" in
     fi
     ;;
   *)
-    echo "Linux detection failed"
+    echo "OS detection failed"
     exit 1
     ;;
 esac
