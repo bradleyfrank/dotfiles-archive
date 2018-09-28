@@ -81,7 +81,7 @@ mac_path_brewgnu() {
   local tmpout binpath
 
   while read -r formula; do
-    binpath=$(printf 'PATH=\"%s:\$PATH\"' "$formula")
+    binpath=$(printf "PATH=\"%s:\$PATH\"" "$formula")
     tmpout=$(printf '%s%s\\n' "$tmpout" "$binpath")
   done <<< "$(find -L "$(brew --prefix)"/opt -type d -name 'gnubin')"
 
@@ -99,7 +99,7 @@ mac_manpath_brewgnu() {
   local tmpout manpath
 
   while read -r formula; do
-    manpath=$(printf 'MANPATH=\"\$MANPATH:%s\"' "$formula")
+    manpath=$(printf "MANPATH=\"\$MANPATH:%s\"" "$formula")
     tmpout=$(printf '%s%s\\n' "$tmpout" "$manpath")
   done <<< "$(find -L "$(brew --prefix)"/opt -type d -name 'gnuman')"
 
