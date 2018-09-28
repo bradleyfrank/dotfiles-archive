@@ -8,4 +8,6 @@ MANPATH="/usr/share/man:/usr/local/share/man:$HOME/.local/share/man"
 %% mac_manpath_brewgnu
 export MANPATH
 
+%% export_python_site
+
 if [[ -f "$HOME/.bashrc" ]]; then . "$HOME/.bashrc"; fi

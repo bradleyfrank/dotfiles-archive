@@ -108,6 +108,23 @@ mac_manpath_brewgnu() {
 }
 
 
+#
+# Find and export Python user site-packages location
+#
+export_python_site() {
+  local site pyver
+
+  if type python3 >/dev/null 2>&1; then
+    pyver="python3"
+  else
+    pyver="python"
+  fi
+
+  site=$("$pyver" -m site | grep -E '^USER_SITE' | awk '{print $2}' | tr -d "'")
+  OUTPUT="export USER_SITE=\"$site\""
+}
+
+
 # -----------------------------------------------------------------------------
 # bashrc functions
 # -----------------------------------------------------------------------------
@@ -212,18 +229,14 @@ source_rvm() {
 # Sets PS1 to use Powerline (usually reserved for local hosts)
 #
 powerline_ps1() {
-  local sitepkgs
-
   # Skip if Pip not found on system
   if [[ "$PIP" == "NaN" ]]; then return 1; fi
-
-  sitepkgs=$("$PIP" show powerline-status | grep 'Location' | cut -d ' ' -f 2)
 
   OUTPUT="$(printf '%s\n' \
     'powerline-daemon -q' \
     'POWERLINE_BASH_CONTINUATION=1' \
     'POWERLINE_BASH_SELECT=1' \
-    '. '"${sitepkgs}"'/powerline/bindings/bash/powerline.sh'
+    '. '"${USER_SITE}"'/powerline/bindings/bash/powerline.sh'
   )"
 }
 
