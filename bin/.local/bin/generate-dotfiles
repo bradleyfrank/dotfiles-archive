@@ -34,11 +34,7 @@ skip() {
 }
 
 convert_template() {
-  local bash_template
-  local bash_config
-
-  bash_template="$1"
-  bash_config="$2"
+  local bash_template="$1" bash_config="$2"
 
   IFS=''
   while read -r line || [[ -n "$line" ]]; do
@@ -128,7 +124,7 @@ alias_anaconda() {
 }
 
 alias_ncdu() {
-  if type ncdu &>/dev/null; then
+  if type ncdu >/dev/null 2>&1; then
     OUTPUT="alias du='ncdu'"
   else
     return 1
@@ -136,7 +132,7 @@ alias_ncdu() {
 }
 
 alias_prettyping() {
-  if type prettyping &>/dev/null; then
+  if type prettyping >/dev/null 2>&1; then
     OUTPUT="alias ping='prettyping'"
   else
     return 1
@@ -144,7 +140,7 @@ alias_prettyping() {
 }
 
 alias_pydf() {
-  if type pydf &>/dev/null; then
+  if type pydf >/dev/null 2>&1; then
     OUTPUT="alias df='pydf'"
   else
     return 1
@@ -152,7 +148,7 @@ alias_pydf() {
 }
 
 alias_rmate() {
-  if type rmate &>/dev/null; then
+  if type rmate >/dev/null 2>&1; then
     OUTPUT="alias mate='rmate'"
   else
     return 1
@@ -164,7 +160,7 @@ alias_rmate() {
 # Enables thefuck alias if installed
 #
 eval_thefuck() {
-  if type thefuck &>/dev/null; then
+  if type thefuck >/dev/null 2>&1; then
     OUTPUT="eval \$(thefuck --alias)"
   else
     return 1
@@ -176,7 +172,7 @@ eval_thefuck() {
 # Use keychain if installed with specific per-system options
 #
 eval_keychain() {
-  if ! type keychain &>/dev/null; then return 1; fi
+  if ! type keychain >/dev/null 2>&1; then return 1; fi
 
   local inherit=""
   local flags="--eval --ignore-missing --quiet"
@@ -244,36 +240,28 @@ powerline_ps1() {
 case "$(uname -s)" in
   Darwin) OS="macos" ;;
   Linux)
-    if [ -f /etc/fedora-release ]; then
+    if [[ -f /etc/fedora-release ]]; then
       OS="fedora"
-    elif [ -f /etc/centos-release ]; then
-      OS="centos"
-    elif [ -f /etc/redhat-release ]; then
+    elif [[ -f /etc/centos-release ]] || [[ -f /etc/redhat-release ]]; then
       OS="redhat"
     else
-      echo "Linux detection failed"
+      echo "OS not supported"
       exit 1
     fi
     ;;
   *)
-    echo "OS not supported"
+    echo "Linux detection failed"
     exit 1
     ;;
 esac
 
 
 #
-# Get hostname info
-#
-_DOMAIN=$(echo "$HOSTNAME" | cut -d '.' -f 2-)
-
-
-#
 # Find Pip executable
 #
-if type pip3 &>/dev/null; then
+if type pip3 >/dev/null 2>&1; then
   PIP="pip3"
-elif type pip &>/dev/null; then
+elif type pip >/dev/null 2>&1; then
   PIP="pip"
 fi
 
@@ -304,5 +292,3 @@ command cp "$PROFILE_TEMP" "$PROFILE"
 command cp "$RC_TEMP" "$RC"
 chown "$USER" "$PROFILE" "$RC"
 chmod 644 "$PROFILE" "$RC"
-
-exit 0
