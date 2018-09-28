@@ -93,9 +93,4 @@ encrypt() {
   openssl enc -aes-256-cbc -salt -in "$1" -out "$1.encrypted"
 }
 
-source_ps1() {
-  . ps1
-}
-
-
-PROMPT_COMMAND=source_ps1
+%% powerline_ps1
