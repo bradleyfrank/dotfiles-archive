@@ -108,23 +108,6 @@ mac_manpath_brewgnu() {
 }
 
 
-#
-# Find and export Python user site-packages location
-#
-export_python_site() {
-  local site pyver
-
-  if type python3 >/dev/null 2>&1; then
-    pyver="python3"
-  else
-    pyver="python"
-  fi
-
-  site=$("$pyver" -m site | grep -E '^USER_SITE' | awk '{print $2}' | tr -d "'")
-  OUTPUT="export USER_SITE=\"$site\""
-}
-
-
 # -----------------------------------------------------------------------------
 # bashrc functions
 # -----------------------------------------------------------------------------
@@ -210,6 +193,23 @@ export_termopts() {
   if [[ "$OS" != "macos" ]]; then return 1; fi
 
   OUTPUT=$(printf "export EDITOR=\"/usr/local/bin/mate -w\"\\n")
+}
+
+
+#
+# Find and export Python user site-packages location
+#
+export_python_site() {
+  local site pyver
+
+  if type python3 >/dev/null 2>&1; then
+    pyver="python3"
+  else
+    pyver="python"
+  fi
+
+  site=$("$pyver" -m site | grep -E '^USER_SITE' | awk '{print $2}' | tr -d "'")
+  OUTPUT="export USER_SITE=\"$site\""
 }
 
 

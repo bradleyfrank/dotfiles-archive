@@ -93,4 +93,6 @@ encrypt() {
 }
 
 
+%% export_python_site
+
 %% powerline_ps1
