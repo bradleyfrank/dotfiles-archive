@@ -191,7 +191,7 @@ eval_thefuck() {
 eval_keychain() {
   if ! type keychain >/dev/null 2>&1; then return 1; fi
 
-  local inherit
+  local inherit=""
   local flags="--eval --ignore-missing --quiet"
   local keys="id_esai id_home id_develop id_rsa id_ed25519"
 
