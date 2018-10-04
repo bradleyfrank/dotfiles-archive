@@ -36,6 +36,10 @@
         "priority": 10
       },
       {
+        "function": "powerline_docker.docker",
+        "priority": 30
+      },
+      {
         "function": "powerline_gitstatus.gitstatus",
         "priority": 20
       },
