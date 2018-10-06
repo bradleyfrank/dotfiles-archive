@@ -92,8 +92,8 @@ brew_up() {
   fi
 
   # Cleanup casks
-  echo -n "Running cask cleanup... "
-  if brew cask cleanup >/dev/null 2>&1; then
+  echo -n "Running cleanup... "
+  if brew cleanup >/dev/null 2>&1; then
     echo "done"
   else
     echo "failed"
