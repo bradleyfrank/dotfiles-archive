@@ -92,6 +92,10 @@ encrypt() {
   openssl enc -aes-256-cbc -salt -in "$1" -out "$1.encrypted"
 }
 
+tardir() {
+  tar -czf "$1".tar.gz "$1"
+}
+
 
 %% export_python_site
 
