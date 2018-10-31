@@ -23,26 +23,9 @@ anaconda_up() {
     return
   fi
 
-  echo -n "Running base update... "
-  if conda update -n base conda -y >/dev/null 2>&1; then
-    echo "done"
-  else
-    echo "failed"
-  fi
-
-  echo -n "Running package update... "
-  if conda update --prefix /usr/local/anaconda3 anaconda -y >/dev/null 2>&1; then
-    echo "done"
-  else
-    echo "failed"
-  fi
-
-  echo -n "Running cleanup... "
-  if conda clean --all -y >/dev/null 2>&1; then
-    echo "done"
-  else
-    echo "failed"
-  fi
+  conda update -n base conda -y
+  conda update --prefix /usr/local/anaconda3 anaconda -y 
+  conda clean --all -y
 
   # shellcheck source=/dev/null
   source deactivate
@@ -67,45 +50,11 @@ brew_up() {
     return
   fi
 
-  # Generic Brew update
-  echo -n "Running formula update... "
-  if brew update >/dev/null 2>&1; then
-    echo "done"
-  else
-    echo "failed"
-  fi
-
-  # Upgrade and cleanup
-  echo -n "Running formula upgrade and cleanup... "
-  if brew upgrade --cleanup >/dev/null 2>&1; then
-    echo "done"
-  else
-    echo "failed"
-  fi
-
-  # Upgrade casks
-  echo -n "Running cask upgrade... "
-  if brew cask upgrade >/dev/null 2>&1; then
-    echo "done"
-  else
-    echo "failed"
-  fi
-
-  # Cleanup casks
-  echo -n "Running cleanup... "
-  if brew cleanup >/dev/null 2>&1; then
-    echo "done"
-  else
-    echo "failed"
-  fi
-
-  # Prune old taps
-  echo -n "Pruning old taps... "
-  if brew prune >/dev/null 2>&1; then
-    echo "done"
-  else
-    echo "failed"
-  fi
+  brew update
+  brew upgrade --cleanup
+  brew cask upgrade
+  brew cleanup
+  brew prune
 }
 
 
@@ -174,26 +123,9 @@ ruby_up() {
     return
   fi
 
-  echo -n "Fetching stable build... "
-  if rvm get stable >/dev/null 2>&1; then
-    echo "done"
-  else
-    echo "failed"
-  fi
-
-  echo -n "Updating gemset... "
-  if rvm gemset update >/dev/null 2>&1; then
-    echo "done"
-  else
-    echo "failed"
-  fi
-
-  echo -n "Cleaning up... "
-  if rvm cleanup all >/dev/null 2>&1; then
-    echo "done"
-  else
-    echo "failed"
-  fi
+  rvm get stable
+  rvm gemset update
+  rvm cleanup all
 }
 
 
@@ -209,12 +141,7 @@ py_up() {
       break
     fi
 
-    echo -n "Upgrading $pip packages... "
-    if "$pip" freeze --user --disable-pip-version-check | grep -v '^\-e' | cut -d = -f 1 | xargs -n 1 "$pip" install -U --user >/dev/null 2>&1; then
-      echo "done"
-    else
-      echo "failed"
-    fi
+    "$pip" freeze --user --disable-pip-version-check | grep -v '^\-e' | cut -d = -f 1 | xargs -n 1 "$pip" install -U --user
   done
 }
 
@@ -231,12 +158,7 @@ pip_up() {
       break
     fi
 
-    echo -n "Upgrading $pip... "
-    if "$pip" install -U pip >/dev/null 2>&1; then
-      echo "done"
-    else
-      echo "failed"
-    fi
+    "$pip" install -U pip
   done
 }
 
@@ -251,12 +173,7 @@ shell_gen() {
     return
   fi
 
-  echo -n "Generate Bash startup files... "
-  if "$BASH_DOTFILES_SCRIPT" >/dev/null 2>&1; then
-    echo "done"
-  else
-    echo "failed"
-  fi
+  "$BASH_DOTFILES_SCRIPT"
 }
 
 
@@ -271,12 +188,7 @@ macos() {
     return
   fi
 
-  echo -n "Running software update... "
-  if sudo softwareupdate -ia >/dev/null 2>&1; then
-    echo "done"
-  else
-    echo "failed"
-  fi
+  sudo softwareupdate -ia
 }
 
 
@@ -297,9 +209,7 @@ linux_os() {
     return
   fi
 
-  echo -n "Performing system updates... "
-  sudo "$pkg_manager" upgrade -yq >/dev/null 2>&1
-  echo "done"
+  sudo "$pkg_manager" upgrade -y
 }
 
 
