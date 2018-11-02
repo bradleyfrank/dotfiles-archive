@@ -55,7 +55,7 @@
 		"battery_empty":              { "fg": "white", "bg": "gray0", "attrs": [] },
 		"player":                     { "fg": "gray10", "bg": "black", "attrs": [] },
 		"user":                       { "fg": "white", "bg": "darkblue", "attrs": ["bold"] },
-		"branch":                     { "fg": "gray9", "bg": "gray2", "attrs": [] },
+		"branch":                     { "fg": "green", "bg": "gray2", "attrs": [] },
 		"branch_dirty":               { "fg": "brightyellow", "bg": "gray2", "attrs": [] },
 		"branch_clean":               { "fg": "gray9", "bg": "gray2", "attrs": [] },
 		"branch:divider":             { "fg": "gray7", "bg": "gray2", "attrs": [] },
