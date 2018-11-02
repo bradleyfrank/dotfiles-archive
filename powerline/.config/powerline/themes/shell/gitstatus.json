@@ -28,14 +28,7 @@
         "priority": 10
       },
       {
-        "function": "powerline.segments.common.vcs.branch",
-        "args": {
-          "status_colors": true
-        },
-        "priority": 20
-      },
-      {
-        "function": "powerline.segments.common.vcs.stash",
+        "function": "powerline_gitstatus.gitstatus",
         "priority": 20
       },
       {
