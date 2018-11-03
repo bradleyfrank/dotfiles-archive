@@ -32,14 +32,6 @@ anaconda_up() {
 }
 
 
-# Update Atom
-atom() {
-  echo "Atom placeholder."
-  #apm list --installed --bare > ~/.atom/package.list
-  #apm install --packages-file ~/.atom/package.list
-}
-
-
 # Update HomeBrew
 brew_up() {
   echo ""
