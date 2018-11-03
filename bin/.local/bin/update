@@ -3,7 +3,6 @@
 set -eu
 
 PIPS=("pip" "pip2" "pip3")
-BASH_DOTFILES_SCRIPT="$HOME/.local/bin/generate-dotfiles"
 UPDATES="abdiprslm"
 
 
@@ -55,52 +54,21 @@ dotfiles_pull() {
   echo ""
   echo "__ Updating Dotfiles Repo __"
 
-	local output=""
-  local repo="$HOME/.dotfiles"
+	local packages repo="$HOME/.dotfiles"
 
   if [[ -d "$repo" ]]; then
     pushd "$repo" >/dev/null 2>&1
+    git stash
+    generate-dotfiles
+    git submodule update --init --recursive
 
-		echo -n "Stashing any changes... "
-		output=$(git stash)
-		if echo "$output" | grep -q "Saved working directory"; then
-      echo "done"
-    elif echo "$output" | grep -q "No local changes"; then
-    	echo "done"
-    else
-      echo "failed"
-    fi
-
-    echo -n "Pulling latest dotfiles changes... "
-    if pull_result=$(git pull 2>&1); then
-      echo "done"
-      if echo "$pull_result" | grep -q -E 'bash(rc|_profile)\.template'; then
-        echo -n "Re-generating Bash startup files... "
-        if "$BASH_DOTFILES_SCRIPT" >/dev/null 2>&1; then
-          echo "done"
-        else
-          echo "failed"
-        fi
-      fi
-    else
-      echo "failed"
-    fi
-
-    echo -n "Checking out submodules... "
-    git submodule update --init --recursive >/dev/null 2>&1
-    echo "done"
-
-    echo -n "Re-stowing dotfiles... "
     shopt -s nullglob
-    stow_packages=(*/)
-    for pkg in "${stow_packages[@]}"; do
+    packages=(*/)
+    for pkg in "${packages[@]}"; do
      stow "$(echo "$pkg" | cut -d '/' -f 1)"
     done
-    echo "done"
 
     popd >/dev/null 2>&1
-  else
-    echo "Dotfiles repo not present, skipping... "
   fi
 }
 
@@ -152,20 +120,6 @@ pip_up() {
 
     "$pip" install -U pip
   done
-}
-
-
-# Update Shell (bash startup files)
-shell_gen() {
-  echo ""
-  echo "__ Updating Bash __"
-
-  if [ ! -x "$BASH_DOTFILES_SCRIPT" ]; then
-    echo "Script missing to generate startup files."
-    return
-  fi
-
-  "$BASH_DOTFILES_SCRIPT"
 }
 
 
@@ -257,7 +211,7 @@ for (( i=0; i<${#UPDATES}; i++ )); do
     i ) pip_up ;;
     p ) py_up ;;
     r ) ruby_up ;;
-    s ) shell_gen ;;
+    s ) generate-dotfiles ;;
     l ) linux_os ;;
     m ) macos ;;
     * ) echo "Invalid option: $update" 1>&2 ; exit 1 ;;
