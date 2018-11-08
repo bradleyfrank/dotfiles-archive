@@ -8,7 +8,7 @@ MANPATH="/usr/share/man:/usr/local/share/man:$HOME/.local/share/man"
 %% mac_manpath_brewgnu
 export MANPATH
 
-if [[ -z $SCREENFETCH ]]; then
+if [[ -n $SCREENFETCH ]]; then
   screenfetch
   export SCREENFETCH
 fi
