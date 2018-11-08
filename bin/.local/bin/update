@@ -2,9 +2,6 @@
 
 set -eu
 
-PIPS=("pip" "pip2" "pip3")
-UPDATES="abdiprslm"
-
 
 # ==============================================================================
 # Functions
@@ -13,9 +10,6 @@ UPDATES="abdiprslm"
 
 # Update Anaconda
 anaconda_up() {
-  echo ""
-  echo "__ Updating Anaconda __"
-
   # shellcheck source=/dev/null
   if ! source /usr/local/anaconda3/bin/activate root >/dev/null 2>&1; then
     echo "Anaconda3 not found on system."
@@ -33,9 +27,6 @@ anaconda_up() {
 
 # Update HomeBrew
 brew_up() {
-  echo ""
-  echo "__ Updating HomeBrew __"
-
   if ! type brew >/dev/null 2>&1; then
     echo "HomeBrew not found on system."
     return
@@ -51,9 +42,6 @@ brew_up() {
 
 # Update Dotfiles repo
 dotfiles_pull() {
-  echo ""
-  echo "__ Updating Dotfiles Repo __"
-
 	local packages repo="$HOME/.dotfiles"
 
   if [[ -d "$repo" ]]; then
@@ -75,9 +63,6 @@ dotfiles_pull() {
 
 # Update RVM
 ruby_up() {
-  echo ""
-  echo "__ Updating RVM & Gems __"
-
   if ! type rvm >/dev/null 2>&1; then
     echo "No RVM installation found."
     return
@@ -89,111 +74,54 @@ ruby_up() {
 }
 
 
-# Update Python packages
-py_up() {
-  echo ""
-  echo "__ Updating Python __"
-
-  for pip in "${PIPS[@]}"
-  do
-    if ! type "$pip" >/dev/null 2>&1; then
-      echo "Version $pip not found."
-      break
-    fi
-
-    "$pip" freeze --user --disable-pip-version-check | grep -v '^\-e' | cut -d = -f 1 | xargs -n 1 "$pip" install -U --user
-  done
-}
-
-
-# Update Pip
-pip_up() {
-  echo ""
-  echo "__ Updating Pip __"
-
-  for pip in "${PIPS[@]}"
-  do
-    if ! type "$pip" >/dev/null 2>&1; then
-      echo "Version $pip not found."
-      break
-    fi
-
-    "$pip" install -U pip
-  done
-}
-
-
-# Update MacOS
-macos() {
-  echo ""
-  echo "__ Updating MacOS __"
-
-  # Bail if not present
-  if ! type softwareupdate >/dev/null 2>&1; then
-    echo "MacOS system not detected."
-    return
-  fi
-
-  sudo softwareupdate -ia
-}
-
-
-# Update Linux OS
-linux_os() {
-  echo ""
-  echo "__ Updating Linux __"
-
-  local pkg_manager
-
-  # Find package manager
-  if type yum >/dev/null 2>&1; then
-    pkg_manager="yum"
+# Update OS
+opsys() {
+  if type softwareupdate >/dev/null 2>&1; then
+    sudo softwareupdate -ia
+  elif type yum >/dev/null 2>&1; then
+    sudo yum update -y
   elif type dnf >/dev/null 2>&1; then
-    pkg_manager="dnf"
+    sudo dnf upgrade -y
   else
-    echo "No Linux package manager found."
     return
   fi
-
-  sudo "$pkg_manager" upgrade -y
 }
 
 
 usage() {
   echo "update.sh -- Updates various system environments."
-  echo ""
-  echo "Usage: update -h | -a | -s | -u | [-i $UPDATES]"
-  echo ""
+  echo
+  echo "Usage: update -h | -a | [-i $UPDATES]"
+  echo
   echo "Options:"
   echo "-h    print help menu and exit"
   echo "-a    perform all updates (default);  implies -i $UPDATES"
-  echo "-s    system updates only;            implies -i lm"
-  echo "-u    user updates only;              implies -i bdprs"
   echo "-i    update individual subsystem:"
   echo "      a    Anaconda"
-  echo "      b    HomeBrew"
-  echo "      d    Dotfiles"
-  echo "      i    Pip"
-  echo "      p    Python"
-  echo "      r    Ruby"
-  echo "      s    Shell"
-  echo "      -------------"
-  echo "      l    Linux OS"
-  echo "      m    Mac OS"
-  echo ""
+  echo "      b    HomeBrew formulas and casks"
+  echo "      d    dotfiles repo"
+  echo "      i    pip3 itself"
+  echo "      o    operating system"
+  echo "      p    Python $PYVER packages"
+  echo "      r    RVM and Ruby gems"
+  echo "      s    shell profile/rc dotfiles"
+  echo
   exit 0
 }
 
 
-# ==============================================================================
-# Main
-# ==============================================================================
+##
+## Main
+##
+
+UPDATES="abdioprs"
+PYVER="$(python3 -V 2>&1 | grep -Eo '[0-9]\.[0-9]')"
 
 while getopts 'hasui:' flag; do
   case "${flag}" in
     h ) usage ;;
     a ) UPDATES="$UPDATES" ;;
-    s ) UPDATES="ml" ;;
+    s ) UPDATES="o" ;;
     u ) UPDATES="bdprs" ;;
     i ) UPDATES="$OPTARG" ;;
     : ) echo "Missing argument: $OPTARG requires an argument" 1>&2 ; exit 1 ;;
@@ -208,15 +136,14 @@ for (( i=0; i<${#UPDATES}; i++ )); do
     a ) anaconda_up ;;
     b ) brew_up ;;
     d ) dotfiles_pull ;;
-    i ) pip_up ;;
-    p ) py_up ;;
+    i ) pip3 install --upgrade pip ;;
+    o ) opsys ;;
+    p ) pip_upgrade_outdated -3 --verbose ;;
     r ) ruby_up ;;
     s ) generate-dotfiles ;;
-    l ) linux_os ;;
-    m ) macos ;;
     * ) echo "Invalid option: $update" 1>&2 ; exit 1 ;;
   esac
 done
 
-echo ""
+echo
 exit 0
