@@ -43,4 +43,4 @@ popd >/dev/null
 
 pushd "$tmpdir" >/dev/null
 mv *.tar.gz "$archive_dir"/
-popd
+popd >/dev/null
