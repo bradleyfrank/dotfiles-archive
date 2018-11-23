@@ -4,7 +4,7 @@ PATH="$HOME/.local/bin:$HOME/bin:$PATH"
 %% mac_path_brewgnu
 export PATH
 
-MANPATH="/usr/share/man:/usr/local/share/man:$HOME/.local/share/man"
+MANPATH="$HOME/.local/share/man:/usr/local/share/man:/usr/share/man"
 %% mac_manpath_brewgnu
 export MANPATH
 
