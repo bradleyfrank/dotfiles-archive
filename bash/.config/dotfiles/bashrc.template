@@ -75,6 +75,7 @@ export HISTSIZE=
 export HISTCONTROL="erasedups:ignoreboth:ignorespace"
 export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear"
 export HISTTIMEFORMAT='%F %T '
+export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
 
 # hstr bindings
 # https://github.com/dvorka/hstr/blob/master/CONFIGURATION.md
