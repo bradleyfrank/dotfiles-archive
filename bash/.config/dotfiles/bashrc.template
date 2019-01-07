@@ -27,6 +27,7 @@ alias pubip='dig +short myip.opendns.com @resolver1.opendns.com'
 # system
 alias powerline-restart='powerline-daemon --replace'
 alias tag='dmidecode -s system-serial-number'
+alias weather='curl wttr.in'
 
 # terminal
 %% alias_ncdu
