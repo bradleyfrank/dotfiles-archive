@@ -47,6 +47,7 @@ dotfiles_pull() {
   if [[ -d "$repo" ]]; then
     pushd "$repo" >/dev/null 2>&1
     git stash
+    git pull
     generate-dotfiles
     git submodule update --init --recursive
 
