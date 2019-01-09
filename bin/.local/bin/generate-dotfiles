@@ -153,18 +153,6 @@ alias_rmate() {
 
 
 #
-# Enables thefuck alias if installed
-#
-eval_thefuck() {
-  if type thefuck >/dev/null 2>&1; then
-    OUTPUT="eval \$(thefuck --alias)"
-  else
-    return 1
-  fi
-}
-
-
-#
 # Use keychain if installed with specific per-system options
 #
 eval_keychain() {
