@@ -35,12 +35,6 @@ alias sane='stty sane'
 alias t='tree'
 alias wget='wget -c'
 
-# tmux
-alias tat='tmux attach -t'
-alias tka='tmux kill-server'
-alias tks='tmux kill-session'
-alias tls='tmux list-sessions'
-
 # tufts
 alias orch='javaws ~/.local/java/orchestrator.jnlp'
 
