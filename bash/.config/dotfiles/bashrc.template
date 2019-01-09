@@ -39,7 +39,6 @@ alias wget='wget -c'
 alias orch='javaws ~/.local/java/orchestrator.jnlp'
 
 
-%% eval_thefuck
 %% eval_keychain
 %%
 
