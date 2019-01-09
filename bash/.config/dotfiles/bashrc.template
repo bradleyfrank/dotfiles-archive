@@ -11,11 +11,6 @@ alias bb='bbedit'
 alias safari='open -a Safari'
 alias typora='open -a typora'
 
-# docker
-alias dcu='docker-compose up -d'
-alias dip='docker inspect --format "{{ .NetworkSettings.IPAddress }}"'
-alias dps='docker ps -a --format "ContainerID:\t{{.ID}}\nImage:\t\t{{.Image}}\nCreated:\t{{.CreatedAt}}\nStatus:\t\t{{.Status}}\nPorts:\t\t{{.Ports}}\n"'
-
 # networking
 %% alias_prettyping
 alias digg='dig +noall +answer'
