@@ -36,7 +36,6 @@ brew_up() {
   brew upgrade --cleanup
   brew cask upgrade
   brew cleanup
-  brew prune
 }
 
 
