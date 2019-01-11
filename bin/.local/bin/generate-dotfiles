@@ -57,6 +57,17 @@ convert_template() {
 ##
 
 #
+# Add rbenv to PATH if installed
+#
+path_rbenv() {
+  if [[ -x "$HOME"/.rbenv/bin/rbenv ]]; then
+    OUTPUT=". \"$HOME\"/.rbenv/bin"
+  else
+    return 1
+  fi
+}
+
+#
 # Mac needs to add ~/Library Python 3.7 to PATH
 #
 mac_path_anaconda() {
@@ -194,18 +205,6 @@ export_python_site() {
 
   site=$("$pyver" -m site | grep -E '^USER_SITE' | awk '{print $2}' | tr -d "'")
   OUTPUT="export USER_SITE=\"$site\""
-}
-
-
-#
-# Source RVM scripts if present
-#
-source_rvm() {
-  if [[ -x "$HOME"/.rvm/scripts/rvm ]]; then
-    OUTPUT=". \"$HOME\"/.rvm/scripts/rvm"
-  else
-    return 1
-  fi
 }
 
 

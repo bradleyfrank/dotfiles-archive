@@ -72,8 +72,6 @@ export PROMPT_COMMAND="history -a; history -n; ${PROMPT_COMMAND}"
 bind "'\C-r': '\C-a hh -- \C-j'"
 
 
-%% source_rvm
-
 decrypt() {
   openssl enc -d -aes-256-cbc -in "$1" -out "$1.decrypted"
 }
