@@ -61,7 +61,7 @@ convert_template() {
 #
 path_rbenv() {
   if [[ -x "$HOME"/.rbenv/bin/rbenv ]]; then
-    OUTPUT=". \"$HOME\"/.rbenv/bin"
+    OUTPUT="PATH=\"\$HOME/.rbenv/bin:\$PATH\""
   else
     return 1
   fi
