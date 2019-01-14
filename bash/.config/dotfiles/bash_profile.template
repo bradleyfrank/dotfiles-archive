@@ -1,5 +1,6 @@
 PATH="/usr/local/sbin:/usr/local/bin:$PATH"
 PATH="$HOME/.local/bin:$HOME/bin:$PATH"
+%% path_rbenv
 %% mac_path_anaconda
 %% mac_path_brewgnu
 export PATH
