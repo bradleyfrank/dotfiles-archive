@@ -14,7 +14,7 @@ set backspace=indent,eol,start
 set tabstop=2 shiftwidth=2 expandtab smarttab autoindent
 set showmatch
 set hlsearch incsearch
-set linebreak breakindent
+set linebreak "breakindent
 set novisualbell noerrorbells
 
 " Powerline
