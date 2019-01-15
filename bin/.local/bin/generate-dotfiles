@@ -125,7 +125,7 @@ source_profiled() {
   if [[ -d /usr/local/etc/profile.d ]]; then
     for i in /usr/local/etc/profile.d/*.sh ; do
       if [[ -r "$i" ]]; then
-        tmpout=$(printf '. /usr/local/etc/profile.d/%s\\n%s' "$i" "$tmpout" )
+        tmpout=$(printf '. %s\\n%s' "$i" "$tmpout" )
       fi
     done
 
