@@ -67,6 +67,7 @@ path_rbenv() {
   fi
 }
 
+
 #
 # Mac needs to add ~/Library Python 3.7 to PATH
 #
@@ -112,6 +113,27 @@ mac_manpath_brewgnu() {
 
   # removes last two characters (newline)
   OUTPUT="${tmpout%??}"
+}
+
+
+#
+# Source custom Bash scripts
+#
+source_profiled() {
+  local tmpout
+
+  if [[ -d /usr/local/etc/profile.d ]]; then
+    for i in /usr/local/etc/profile.d/*.sh ; do
+      if [[ -r "$i" ]]; then
+        tmpout=$(printf '%s\\n. /usr/local/etc/profile.d/%s' "$tmpout" "$i" )
+      fi
+    done
+
+    # removes last two characters (newline)
+    OUTPUT="${tmpout%??}"
+  else
+    return 1
+  fi
 }
 
 

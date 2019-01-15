@@ -4,9 +4,6 @@
 # load the system bashrc
 [[ -f /etc/bashrc ]] && . /etc/bashrc
 
-# source z
-[[ -f /usr/local/etc/profile.d/z.sh ]] && . /usr/local/etc/profile.d/z.sh
-
 
 # apps
 alias bb='bbedit'

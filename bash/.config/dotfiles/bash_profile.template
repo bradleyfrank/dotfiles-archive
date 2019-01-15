@@ -9,4 +9,6 @@ MANPATH="$HOME/.local/share/man:/usr/local/share/man:/usr/share/man"
 %% mac_manpath_brewgnu
 export MANPATH
 
+%% source_profiled
+
 if [[ -f "$HOME/.bashrc" ]]; then . "$HOME/.bashrc"; fi
