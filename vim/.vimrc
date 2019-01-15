@@ -1,23 +1,39 @@
-" Static Interface Elements
+""
+"" Static Interface Elements
+""
 syntax on
 set term=screen-256color
-set number
-set relativenumber
 set laststatus=2
 set scrolloff=4
 
-" I/O Behavior
-set mouse=nvi
+" use hybrid line numbering by default with automatic toggling
+set number relativenumber
+augroup numbertoggle
+  autocmd!
+  autocmd BufEnter,FocusGained,InsertLeave * set relativenumber
+  autocmd BufLeave,FocusLost,InsertEnter   * set norelativenumber
+augroup END
+
+
+""
+"" I/O Behavior
+""
+set mouse=i
 set backspace=indent,eol,start
 
-" Dynamic Interaction Elements
+
+""
+"" Dynamic Interaction Elements
+""
 set tabstop=2 shiftwidth=2 expandtab smarttab autoindent
 set showmatch
 set hlsearch incsearch
-set linebreak "breakindent
+set linebreak
 set novisualbell noerrorbells
 
-" Powerline
+""
+"" Powerline
+""
 set rtp+=$USER_SITE/powerline/bindings/vim
 python3 from powerline.vim import setup as powerline_setup
 python3 powerline_setup()
