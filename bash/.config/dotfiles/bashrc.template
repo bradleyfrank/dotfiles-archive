@@ -78,7 +78,7 @@ encrypt() {
 }
 
 tardir() {
-  tar -czf "$1".tar.gz "$1"
+  tar -czf "${1%/}".tar.gz "$1"
 }
 
 gedit() {
