@@ -24,7 +24,8 @@
         "function": "powerline.segments.shell.cwd",
         "args": {
           "dir_shorten_len": 1,
-          "dir_limit_depth": 0
+          "dir_limit_depth": 0,
+          "use_path_separator": true
         },
         "priority": 10
       },
