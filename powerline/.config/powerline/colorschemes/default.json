@@ -1,19 +1,18 @@
 {
-	"name": "GitStatus",
+	"name": "powerline-gitstatus",
 	"groups": {
-    "gitstatus":                  { "fg": "gray8", "bg": "gray2", "attrs": [] },
-    "gitstatus_branch":           { "fg": "gray8", "bg": "gray2", "attrs": [] },
-    "gitstatus_branch_clean":     { "fg": "green", "bg": "gray2", "attrs": [] },
-    "gitstatus_branch_dirty":     { "fg": "gray8", "bg": "gray2", "attrs": [] },
-    "gitstatus_branch_detached":  { "fg": "mediumpurple", "bg": "gray2", "attrs": [] },
-    "gitstatus_tag":              { "fg": "darkcyan", "bg": "gray2", "attrs": [] },
-    "gitstatus_behind":           { "fg": "gray10", "bg": "gray2", "attrs": [] },
-    "gitstatus_ahead":            { "fg": "gray10", "bg": "gray2", "attrs": [] },
-    "gitstatus_staged":           { "fg": "green", "bg": "gray2", "attrs": [] },
-    "gitstatus_unmerged":         { "fg": "brightred", "bg": "gray2", "attrs": [] },
-    "gitstatus_changed":          { "fg": "mediumorange", "bg": "gray2", "attrs": [] },
-    "gitstatus_untracked":        { "fg": "brightestorange", "bg": "gray2", "attrs": [] },
-    "gitstatus_stashed":          { "fg": "darkblue", "bg": "gray2", "attrs": [] },
-    "gitstatus:divider":          { "fg": "gray8", "bg": "gray2", "attrs": [] }
+  	"gitstatus":                 { "fg": "solarized:base1", "bg": "gray2", "attrs": [] },
+  	"gitstatus_branch":          { "fg": "solarized:base1", "bg": "gray2", "attrs": [] },
+  	"gitstatus_branch_clean":    { "fg": "solarized:green", "bg": "gray2", "attrs": [] },
+  	"gitstatus_branch_dirty":    { "fg": "solarized:base1", "bg": "gray2", "attrs": [] },
+  	"gitstatus_branch_detached": { "fg": "solarized:magenta", "bg": "gray2", "attrs": [] },
+  	"gitstatus_behind":          { "fg": "solarized:base2", "bg": "gray2", "attrs": [] },
+  	"gitstatus_ahead":           { "fg": "solarized:base2", "bg": "gray2", "attrs": [] },
+  	"gitstatus_staged":          { "fg": "solarized:green", "bg": "gray2", "attrs": [] },
+  	"gitstatus_unmerged":        { "fg": "solarized:red", "bg": "gray2", "attrs": [] },
+  	"gitstatus_changed":         { "fg": "solarized:orange", "bg": "gray2", "attrs": [] },
+  	"gitstatus_untracked":       { "fg": "solarized:yellow", "bg": "gray2", "attrs": [] },
+  	"gitstatus_stashed":         { "fg": "solarized:blue", "bg": "gray2", "attrs": [] },
+    "gitstatus:divider":         { "fg": "solarized:base1", "bg": "gray2", "attrs": [] }
 	}
 }
