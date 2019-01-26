@@ -1,11 +1,12 @@
 {
 	"name": "powerline-gitstatus",
 	"groups": {
-		"date":                      { "fg": "white",           "bg": "darkblue", "attrs": [] },
+		"cwd:divider":               { "fg": "gray10",          "bg": "gray4", "attrs": [] },
+		"date":                      { "fg": "skyblue1",        "bg": "gray4", "attrs": [] },
     "gitstatus":                 { "fg": "white",           "bg": "gray4", "attrs": [] },
     "gitstatus_branch":          { "fg": "white",           "bg": "gray4", "attrs": [] },
     "gitstatus_branch_clean":    { "fg": "brightgreen",     "bg": "gray4", "attrs": [] },
-    "gitstatus_branch_dirty":    { "fg": "white",           "bg": "gray4", "attrs": [] },
+    "gitstatus_branch_dirty":    { "fg": "brightyellow",    "bg": "gray4", "attrs": [] },
     "gitstatus_branch_detached": { "fg": "mediumpurple",    "bg": "gray4", "attrs": [] },
     "gitstatus_tag":             { "fg": "darkcyan",        "bg": "gray4", "attrs": [] },
     "gitstatus_behind":          { "fg": "gray10",          "bg": "gray4", "attrs": [] },
