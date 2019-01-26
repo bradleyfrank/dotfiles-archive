@@ -33,6 +33,7 @@ alias ll='ls -lAhF'
 alias sane='stty sane'
 alias t='tree'
 alias wget='wget -c'
+alias e='extract'
 
 # tufts
 alias orch='javaws ~/.local/java/orchestrator.jnlp'
