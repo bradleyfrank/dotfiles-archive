@@ -26,10 +26,10 @@ alias weather='curl wttr.in'
 # terminal
 %% alias_ncdu
 %% alias_pydf
-alias clean='grep -Erv "(^#|^$)"'
 alias groot='cd $(git rev-parse --show-toplevel)'
 alias help='tldr'
 alias ll='ls -lAhF'
+alias nbl='grep -Erv "(^#|^$)"'
 alias sane='stty sane'
 alias t='tree'
 alias wget='wget -c'
