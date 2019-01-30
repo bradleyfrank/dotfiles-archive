@@ -1,0 +1,181 @@
+#!/bin/bash
+
+LAST_EXIT_STATUS="$?"
+
+bgBlue="\\e[44m"
+bgGreen="\\e[48;5;108m"
+bgRed="\\e[48;5;124m"
+bgOrange="\\e[48;5;202m"
+bgLightGray="\\e[48;5;059m"
+
+fgRed="\\e[38;5;31m"
+fgGreen="\\e[38;5;28m"
+fgYellow="\\e[38;5;3m"
+fgBlue="\\e[38;5;27m"
+fgMagenta="\\e[38;5;35m"
+fgTeal="\\e[38;5;36m"
+
+fgSkyBlue="\\e[38;5;117m"
+fgMedRed="\\e[38;5;1m"
+fgBrightGreen="\\e[38;5;148m"
+fgOrange="\\e[38;5;202m"
+fgBrightOrange="\\e[38;5;214m"
+fgDarkGray="\\e[38;5;240m"
+fgMedGray="\\e[38;5;245m"
+fgLightGray="\\e[38;5;250m"
+fgWhite="\\e[38;5;256m"
+
+mkBold="$(tput bold)"
+ResetColor="\\e[0;0m"
+
+ThinArrow=$'\UE0B1'
+Triangle=$'\UE0B0'
+GitGlyph=$'\uE0A0'
+
+##
+## FUNCTIONS
+##
+
+build_git_prompt() {
+  local git_status git_prompt git_remote="" git_changes=""
+  local clean branch state remote upstream staged conflicts changed untracked stashed
+
+  # import parsed git status
+  readarray -t git_status <<< "$(parse-git-status)"
+  if [[ ${git_status[@]} == "" ]]; then
+    return 1
+  fi
+
+  clean=${git_status[0]}
+  branch="${git_status[1]}"
+  state="${git_status[2]}"
+  remote="${git_status[3]}"
+  upstream="${git_status[4]}"
+  staged=${git_status[5]}
+  conflicts=${git_status[6]}
+  changed=${git_status[7]}
+  untracked=${git_status[8]}
+  stashed=${git_status[9]}
+
+
+  # build the git push/pull prompt
+  if [[ "$remote" =~ BEHIND ]]; then
+    git_remote="↓${remote//_BEHIND_/}"
+  elif [[ "$remote" =~ AHEAD ]]; then
+    git_remote="↑${remote//_AHEAD_/}"
+  fi
+
+
+  # build the changes prompt
+  if [[ "$clean" -eq 1 ]]; then
+    local _staged="" _conflicts="" _changed="" _untracked="" _stashed=""
+
+    if [[ $staged -gt 0 ]]; then
+      _staged=" ${fgOrange}⋮${staged}"
+    fi
+
+    if [[ $conflicts -gt 0 ]]; then
+      _conflicts=" ${fgRed}✗${conflicts}"
+    fi
+
+    if [[ $changed -gt 0 ]]; then
+      _changed=" ${fgYellow}+${changed}"
+    fi
+
+    if [[ $untracked -gt 0 ]]; then
+      _untracked=" ${fgWhite}…${untracked}"
+    fi
+
+    if [[ $stashed -gt 0 ]]; then
+      _stashed=" ${fgBlue}⚑${stashed}"
+    fi
+
+    # combine the stats into one string
+    git_changes="${_staged}${_conflicts}${_changed}${_untracked}${_stashed}"
+    git_changes="${bgLightGray}${git_changes}${ResetColor}"
+  fi
+
+
+  # combine remote info with local changes
+  _metadata="${git_remote}${git_changes}${bgLightGray} ${ResetColor}"
+  #if [[ "$_metadata" == "" ]]; then
+  #  _metadata="${bgLightGray} ${ResetColor}"
+  #else
+  #  _metadata=" ${_metadata}${bgLightGray} ${ResetColor}"
+  #fi
+
+  # build git prompt section
+  _prefix="${bgLightGray}${fgBrightGreen}${GitGlyph} ${branch}${ResetColor}"
+
+  # build final ps1 git prompt
+  ps1_git_prompt="${_prefix}${bgLightGray}${state}${_metadata}${ResetColor}"
+}
+
+
+##
+## MAIN
+##
+
+s=" ${ThinArrow} "
+date="${bgLightGray} ${fgSkyBlue}$(date +'%b-%e %H:%M:%S')${s}${ResetColor}"
+exit_code=""
+suffix="${fgMedGray}${Triangle}${ResetColor} "
+host_name=""
+current_dir=""
+user_name=""
+ps1_git_prompt=""
+ps1_env_prompt=""
+
+
+#
+# set working directory
+#
+_cwd="${bgLightGray}${mkBold}${fgWhite}\\W${ResetColor}"
+_div="${bgLightGray}${fgWhite}${s}${ResetColor}"
+current_dir="${_cwd}${_div}"
+
+
+#
+# set exit code
+#
+if [[ $LAST_EXIT_STATUS -eq 0 ]]; then
+  exit_code=""
+else
+  exit_code="${fgWhite}${bgRed} ${LAST_EXIT_STATUS} ${ResetColor}"
+fi
+
+
+#
+# only display hostname if not on localhost
+#
+if [[ ! -z "$SSH_CONNECTION" ]]; then
+  host_name="${fgWhite}${bgBlue} \\h ${ResetColor}"
+fi
+
+
+#
+# only display username if not local user
+#
+if [[ ! -z "$SUDO_USER" ]]; then
+  user_name="${fgWhite}${bgOrange} \\u ${ResetColor}"
+fi
+
+
+#
+# set Git prompt
+#
+if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+  build_git_prompt
+else
+  ps1_git_prompt="${bgLightGray}${fgMedRed}${GitGlyph} ${ResetColor}"
+fi
+
+
+#
+# set Virtual Env prompt
+#
+if [[ ! -z $CONDA_DEFAULT_ENV ]]; then
+  ps1_env_prompt="${s} ${fgTeal}${CONDA_DEFAULT_ENV}${ResetColor}"
+fi
+
+export PS1="${date}${host_name}${current_dir}${ps1_git_prompt}${suffix}"
