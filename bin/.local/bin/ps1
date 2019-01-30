@@ -110,23 +110,23 @@ build_git_prompt() {
 ## HOSTNAME
 ##
 if [[ ! -z "$SSH_CONNECTION" ]]; then
-  host_name="${bgLightGray}${fgOrange} \\h ${div}${ResetColor}"
+  hostname="${bgLightGray}${fgOrange} \\h ${div}${ResetColor}"
 else
-  host_name=""
+  hostname=""
 fi
 
 
 ##
 ## DATE
 ##
-date="${bgLightGray} ${fgSkyBlue}$(date +'%b-%e %H:%M:%S') ${div}${ResetColor}"
+_div="${bgLightGray}${fgWhite}${div}${ResetColor}"
+date="${bgLightGray} ${fgSkyBlue}$(date +'%b-%e %H:%M:%S') ${ResetColor}${_div}"
 
 
 ##
 ## CWD
 ##
-_cwd="${bgLightGray}${fgWhite} \\W${ResetColor}"
-current_dir="${_cwd}"
+current_dir="${bgLightGray}${fgWhite} \\W${ResetColor}"
 
 
 ##
@@ -134,11 +134,9 @@ current_dir="${_cwd}"
 ##
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
   build_git_prompt
-  _div="${bgLightGray}${fgWhite} ${div}${ResetColor}"
-  ps1_git_prompt="${_div}${ps1_git_prompt}"
+  ps1_git_prompt="${bgLightGray}${fgWhite} ${div}${ResetColor}${ps1_git_prompt}"
 else
-  _div="${bgLightGray}${fgLightGray}${Triangle}${ResetColor}"
-  ps1_git_prompt="${_div}"
+  ps1_git_prompt="${bgLightGray} ${ResetColor}"
 fi
 
 
@@ -146,7 +144,9 @@ fi
 ## VIRTUAL ENV
 ##
 if [[ ! -z $CONDA_DEFAULT_ENV ]]; then
-  ps1_env_prompt="${div} ${fgTeal}${CONDA_DEFAULT_ENV}${ResetColor}"
+  _div="${bgLightGray}${fgWhite}${div}${ResetColor}"
+  _env="${bgLightGray}${fgOrange} ${CONDA_DEFAULT_ENV} ${ResetColor}"
+  ps1_env_prompt="${_div}${_env}"
 else
   ps1_env_prompt=""
 fi
@@ -167,7 +167,7 @@ fi
 ##
 ## PS1
 ##
-_system="${host_name}${date}"
+_system="${hostname}${date}"
 _user="${current_dir}${ps1_git_prompt}${ps1_env_prompt}"
 _shell="${exit_status}"
 _suffix="${fgMedGray}${Triangle}${ResetColor} "
