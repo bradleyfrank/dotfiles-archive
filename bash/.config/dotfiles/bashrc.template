@@ -86,7 +86,8 @@ gedit() {
   nohup /usr/bin/gedit "$@" >/dev/null 2>&1 &
 }
 
+build_prompt() {
+  . ps1
+}
 
-%% export_python_site
-
-%% powerline_ps1
+export PROMPT_COMMAND=build_prompt
