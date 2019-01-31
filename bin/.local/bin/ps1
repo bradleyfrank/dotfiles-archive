@@ -110,7 +110,8 @@ build_git_prompt() {
 ## HOSTNAME
 ##
 if [[ ! -z "$SSH_CONNECTION" ]]; then
-  hostname="${bgLightGray}${fgOrange} \\h ${div}${ResetColor}"
+  _div="${bgLightGray}${fgWhite}${div}${ResetColor}"
+  hostname="${bgLightGray}${fgOrange} \\h ${ResetColor}${_div}"
 else
   hostname=""
 fi
