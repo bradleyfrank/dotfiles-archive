@@ -1,8 +1,5 @@
 #!/bin/bash
 
-set -o errexit
-set -o pipefail
-
 LAST_EXIT_STATUS="$?"
 
 bgRed="\[\e[48;5;52m\]"
