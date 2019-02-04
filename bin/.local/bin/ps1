@@ -1,5 +1,8 @@
 #!/bin/bash
 
+set -o errexit
+set -o pipefail
+
 LAST_EXIT_STATUS="$?"
 
 bgRed="\[\e[48;5;52m\]"
@@ -9,19 +12,19 @@ fgLightCyan="\[\e[38;5;6m\]"
 fgCyan="\[\e[38;5;39m\]"
 fgLightGray="\[\e[38;5;059m\]"
 fgSkyBlue="\[\e[38;5;117m\]"
-fgMedRed="\[\e[38;5;1m\]"
+#fgMedRed="\[\e[38;5;1m\]"
 fgBrightGreen="\[\e[38;5;148m\]"
 fgBrightRed="\[\e[38;5;196m\]"
 fgOrange="\[\e[38;5;208m\]"
 fgYellow="\[\e[38;5;220m\]"
 fgLightPurple="\[\e[38;5;213m\]"
-fgBrightOrange="\[\e[38;5;214m\]"
-fgDarkGray="\[\e[38;5;240m\]"
+#fgBrightOrange="\[\e[38;5;214m\]"
+#fgLightGray="\[\e[38;5;240m\]"
 fgMedGray="\[\e[38;5;245m\]"
-fgDarkGray="\[\e[38;5;250m\]"
+#fgDarkGray="\[\e[38;5;250m\]"
 fgWhite="\[\e[38;5;256m\]"
 
-mkBold="\[\e[0;1m\]"
+mkBold="\[\e[1m\]"
 ResetColor="\[\e[0;0m\]"
 
 ThinArrow=$'\UE0B1'
@@ -34,14 +37,39 @@ div="${ThinArrow}"
 ## FUNCTIONS
 ##
 
+build_cwd() {
+  local wd pathdirs numdirs shortpwd
+
+  # replace $HOME with tilde
+  wd="$(printf '%s' "$PWD" | sed "s|^${HOME}|~|")"
+  # replace "/" with spaces to split into array
+  pathdirs=(${wd//// })
+  # count array size to get number of directories
+  numdirs="${#pathdirs[@]}"
+  # decrement array size to avoid parsing cwd below
+  ((numdirs--))
+
+  shortpwd=""
+
+  if [[ "$numdirs" -gt 0 ]]; then
+    for ((i=0;i<"${numdirs}";i++)); do
+      shortpwd="${shortpwd}${pathdirs[$i]:0:1}/"
+    done
+  fi
+
+  # add the cwd back in since we want the full name
+  shortpwd="${shortpwd}${mkBold}${pathdirs[-1]}"
+  current_dir="${bgLightGray}${fgWhite} ${shortpwd}${ResetColor}"
+}
+
 build_git_prompt() {
   local prefix metadata
   local git_remote="" git_changes=""
-  local clean branch state remote upstream staged conflicts changed untracked stashed
+  local clean branch state remote staged conflicts changed untracked stashed
 
-  # import parsed git status
+  # call external script (probably in local bin folder)
   readarray -t git_status <<< "$(parse-git-status)"
-  if [[ ${git_status[@]} == "" ]]; then
+  if [[ ${git_status[*]} == "" ]]; then
     return 1
   fi
 
@@ -49,7 +77,7 @@ build_git_prompt() {
   branch="${git_status[1]}"
   state="${git_status[2]}"
   remote="${git_status[3]}"
-  upstream="${git_status[4]}"
+  #upstream="${git_status[4]}"
   staged=${git_status[5]}
   conflicts=${git_status[6]}
   changed=${git_status[7]}
@@ -57,7 +85,7 @@ build_git_prompt() {
   stashed=${git_status[9]}
 
 
-  # build the git push/pull prompt
+  # set the push/pull indicators
   if [[ "$remote" =~ BEHIND ]]; then
     git_remote=" ${fgBrightRed}↓${remote//_BEHIND_/}"
   elif [[ "$remote" =~ AHEAD ]]; then
@@ -65,7 +93,7 @@ build_git_prompt() {
   fi
 
 
-  # build the changes prompt
+  # set the various repo indictors
   if [[ "$clean" -eq 1 ]]; then
     local _staged="" _conflicts="" _changed="" _untracked="" _stashed=""
 
@@ -93,8 +121,10 @@ build_git_prompt() {
     git_changes="${_staged}${_conflicts}${_changed}${_untracked}${_stashed}"
     git_changes="${bgLightGray}${git_changes}${ResetColor}"
 
+    # branch is dirty, color it yellow
     prefix="${bgLightGray}${fgYellow} ${GitGlyph} ${branch}${ResetColor}"
   else
+    # branch is clean, color is green
     prefix="${bgLightGray}${fgBrightGreen} ${GitGlyph} ${branch}${ResetColor}"
   fi
 
@@ -109,7 +139,8 @@ build_git_prompt() {
 ##
 ## HOSTNAME
 ##
-if [[ ! -z "$SSH_CONNECTION" ]]; then
+if [[ -n "$SSH_CONNECTION" ]]; then
+  # only show hostname on remote hosts
   _div="${bgLightGray}${fgWhite}${div}${ResetColor}"
   hostname="${bgLightGray}${fgOrange} \\h ${ResetColor}${_div}"
 else
@@ -127,24 +158,28 @@ date="${bgLightGray} ${fgSkyBlue}$(date +'%b-%d %H:%M:%S') ${ResetColor}${_div}"
 ##
 ## CWD
 ##
-current_dir="${bgLightGray}${fgWhite} \\W${ResetColor}"
+build_cwd
 
 
 ##
 ## GIT STATUS
 ##
+_div=""
+ps1_git_prompt="${bgLightGray} ${ResetColor}"
+
 if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-  build_git_prompt
-  ps1_git_prompt="${bgLightGray}${fgWhite} ${div}${ResetColor}${ps1_git_prompt}"
-else
-  ps1_git_prompt="${bgLightGray} ${ResetColor}"
+  if build_git_prompt; then
+    _div="${bgLightGray}${fgWhite} ${div}${ResetColor}"
+  fi
 fi
+
+ps1_git_prompt="${_div}${ps1_git_prompt}"
 
 
 ##
 ## VIRTUAL ENV
 ##
-if [[ ! -z $CONDA_DEFAULT_ENV ]]; then
+if [[ -n $CONDA_DEFAULT_ENV ]]; then
   _div="${bgLightGray}${fgWhite}${div}${ResetColor}"
   _env="${bgLightGray}${fgOrange} ${CONDA_DEFAULT_ENV} ${ResetColor}"
   ps1_env_prompt="${_div}${_env}"
