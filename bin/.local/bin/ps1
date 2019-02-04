@@ -121,7 +121,7 @@ fi
 ## DATE
 ##
 _div="${bgLightGray}${fgWhite}${div}${ResetColor}"
-date="${bgLightGray} ${fgSkyBlue}$(date +'%b-%e %H:%M:%S') ${ResetColor}${_div}"
+date="${bgLightGray} ${fgSkyBlue}$(date +'%b-%d %H:%M:%S') ${ResetColor}${_div}"
 
 
 ##
