@@ -28,7 +28,7 @@ alias weather='curl wttr.in'
 %% alias_pydf
 alias groot='cd $(git rev-parse --show-toplevel)'
 alias help='tldr'
-alias ll='ls -lAhF'
+alias ll='ls -lAhF --color=auto'
 alias nbl='grep -Erv "(^#|^$)"'
 alias proc='ps -e --forest -o pid,ppid,user,cmd'
 alias sane='stty sane'
