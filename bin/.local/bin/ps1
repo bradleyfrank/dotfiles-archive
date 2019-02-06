@@ -39,8 +39,8 @@ build_cwd() {
 
   # replace $HOME with tilde
   wd="$(printf '%s' "$PWD" | sed "s|^${HOME}|~|")"
-  # replace "/" with spaces to split into array
-  pathdirs=(${wd//// })
+  # split pwd on "/" deliminator into an array
+  readarray -td '/' pathdirs < <(echo "$wd")
   # count array size to get number of directories
   numdirs="${#pathdirs[@]}"
   # decrement array size to avoid parsing cwd below
