@@ -30,11 +30,3 @@ set showmatch
 set hlsearch incsearch
 set linebreak
 set novisualbell noerrorbells
-
-""
-"" Powerline
-""
-set rtp+=$USER_SITE/powerline/bindings/vim
-python3 from powerline.vim import setup as powerline_setup
-python3 powerline_setup()
-python3 del powerline_setup
