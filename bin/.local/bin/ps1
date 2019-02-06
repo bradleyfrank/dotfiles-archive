@@ -35,7 +35,7 @@ div="${ThinArrow}"
 ##
 
 build_cwd() {
-  local wd pathdirs numdirs shortpwd
+  local wd pathdirs numdirs shortpwd=""
 
   # replace $HOME with tilde
   wd="$(printf '%s' "$PWD" | sed "s|^${HOME}|~|")"
@@ -45,8 +45,6 @@ build_cwd() {
   numdirs="${#pathdirs[@]}"
   # decrement array size to avoid parsing cwd below
   ((numdirs--))
-
-  shortpwd=""
 
   if [[ "$numdirs" -gt 0 ]]; then
     for ((i=0;i<"${numdirs}";i++)); do
