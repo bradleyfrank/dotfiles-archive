@@ -1,7 +1,9 @@
 ""
 "" Static Interface Elements
 ""
+let g:airline_theme='bubblegum'
 syntax on
+
 set term=screen-256color
 set laststatus=2
 set scrolloff=4
