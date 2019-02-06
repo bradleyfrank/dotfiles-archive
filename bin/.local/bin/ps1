@@ -103,11 +103,11 @@ build_git_prompt() {
     fi
 
     if [[ $changed -gt 0 ]]; then
-      _changed=" ${fgYellow}+${changed}"
+      _changed=" ${fgYellow}𝛥${changed}"
     fi
 
     if [[ $untracked -gt 0 ]]; then
-      _untracked=" ${fgLightPurple}…${untracked}"
+      _untracked=" ${fgLightPurple}+${untracked}"
     fi
 
     if [[ $stashed -gt 0 ]]; then
