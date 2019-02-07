@@ -33,7 +33,7 @@ brew_up() {
   fi
 
   brew update
-  brew upgrade --cleanup
+  brew upgrade
   brew cask upgrade
   brew cleanup
 }
