@@ -37,10 +37,10 @@ div="${ThinArrow}"
 build_cwd() {
   local wd pathdirs numdirs shortpwd=""
 
-  # replace $HOME with tilde
-  wd="$(printf '%s' "$PWD" | sed "s|^${HOME}|~|")"
-  # split pwd on "/" deliminator into an array
-  readarray -d '/' pathdirs < <(echo "$wd")
+  # replace $HOME with tilde and slashes with newlines
+  wd="$(printf '%s' "$PWD" | sed "s|^${HOME}|~|" | tr '/' '\n')"
+  # split pwd on newlines into an array (bash > 4.4 requires for -d option)
+  readarray -t pathdirs <<< "$wd"
   # count array size to get number of directories
   numdirs="${#pathdirs[@]}"
   # decrement array size to avoid parsing cwd below
@@ -53,7 +53,7 @@ build_cwd() {
   fi
 
   # add the cwd back in since for the full name (also remove trailing newline)
-  shortpwd="${shortpwd}${mkBold}${pathdirs[-1]%$'\n'}"
+  shortpwd="${shortpwd}${mkBold}${pathdirs[-1]}"
   current_dir="${bgLightGray}${fgWhite} ${shortpwd}${ResetColor}"
 }
 
