@@ -40,7 +40,7 @@ build_cwd() {
   # replace $HOME with tilde
   wd="$(printf '%s' "$PWD" | sed "s|^${HOME}|~|")"
   # split pwd on "/" deliminator into an array
-  readarray -td '/' pathdirs < <(echo "$wd")
+  readarray -d '/' pathdirs < <(echo "$wd")
   # count array size to get number of directories
   numdirs="${#pathdirs[@]}"
   # decrement array size to avoid parsing cwd below
@@ -52,8 +52,8 @@ build_cwd() {
     done
   fi
 
-  # add the cwd back in since we want the full name
-  shortpwd="${shortpwd}${mkBold}${pathdirs[-1]}"
+  # add the cwd back in since for the full name (also remove trailing newline)
+  shortpwd="${shortpwd}${mkBold}${pathdirs[-1]%$'\n'}"
   current_dir="${bgLightGray}${fgWhite} ${shortpwd}${ResetColor}"
 }
 
