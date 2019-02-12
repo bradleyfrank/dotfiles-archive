@@ -19,7 +19,7 @@ fgLightPurple="\[\e[38;5;213m\]"
 #fgLightGray="\[\e[38;5;240m\]"
 fgMedGray="\[\e[38;5;245m\]"
 #fgDarkGray="\[\e[38;5;250m\]"
-fgWhite="\[\e[38;5;256m\]"
+fgWhite="\[\e[38;5;7m\]"
 
 mkBold="\[\e[1m\]"
 ResetColor="\[\e[0;0m\]"
