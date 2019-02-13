@@ -11,6 +11,7 @@ fgLightGray="\[\e[38;5;059m\]"
 fgSkyBlue="\[\e[38;5;117m\]"
 #fgMedRed="\[\e[38;5;1m\]"
 fgBrightGreen="\[\e[38;5;148m\]"
+fgDarkYellow="\[\e[38;5;172m\]"
 fgBrightRed="\[\e[38;5;196m\]"
 fgOrange="\[\e[38;5;208m\]"
 fgYellow="\[\e[38;5;220m\]"
@@ -82,7 +83,7 @@ build_git_prompt() {
 
   # set the push/pull indicators
   if [[ "$remote" =~ BEHIND ]]; then
-    git_remote=" ${fgBrightRed}↓${remote//_BEHIND_/}"
+    git_remote=" ${fgDarkYellow}↓${remote//_BEHIND_/}"
   elif [[ "$remote" =~ AHEAD ]]; then
     git_remote=" ${fgLightCyan}↑${remote//_AHEAD_/}"
   fi
