@@ -15,6 +15,10 @@ location=0
 plugin=org.kde.plasma.folder
 wallpaperplugin=org.kde.image
 
+[Containments][1][ConfigDialog]
+DialogHeight=541
+DialogWidth=720
+
 [Containments][2]
 activityId=
 formfactor=2
@@ -33,6 +37,7 @@ DialogHeight=540
 DialogWidth=720
 
 [Containments][2][Applets][20][Configuration][General]
+launchers=applications:org.kde.dolphin.desktop,applications:org.kde.konsole.desktop
 maxStripes=1
 smartLaunchersEnabled=false
 
@@ -66,7 +71,7 @@ immutability=1
 plugin=org.kde.plasma.systemtray
 
 [Containments][2][Applets][6][Configuration]
-PreloadWeight=60
+PreloadWeight=75
 SystrayContainmentId=7
 
 [Containments][2][Applets][8]
@@ -93,6 +98,9 @@ wallpaperplugin=org.kde.image
 immutability=1
 plugin=org.kde.plasma.clipboard
 
+[Containments][7][Applets][10][Configuration]
+PreloadWeight=55
+
 [Containments][7][Applets][11]
 immutability=1
 plugin=org.kde.plasma.devicenotifier
@@ -111,12 +119,11 @@ plugin=org.kde.plasma.notifications
 immutability=1
 plugin=org.kde.plasma.printmanager
 
-[Containments][7][Applets][16]
-immutability=1
-plugin=org.kde.plasma.pkupdates
+[Containments][7][Applets][15][Configuration]
+PreloadWeight=60
 
 [Containments][7][Applets][16][Configuration]
-PreloadWeight=55
+PreloadWeight=42
 
 [Containments][7][Applets][17]
 immutability=1
@@ -142,8 +149,11 @@ DialogHeight=540
 DialogWidth=720
 
 [Containments][7][General]
-extraItems=org.kde.plasma.printmanager,org.kde.plasma.notifications,org.kde.plasma.bluetooth,org.kde.plasma.devicenotifier,org.kde.plasma.battery,org.kde.plasma.clipboard,org.kde.plasma.pkupdates,org.kde.plasma.networkmanagement,org.kde.plasma.volume
+extraItems=org.kde.plasma.printmanager,org.kde.plasma.notifications,org.kde.plasma.bluetooth,org.kde.plasma.devicenotifier,org.kde.plasma.battery,org.kde.plasma.clipboard,org.kde.plasma.networkmanagement,org.kde.plasma.volume
+hiddenItems=KOrganizer Reminder Daemon
 knownItems=org.kde.plasma.keyboardindicator,org.kde.plasma.printmanager,org.kde.plasma.notifications,org.kde.plasma.mediacontroller,org.kde.plasma.bluetooth,org.kde.plasma.devicenotifier,org.kde.plasma.battery,org.kde.plasma.clipboard,org.kde.kdeconnect,org.kde.plasma.pkupdates,org.kde.plasma.networkmanagement,org.kde.plasma.volume
+showAllItems=true
+shownItems=org.kde.plasma.volume,org.kde.plasma.battery,org.kde.plasma.bluetooth,org.kde.plasma.clipboard,org.kde.plasma.networkmanagement
 
 [ScreenMapping]
 itemsOnDisabledScreens=
