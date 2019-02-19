@@ -21,7 +21,7 @@ anaconda_up() {
   conda clean --all -y
 
   # shellcheck source=/dev/null
-  source deactivate
+  conda deactivate
 }
 
 
