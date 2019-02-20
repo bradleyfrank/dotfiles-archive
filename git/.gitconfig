@@ -7,7 +7,7 @@
 	excludesfile = /Users/bfrank/.gitignore
 	editor = vim
 [alias]
-  mylog = "git log --oneline --decorate --graph --all"
+  mylog = "log --oneline --decorate --graph --all"
   brch = rev-parse --abbrev-ref HEAD
   fp = push --set-upstream origin brch
   lc = rev-parse --verify HEAD
