@@ -11,17 +11,11 @@ alias bb='bbedit'
 alias safari='open -a Safari'
 alias typora='open -a typora'
 
-# networking
+# misc
+alias weather='curl wttr.in'
+%% alias_anaconda
 %% alias_prettyping
 alias pubip='dig myip.opendns.com @resolver1.opendns.com'
-
-# python
-%% alias_anaconda
-
-# system
-alias powerline-restart='powerline-daemon --replace'
-alias tag='dmidecode -s system-serial-number'
-alias weather='curl wttr.in'
 
 # terminal
 %% alias_ncdu
@@ -32,7 +26,6 @@ alias ll='ls -lAhF --color=auto'
 alias nbl='grep -Erv "(^#|^$)"'
 alias proc='ps -e --forest -o pid,ppid,user,cmd'
 alias sane='stty sane'
-alias t='tree'
 alias wget='wget -c'
 alias e='extract'
 
