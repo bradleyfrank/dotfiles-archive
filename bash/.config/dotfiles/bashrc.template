@@ -16,7 +16,8 @@ alias weather='curl wttr.in'
 %% alias_anaconda
 %% alias_prettyping
 alias pubip='dig myip.opendns.com @resolver1.opendns.com'
-alias ip='ip -c'
+alias ipca='ip -c a'
+alias lsdev='lsblk -o "NAME,FSTYPE,SIZE,UUID,MOUNTPOINT"'
 
 # terminal
 %% alias_ncdu
