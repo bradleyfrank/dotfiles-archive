@@ -5,7 +5,7 @@ LAST_EXIT_STATUS="$?"
 bgRed="\[\e[48;5;52m\]"
 bgLightGray="\[\e[48;5;059m\]"
 
-fgLightCyan="\[\e[38;5;6m\]"
+#fgLightCyan="\[\e[38;5;6m\]"
 fgCyan="\[\e[38;5;39m\]"
 fgLightGray="\[\e[38;5;059m\]"
 fgSkyBlue="\[\e[38;5;117m\]"
@@ -86,7 +86,7 @@ build_git_prompt() {
   if [[ "$remote" =~ BEHIND ]]; then
     git_remote=" ${fgDarkYellow}↓${remote//_BEHIND_/}"
   elif [[ "$remote" =~ AHEAD ]]; then
-    git_remote=" ${fgLightCyan}↑${remote//_AHEAD_/}"
+    git_remote=" ${fgSkyBlue}↑${remote//_AHEAD_/}"
   fi
 
 
