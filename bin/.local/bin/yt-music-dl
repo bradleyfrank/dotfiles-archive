@@ -1,0 +1,9 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+case "$(uname -s)" in
+  Darwin) flags="--postprocessor-args \"-strict experimental\"" ;;
+esac
+
+youtube-dl -x --audio-format m4a "$flags" https://www.youtube.com/watch?v="$1"
