@@ -81,6 +81,10 @@ gedit() {
   nohup /usr/bin/gedit "$@" >/dev/null 2>&1 &
 }
 
+dclint() {
+  docker-compose -f "$1" config --quiet
+}
+
 build_prompt() {
   . ps1
 }
