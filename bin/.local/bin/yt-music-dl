@@ -2,8 +2,10 @@
 
 set -euo pipefail
 
-case "$(uname -s)" in
-  Darwin) flags="--postprocessor-args \"-strict experimental\"" ;;
-esac
+flags=""
 
-youtube-dl -x --audio-format m4a "$flags" https://www.youtube.com/watch?v="$1"
+if [[ "$(uname -s)" == "Darwin" ]]; then
+  flags='--postprocessor-args "-strict experimental"'
+fi
+
+eval "youtube-dl -x --audio-format m4a $flags https://www.youtube.com/watch?v=$1"
