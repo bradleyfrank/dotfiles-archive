@@ -1,0 +1,18 @@
+{
+    "editor.fontFamily": "'Source Code Pro', Menlo, Monaco, monospace",
+    "editor.wordWrap": "wordWrapColumn",
+    "git.confirmSync": false,
+    "workbench.colorTheme": "Default Light+",
+    "editor.fontSize": 13,
+    "workbench.statusBar.feedback.visible": false,
+    "window.nativeTabs": true,
+    "window.restoreWindows": "all",
+    "search.location": "panel",
+    "workbench.list.openMode": "doubleClick",
+    "terminal.integrated.fontSize": "13",
+    "terminal.integrated.fontFamily": "Source Code Pro",
+    "workbench.colorCustomizations": {
+        "terminal.background": "#353a44",
+        "terminal.foreground": "#d9d9d9",
+    }
+}

@@ -1,0 +1,11 @@
+// Place your key bindings in this file to override the defaultsauto[]
+[
+    {
+        "key": "cmd+f",
+        "command": "editor.action.startFindReplaceAction"
+    },
+    {
+        "key": "cmd+h",
+        "command": "actions.find"
+    }
+]
