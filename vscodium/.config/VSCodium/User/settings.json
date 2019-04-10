@@ -1,18 +1,35 @@
 {
-    "editor.fontFamily": "'Source Code Pro', Menlo, Monaco, monospace",
-    "editor.wordWrap": "wordWrapColumn",
-    "git.confirmSync": false,
-    "workbench.colorTheme": "Default Light+",
-    "editor.fontSize": 13,
+    // App settings
     "workbench.statusBar.feedback.visible": false,
     "window.nativeTabs": true,
     "window.restoreWindows": "all",
-    "search.location": "panel",
     "workbench.list.openMode": "doubleClick",
-    "terminal.integrated.fontSize": "13",
+
+    // Display settings
+    "workbench.colorTheme": "Default Light+",
+    "editor.wordWrap": "on",
+
+    // Editor settings
+    "editor.fontFamily": "'Source Code Pro', Menlo, Monaco, monospace", 
+    "editor.fontSize": 13,
+
+    // Git settings
+    "git.confirmSync": false,
+
+    // Terminal settings
+    "terminal.integrated.fontSize": 13,
     "terminal.integrated.fontFamily": "Source Code Pro",
+
+    // Customized colors
     "workbench.colorCustomizations": {
         "terminal.background": "#353a44",
         "terminal.foreground": "#d9d9d9",
-    }
+        "editorRuler.foreground": "#747474"
+    },
+
+    // Python settings
+    "[python]": {
+        "editor.wordWrap": "wordWrapColumn",
+        "editor.rulers": [120]
+    },
 }
