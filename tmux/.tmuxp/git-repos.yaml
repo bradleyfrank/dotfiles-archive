@@ -1,0 +1,55 @@
+session_name: git-repos
+windows:
+- layout: 14cb,178x46,0,0{92x46,0,0,15,85x46,93,0,17}
+  options:
+    automatic-rename: 'off'
+  panes:
+  - shell_command:
+    - cd /Users/bfrank
+  - focus: 'true'
+    shell_command:
+    - cd /Users/bfrank/Development/Home/docker-server
+  window_name: docker-test
+- layout: 6057,178x44,0,0,18
+  options:
+    automatic-rename: 'off'
+  panes:
+  - focus: 'true'
+  start_directory: /Users/bfrank/Development/Home/dotfiles
+  window_name: dotfiles
+- layout: 6451,178x46,0,0,31
+  options:
+    automatic-rename: 'off'
+  panes:
+  - focus: 'true'
+  start_directory: /Users/bfrank/Development/Home/ops-notes
+  window_name: ops-notes
+- focus: 'true'
+  layout: 59b3,181x51,0,0,33
+  options:
+    automatic-rename: 'off'
+  panes:
+  - focus: 'true'
+  start_directory: /Users/bfrank/Development/Home/appeals
+  window_name: appeals
+- layout: 57b6,181x50,0,0,36
+  options:
+    automatic-rename: 'off'
+  panes:
+  - focus: 'true'
+  start_directory: /Users/bfrank/Development/Home/docker-server
+  window_name: docker-server
+- layout: 57b7,181x50,0,0,37
+  options:
+    automatic-rename: 'off'
+  panes:
+  - focus: 'true'
+  start_directory: /Users/bfrank/Development/Home/vg_gists
+  window_name: vg-gists
+- layout: 5e58,178x43,0,0,38
+  options:
+    automatic-rename: 'off'
+  panes:
+  - focus: 'true'
+  start_directory: /Users/bfrank/Development/Home/bootstraps
+  window_name: bootstraps
