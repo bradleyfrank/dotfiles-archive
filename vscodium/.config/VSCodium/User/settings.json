@@ -1,35 +1,26 @@
 {
-    // App settings
     "workbench.statusBar.feedback.visible": false,
     "window.nativeTabs": true,
     "window.restoreWindows": "all",
     "workbench.list.openMode": "doubleClick",
-
-    // Display settings
     "workbench.colorTheme": "Default Light+",
     "editor.wordWrap": "on",
-
-    // Editor settings
     "editor.fontFamily": "'Source Code Pro', Menlo, Monaco, monospace", 
     "editor.fontSize": 13,
-
-    // Git settings
+    "editor.tabSize": 2,
     "git.confirmSync": false,
-
-    // Terminal settings
     "terminal.integrated.fontSize": 13,
     "terminal.integrated.fontFamily": "Source Code Pro",
-
-    // Customized colors
     "workbench.colorCustomizations": {
         "terminal.background": "#353a44",
         "terminal.foreground": "#d9d9d9",
         "editorRuler.foreground": "#747474"
     },
-
-    // Python settings
+    "editor.renderWhitespace": "none",
+    "breadcrumbs.enabled": true,
     "[python]": {
         "editor.wordWrap": "wordWrapColumn",
-        "editor.rulers": [120]
-    },
-}
+        "editor.rulers": [80],
+        "editor.tabSize": 4,
+    }
+}  
