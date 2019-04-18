@@ -1,7 +1,7 @@
 ""
 "" Static Interface Elements
 ""
-let g:airline_theme='bubblegum'
+let g:airline_theme='deus'
 syntax on
 
 set term=screen-256color
@@ -22,6 +22,7 @@ augroup END
 ""
 set mouse=i
 set backspace=indent,eol,start
+set ttimeoutlen=10
 
 
 ""
