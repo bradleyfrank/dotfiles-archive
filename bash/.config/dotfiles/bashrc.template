@@ -87,7 +87,6 @@ dclint() {
 }
 
 build_prompt() {
-  export _PS1_THEME="naked"
   . ps1
 }
 

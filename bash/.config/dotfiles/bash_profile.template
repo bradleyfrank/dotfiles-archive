@@ -11,4 +11,6 @@ export MANPATH
 
 %% source_profiled
 
+export _PS1_THEME="default"
+
 if [[ -f "$HOME/.bashrc" ]]; then . "$HOME/.bashrc"; fi
