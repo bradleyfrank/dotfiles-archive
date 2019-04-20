@@ -1,15 +1,21 @@
 #!/usr/bin/env bash
 
-# ===================================================================
-# Remember to export $_PS1_THEME in .bashrc to set the desired theme.
+# How to setup .bash_profile and .bashrc to use this script:
 #
+# =========================================================================
+# ~/.bash_profile
+# -------------------------------------------------------------------------
+# export _PS1_THEME=${my_theme}
+#
+# =========================================================================
+# ~/.bashrc
+# -------------------------------------------------------------------------
 # build_prompt() {
 #  . /path/to/ps1
 # }
-#
-# export _PS1_THEME=${my_theme}
 # export PROMPT_COMMAND=build_prompt
-# -------------------------------------------------------------------
+#
+
 
 # Capture the exit status from the last command.
 LAST_EXIT_STATUS="$?"
@@ -72,9 +78,10 @@ Circle="●"
 build_cwd() {
   local working_dir pathdirs numdirs shortpwd=""
 
-  # replace $HOME with tilde, and at the same time, replace slashes with newlines
+  # replace $HOME with tilde; replace slashes with newlines
   working_dir="$(printf '%s' "$PWD" | sed "s|^${HOME}|~|" | tr '/' '\n')"
-  # split pwd on newlines into an array (can't use the -d option; requires Bash > 4.4)
+  # split pwd on newlines into an array
+  #     (can't use the -d option; requires Bash > 4.4)
   readarray -t pathdirs <<< "$working_dir"
   # count array size to get number of directories
   numdirs="${#pathdirs[@]}"
