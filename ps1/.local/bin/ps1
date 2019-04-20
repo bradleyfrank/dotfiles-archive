@@ -211,7 +211,7 @@ build_venv() {
 
 
 load_theme() {
-  . "$HOME"/.local/share/ps1_theme_"$theme"
+  . "$HOME"/.local/share/ps1/ps1_theme_"$theme"
 }
 
 
