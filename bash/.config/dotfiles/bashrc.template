@@ -87,7 +87,7 @@ dclint() {
 }
 
 build_prompt() {
-  . ps1
+  . ps1 -t naked
 }
 
 export PROMPT_COMMAND=build_prompt
