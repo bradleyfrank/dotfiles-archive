@@ -109,8 +109,8 @@ build_exitstatus() {
 
   if [[ $LAST_EXIT_STATUS -ne 0 ]]; then
     div="${c_backgroundError}${c_foregroundError}${g_prompt}${ResetColor}"
-    status="${c_backgroundError}${c_foregroundError} ${LAST_EXIT_STATUS} ${ResetColor}"
-    exit_status="${div}${status}"
+    status="${c_backgroundError}${c_foregroundError}${LAST_EXIT_STATUS}"
+    exit_status="${div}${status} ${ResetColor}"
   fi
 }
 
