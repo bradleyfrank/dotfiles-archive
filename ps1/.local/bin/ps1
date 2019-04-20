@@ -149,16 +149,16 @@ build_git_prompt() {
     return 1
   fi
 
-  clean=${git_status[0]}
+  clean="${git_status[0]}"
   branch="${git_status[1]}"
   state="${git_status[2]}"
   remote="${git_status[3]}"
   upstream="${git_status[4]}"
-  staged=${git_status[5]}
-  conflicts=${git_status[6]}
-  changed=${git_status[7]}
-  untracked=${git_status[8]}
-  stashed=${git_status[9]}
+  staged="${git_status[5]}"
+  conflicts="${git_status[6]}"
+  changed="${git_status[7]}"
+  untracked="${git_status[8]}"
+  stashed="${git_status[9]}"
 
 
   # set the push/pull indicators
