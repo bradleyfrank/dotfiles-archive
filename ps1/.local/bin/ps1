@@ -1,0 +1,247 @@
+#!/bin/bash
+
+LAST_EXIT_STATUS="$?"
+
+
+##
+## COLORS & GLYPHS
+##
+
+bgWhite="\[\e[48;5;15m\]"
+bgRed="\[\e[48;5;52m\]"
+bgLightGray="\[\e[48;5;059m\]"
+bgDarkWhite="\[\e[48;5;253m\]"
+
+fgBlack="\[\e[38;5;0m\]"
+fgLightCyan="\[\e[38;5;6m\]"
+fgDarkBlue="\[\e[38;5;20m\]"
+fgMedBlue="\[\e[38;5;26m\]"
+fgGreen="\[\e[38;5;28m\]"
+fgCyan="\[\e[38;5;39m\]"
+fgLightGray="\[\e[38;5;59m\]"
+fgSkyBlue="\[\e[38;5;117m\]"
+fgBrightGreen="\[\e[38;5;148m\]"
+fgPurple="\[\e[38;5;165m\]"
+fgDarkOrange="\[\e[38;5;172m\]"
+fgBrightRed="\[\e[38;5;196m\]"
+fgOrange="\[\e[38;5;208m\]"
+fgYellow="\[\e[38;5;220m\]"
+fgLightPurple="\[\e[38;5;213m\]"
+fgBrightOrange="\[\e[38;5;214m\]"
+fgLightBlack="\[\e[38;5;240m\]"
+fgLightGray="\[\e[38;5;240m\]"
+fgMedGray="\[\e[38;5;245m\]"
+fgDarkGray="\[\e[38;5;250m\]"
+fgWhite="\[\e[38;5;7m\]"
+
+mkBold="\[\e[1m\]"
+ResetColor="\[\e[0;0m\]"
+
+ThinArrow=$'\uE0B1'
+Triangle=$'\uE0B0'
+GitGlyph=$'\uE0A0'
+Hash=$'\u2A33'
+Cross=$'\u2A2F'
+Matrix=$'\u22B9'
+VirticalDots="⋮"
+CursiveX="✗"
+Delta="𝛥"
+NormalPlus="+"
+Flag="⚑"
+
+
+##
+## FUNCTIONS
+##
+
+build_cwd() {
+  local working_dir pathdirs numdirs shortpwd=""
+
+  # replace $HOME with tilde, and at the same time, replace slashes with newlines
+  working_dir="$(printf '%s' "$PWD" | sed "s|^${HOME}|~|" | tr '/' '\n')"
+  # split pwd on newlines into an array (can't use the -d option; requires Bash > 4.4)
+  readarray -t pathdirs <<< "$working_dir"
+  # count array size to get number of directories
+  numdirs="${#pathdirs[@]}"
+  # decrement array size to avoid parsing cwd (which is used later)
+  ((numdirs--))
+
+  # iterate through directories to get the first letter of each directory name
+  if [[ "$numdirs" -gt 0 ]]; then
+    for ((i=0;i<"${numdirs}";i++)); do
+      shortpwd="${shortpwd}${pathdirs[$i]:0:1}/"
+    done
+  fi
+
+  # add the cwd back in so it's shown with a full name
+  shortpwd="${shortpwd}${mkBold}${pathdirs[-1]}"
+  current_dir="${c_background}${c_foreground} ${shortpwd}${ResetColor}"
+}
+
+
+build_date() {
+  local div
+
+  div="${c_background}${c_foreground}${g_div}${ResetColor}"
+  date="${c_background} ${c_date}$(date +'%m-%d %H:%M:%S') ${ResetColor}${div}"
+}
+
+
+build_exitstatus() {
+  local div status exit_status=""
+
+  if [[ $LAST_EXIT_STATUS -ne 0 ]]; then
+    div="${c_backgroundError}${c_foregroundError}${g_prompt}${ResetColor}"
+    status="${c_backgroundError}${c_foregroundError} ${LAST_EXIT_STATUS} ${ResetColor}"
+    exit_status="${div}${status}"
+  fi
+}
+
+
+build_git() {
+  local div=""
+
+  ps1_git_prompt="${c_background} ${ResetColor}"
+
+  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
+    if build_git_prompt; then
+      div="${c_background}${c_foreground} ${g_div}${ResetColor}"
+    fi
+  fi
+
+  ps1_git_prompt="${div}${ps1_git_prompt}"
+
+}
+
+
+build_git_prompt() {
+  local prefix metadata
+  local git_remote="" git_changes=""
+  local clean branch state remote staged conflicts changed untracked stashed
+
+  # call external script (probably in local bin folder)
+  readarray -t git_status <<< "$(parse-git-status)"
+  if [[ ${git_status[*]} == "" ]]; then
+    return 1
+  fi
+
+  clean=${git_status[0]}
+  branch="${git_status[1]}"
+  state="${git_status[2]}"
+  remote="${git_status[3]}"
+  upstream="${git_status[4]}"
+  staged=${git_status[5]}
+  conflicts=${git_status[6]}
+  changed=${git_status[7]}
+  untracked=${git_status[8]}
+  stashed=${git_status[9]}
+
+
+  # set the push/pull indicators
+  if [[ "$remote" =~ BEHIND ]]; then
+    git_remote=" ${c_gitPull}↓${remote//_BEHIND_/}"
+  elif [[ "$remote" =~ AHEAD ]]; then
+    git_remote=" ${c_gitPush}↑${remote//_AHEAD_/}"
+  fi
+
+
+  # set the various repo indictors
+  if [[ "$clean" -eq 1 ]]; then
+    local _staged="" _conflicts="" _changed="" _untracked="" _stashed=""
+
+    if [[ $staged -gt 0 ]]; then
+      _staged=" ${c_gitStaged}${g_gitStaged}${staged}"
+    fi
+
+    if [[ $conflicts -gt 0 ]]; then
+      _conflicts=" ${c_gitConflict}${g_gitConflict}${conflicts}"
+    fi
+
+    if [[ $changed -gt 0 ]]; then
+      _changed=" ${c_gitChanged}${g_gitChanged}${changed}"
+    fi
+
+    if [[ $untracked -gt 0 ]]; then
+      _untracked=" ${c_gitUntracked}${g_gitUntracked}${untracked}"
+    fi
+
+    if [[ $stashed -gt 0 ]]; then
+      _stashed=" ${c_gitStashed}${g_gitStashed}${stashed}"
+    fi
+
+    # combine all the changes into one string
+    git_changes="${_staged}${_conflicts}${_changed}${_untracked}${_stashed}"
+    git_changes="${c_background}${git_changes}${ResetColor}"
+
+    # branch is dirty, color it yellow
+    prefix="${c_background}${c_gitDirty} ${GitGlyph} ${branch}${ResetColor}"
+  else
+    # branch is clean, color is green
+    prefix="${c_background}${c_gitClean} ${GitGlyph} ${branch}${ResetColor}"
+  fi
+
+  # combine remote info with local changes
+  metadata="${git_remote}${git_changes}${c_background} ${ResetColor}"
+
+  # build final git prompt
+  ps1_git_prompt="${prefix}${c_background}${state}${metadata}${ResetColor}"
+}
+
+
+build_hostname() {
+  local div hostname=""
+
+  if [[ -n "$SSH_CONNECTION" ]]; then
+    # only show hostname on remote hosts
+    div="${c_background}${c_foreground}${g_div}${ResetColor}"
+    hostname="${c_background}${c_hostname} \\h ${ResetColor}${div}"
+  fi
+}
+
+
+build_venv() {
+  local div env ps1_env_prompt=""
+
+  if [[ -n $CONDA_DEFAULT_ENV ]]; then
+    div="${c_background}${c_foreground}${g_div}${ResetColor}"
+    env="${c_background}${c_conda} ${CONDA_DEFAULT_ENV} ${ResetColor}"
+    ps1_env_prompt="${div}${env}"
+  fi
+}
+
+
+load_theme() {
+  . "$HOME"/.local/share/ps1_theme_"$theme"
+}
+
+
+##
+## MAIN
+##
+
+theme="naked"
+
+while getopts 't:' flag; do
+  case "${flag}" in
+    t ) theme="$OPTARG" ;;
+    : ) echo "Missing argument: $OPTARG requires an argument" 1>&2 ; exit 1 ;;
+    \?) echo "Invalid option: $OPTARG" 1>&2 ; exit 1 ;;
+  esac
+done
+
+load_theme
+
+build_hostname
+build_date
+build_cwd
+build_git
+build_venv
+build_exitstatus
+
+
+_system="${hostname}${date}"
+_user="${current_dir}${ps1_git_prompt}${ps1_env_prompt}"
+_shell="${exit_status}"
+_suffix="${c_foregroundSuffix}${g_prompt}${ResetColor}"
+
+export PS1="${_system}${_user}${_shell}${_suffix}"
