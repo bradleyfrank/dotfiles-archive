@@ -2,8 +2,8 @@ g_div=$ThinArrow
 g_prompt="${Triangle} "
 
 g_gitBranch=$Branch1
-g_gitPull=$'\u1F80B'
-g_gitPush=$'\u1F809'
+g_gitPull="↓"
+g_gitPush="↑"
 g_gitStaged=$Circle
 g_gitConflict=$MultiplyX
 g_gitChanged=$Delta
