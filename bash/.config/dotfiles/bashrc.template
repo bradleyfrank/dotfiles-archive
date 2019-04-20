@@ -87,7 +87,8 @@ dclint() {
 }
 
 build_prompt() {
-  . ps1 -t naked
+  export _PS1_THEME="naked"
+  . ps1
 }
 
 export PROMPT_COMMAND=build_prompt

@@ -1,7 +1,7 @@
-#!/bin/bash
+#!/usr/bin/env bash
 
+# Capture the exit status from the last command.
 LAST_EXIT_STATUS="$?"
-
 
 ##
 ## COLORS & GLYPHS
@@ -211,23 +211,13 @@ build_venv() {
 
 
 load_theme() {
-  . "$HOME"/.local/share/ps1/"$theme"
+  . "$HOME"/.local/share/ps1/"$_PS1_THEME"
 }
 
 
 ##
 ## MAIN
 ##
-
-theme="default"
-
-while getopts 't:' flag; do
-  case "${flag}" in
-    t ) theme="$OPTARG" ;;
-    : ) echo "Missing argument: $OPTARG requires an argument" 1>&2 ; exit 1 ;;
-    \?) echo "Invalid option: $OPTARG" 1>&2 ; exit 1 ;;
-  esac
-done
 
 load_theme
 
