@@ -14,7 +14,7 @@ c_foregroundError=$fgBrightRed
 c_foregroundSuffix=$fgDarkGray
 
 c_hostname=$fgOrange
-c_date=$fgMedBlue
+c_date=$fgSkyBlue
 c_conda=$fgOrange
 
 c_gitDirty=$fgMedGray
