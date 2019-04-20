@@ -5,6 +5,8 @@
     "workbench.list.openMode": "doubleClick",
     "workbench.colorTheme": "Default Light+",
     "editor.wordWrap": "on",
+    "editor.occurrencesHighlight": false,
+    "editor.selectionHighlight": false,
     "editor.fontFamily": "'Source Code Pro', Menlo, Monaco, monospace", 
     "editor.fontSize": 13,
     "editor.tabSize": 2,
@@ -21,6 +23,6 @@
     "[python]": {
         "editor.wordWrap": "wordWrapColumn",
         "editor.rulers": [80],
-        "editor.tabSize": 4,
+        "editor.tabSize": 4
     }
 }  
