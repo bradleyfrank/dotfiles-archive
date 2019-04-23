@@ -10,16 +10,16 @@ g_gitChanged=$Delta
 g_gitUntracked=$NormalPlus
 g_gitStashed=$Flag
 
-c_background=$bgLightGray
+c_background=$bgDarkGray
 c_backgroundError=$bgRed
 c_foregroundError=$fgWhite
 c_foregroundSuffix=$fgLightGray
-c_div=$bgLightGray
+c_div=$bgDarkGray
 
 c_hostname=$fgOrange
 c_date=$fgSkyBlue
 c_conda=$fgOrange
-c_cwd=$bgLightGray
+c_cwd=$fgWhite
 
 c_gitDirty=$fgYellow
 c_gitClean=$fgBrightGreen
