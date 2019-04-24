@@ -1,7 +1,7 @@
 ""
 "" Static Interface Elements
 ""
-let g:airline_theme='deus'
+let g:airline_theme='bubblegum'
 syntax on
 
 set term=screen-256color
