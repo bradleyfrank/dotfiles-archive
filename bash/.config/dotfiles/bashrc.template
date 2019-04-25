@@ -88,6 +88,10 @@ dockerlint() {
   docker-compose -f "$1" config --quiet
 }
 
+httptrace() {
+  curl -s -L -D - "$1" -o /dev/null -w "%{url_effective}\n"
+}
+
 build_prompt() {
   . ps1
 }
