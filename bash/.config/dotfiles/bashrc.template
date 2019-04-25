@@ -84,7 +84,7 @@ gedit() {
   nohup /usr/bin/gedit "$@" >/dev/null 2>&1 &
 }
 
-dclint() {
+dockerlint() {
   docker-compose -f "$1" config --quiet
 }
 
