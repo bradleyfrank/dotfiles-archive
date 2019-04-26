@@ -46,7 +46,7 @@ build_cwd() {
   fi
 
   # add the cwd back in so it's shown with a full name
-  shortpwd="${c_cwd}${shortpwd}${mkBold}${pathdirs[-1]}"
+  shortpwd="${c_cwd}${shortpwd}${mkBold}${pathdirs[$numdirs]}"
   current_dir="${c_background}${c_div} ${shortpwd}${ResetColor}"
 }
 
@@ -208,6 +208,6 @@ build_exitstatus
 _system="${hostname}${date}"
 _user="${current_dir}${ps1_git_prompt}${ps1_env_prompt}"
 _shell="${exit_status}"
-_suffix="${c_divSuffix}${g_prompt}${ResetColor}"
+_suffix="${c_div}${g_prompt}${ResetColor}"
 
 export PS1="${_system}${_user}${_shell}${_suffix}"
