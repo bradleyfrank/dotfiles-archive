@@ -90,7 +90,7 @@ build_git() {
 
 build_git_prompt() {
   local prefix metadata
-  local git_remote="" git_changes=""
+  local git_ahead="" git_behind="" git_remote="" git_changes=""
   local clean branch state remote staged conflicts changed untracked stashed
 
   # call external script (probably in local bin folder)
@@ -113,11 +113,14 @@ build_git_prompt() {
 
   # set the push/pull indicators
   if [[ "$remote" =~ BEHIND ]]; then
-    git_remote=" ${c_gitPull}${g_gitPull}${remote//_BEHIND_/}"
-  elif [[ "$remote" =~ AHEAD ]]; then
-    git_remote=" ${c_gitPush}${g_gitPush}${remote//_AHEAD_/}"
+    git_behind=" ${c_gitPull}${g_gitPull}${remote//_BEHIND}"
   fi
 
+  if [[ "$remote" =~ AHEAD ]]; then
+    git_ahead=" ${c_gitPush}${g_gitPush}${remote//_AHEAD}"
+  fi
+
+  git_remote="${git_behind}${git_ahead}"
 
   # set the various repo indictors
   if [[ "$clean" -eq 1 ]]; then
