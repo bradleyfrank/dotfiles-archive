@@ -17,7 +17,7 @@
 #
 
 
-# Capture the exit status from the last command.
+# Capture the exit status from the last command
 LAST_EXIT_STATUS="$?"
 
 
