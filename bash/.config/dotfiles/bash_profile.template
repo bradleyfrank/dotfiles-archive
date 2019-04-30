@@ -13,4 +13,8 @@ export MANPATH
 
 export _PS1_THEME="solid"
 
+if [[ -f "$HOME"/.dir_colors ]]; then
+  eval "$(dircolors "$HOME"/.dir_colors)"
+fi
+
 if [[ -f "$HOME/.bashrc" ]]; then . "$HOME/.bashrc"; fi
