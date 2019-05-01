@@ -125,7 +125,7 @@ c_gitStaged=$fgWhite
 c_gitConflict=$fgBrightRed
 c_gitChanged=$fgYellow
 c_gitUntracked=$fgOrange
-c_gitStashed=$fgViolet
+c_gitStashed=$fgLightPurple
 
 
 # =============================================================================
