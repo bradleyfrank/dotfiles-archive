@@ -1,32 +1,139 @@
 #!/usr/bin/env bash
 
-# How to setup .bash_profile and .bashrc to use this script:
-#
-# =========================================================================
-# ~/.bash_profile
-# -------------------------------------------------------------------------
-# export _PS1_THEME=${my_theme}
-#
-# =========================================================================
-# ~/.bashrc
-# -------------------------------------------------------------------------
-# build_prompt() {
-#  . /path/to/ps1
-# }
-# export PROMPT_COMMAND=build_prompt
-#
-
-
 # Capture the exit status from the last command
 LAST_EXIT_STATUS="$?"
 
+# =============================================================================
+# GLOBAL GLYPHS
+# -----------------------------------------------------------------------------
 
-##
-## FUNCTIONS
-##
+ThinArrow=$'\uE0B1'
+Triangle=$'\uE0B0'
+Branch1=$'\uE0A0'
+Hash=$'\u2A33'
+Cross=$'\u2A2F'
+Matrix=$'\u22B9'
+VirticalDots="⋮"
+CursiveX="✗"
+MultiplyX="✕"
+Delta="𝛥"
+NormalPlus="+"
+Flag="⚑"
+Checkmark="✓"
+Circle="●"
+
+# =============================================================================
+# GLOBAL STYLING
+# -----------------------------------------------------------------------------
+
+mkBold="\[\e[1m\]"
+ResetColor="\[\e[0;0m\]"
+
+# =============================================================================
+# GLOBAL COLORS
+# -----------------------------------------------------------------------------
+
+bgLightGray="\[\e[48;5;7m\]"
+bgLightGreen="\[\e[38;5;10m\]"
+bgWhite="\[\e[48;5;15m\]"
+bgBlue="\[\e[48;5;33m\]"
+bgCyan="\[\e[48;5;37m\]"
+bgRed="\[\e[48;5;52m\]"
+bgViolet="\[\e[48;5;61m\]"
+bgMedGreen="\[\e[48;5;64m\]"
+bgLightBlue="\[\e[48;5;75m\]"
+bgSkyBlue="\[\e[48;5;117m\]"
+bgOrange="\[\e[48;5;208m\]"
+bgLightOrange="\[\e[48;5;214m\]"
+bgMedGray="\[\e[48;5;245m\]"
+bgDarkGray="\[\e[48;5;240m\]"
+bgDarkWhite="\[\e[48;5;253m\]"
+
+fgBlack="\[\e[38;5;0m\]"
+fgLightCyan="\[\e[38;5;6m\]"
+fgLightGreen="\[\e[38;5;10m\]"
+fgWhite="\[\e[38;5;15m\]"
+fgDarkBlue="\[\e[38;5;20m\]"
+fgMedBlue="\[\e[38;5;26m\]"
+fgGreen="\[\e[38;5;28m\]"
+fgBlue="\[\e[38;5;33m\]"
+fgCyan="\[\e[38;5;37m\]"
+fgViolet="\[\e[38;5;61m\]"
+fgMedGreen="\[\e[38;5;64m\]"
+fgLightBlue="\[\e[38;5;75m\]"
+fgSkyBlue="\[\e[38;5;117m\]"
+fgBrightGreen="\[\e[38;5;148m\]"
+fgDarkRed="\[\e[38;5;160m\]"
+fgPurple="\[\e[38;5;165m\]"
+fgDarkOrange="\[\e[38;5;172m\]"
+fgGold="\[\e[38;5;178m\]"
+fgBrightRed="\[\e[38;5;196m\]"
+fgOrange="\[\e[38;5;208m\]"
+fgLightOrange="\[\e[38;5;214m\]"
+fgYellow="\[\e[38;5;220m\]"
+fgLightPurple="\[\e[38;5;213m\]"
+fgBrightOrange="\[\e[38;5;214m\]"
+fgDarkGray="\[\e[38;5;240m\]"
+fgMedGray="\[\e[38;5;245m\]"
+fgLightGray="\[\e[38;5;250m\]"
+
+# =============================================================================
+# INDIVIDUAL STYLING
+# -----------------------------------------------------------------------------
+
+g_div=$Triangle
+g_prompt="${Triangle} "
+g_exitPrompt="${Triangle} "
+
+c_hostname_bg=$bgViolet
+c_hostname_fg=$fgWhite
+c_hostname_div_fg=$fgViolet
+
+c_date_bg=$bgLightBlue
+c_date_fg=$fgWhite
+c_date_div_fg=$fgLightBlue
+
+c_cwd_bg=$bgMedGray
+c_cwd_fg=$fgWhite
+c_cwd_div_fg=$fgMedGray
+
+c_git_bg=$bgDarkGray
+c_gitDirty_fg=$fgLightOrange
+c_gitClean_fg=$fgLightGreen
+c_git_div_fg=$fgDarkGray
+
+c_venv_bg=$bgCyan
+c_venv_fg=$fgWhite
+c_venv_div_fg=$fgCyan
+
+c_prompt_bg=""
+c_error_bg=$bgRed
+c_error_fg=$fgWhite
+
+g_gitBranch=$Branch1
+g_gitPull="↓"
+g_gitPush="↑"
+g_gitStaged=$Circle
+g_gitConflict=$CursiveX
+g_gitChanged=$Delta
+g_gitUntracked=$NormalPlus
+g_gitStashed=$Flag
+
+c_gitPull=$fgBlue
+c_gitPush=$fgLightGreen
+c_gitStaged=$fgWhite
+c_gitConflict=$fgBrightRed
+c_gitChanged=$fgYellow
+c_gitUntracked=$fgOrange
+c_gitStashed=$fgViolet
+
+
+# =============================================================================
+# FUNCTIONS
+# -----------------------------------------------------------------------------
 
 build_cwd() {
-  local working_dir pathdirs numdirs shortpwd=""
+  local div working_dir pathdirs numdirs shortpwd=""
 
   # replace $HOME with tilde; replace slashes with newlines
   working_dir="$(printf '%s' "$PWD" | sed "s|^${HOME}|~|" | tr '/' '\n')"
@@ -46,16 +153,18 @@ build_cwd() {
   fi
 
   # add the cwd back in so it's shown with a full name
-  shortpwd="${c_cwd}${shortpwd}${mkBold}${pathdirs[$numdirs]}"
-  current_dir="${c_background}${c_div} ${shortpwd}${ResetColor}"
+  shortpwd="${shortpwd}${mkBold}${pathdirs[$numdirs]}"
+  current_dir="${c_cwd_bg}${c_cwd_fg} ${shortpwd} ${ResetColor}"
+
+  previous_bg=$c_cwd_div_fg
 }
 
 
 build_date() {
   local div
 
-  div="${c_background}${c_div}${g_div}${ResetColor}"
-  date="${c_background} ${c_date}$(date +'%b-%d %H:%M:%S') ${ResetColor}${div}"
+  div="${c_date_div_fg}${c_cwd_bg}${g_div}${ResetColor}"
+  date="${c_date_bg} ${c_date_fg}$(date +'%b-%d %H:%M:%S') ${ResetColor}${div}"
 }
 
 
@@ -65,8 +174,8 @@ build_exitstatus() {
   exit_status=""
 
   if [[ $LAST_EXIT_STATUS -ne 0 ]]; then
-    div="${c_backgroundError}${c_foregroundError}${g_exitPrompt}${ResetColor}"
-    status="${c_backgroundError}${c_foregroundError}${LAST_EXIT_STATUS}"
+    div="${c_error_bg}${previous_bg}${g_exitPrompt}${ResetColor}"
+    status="${c_error_bg}${c_error_fg}${LAST_EXIT_STATUS}"
     exit_status="${div}${status} ${ResetColor}"
   fi
 }
@@ -75,16 +184,16 @@ build_exitstatus() {
 build_git() {
   local div=""
 
-  ps1_git_prompt="${c_background} ${ResetColor}"
+  ps1_git_prompt=""
 
   if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     if build_git_prompt; then
-      div="${c_background}${c_div} ${g_div}${ResetColor}"
+      div="${c_git_bg}${previous_bg}${g_div}${ResetColor}"
+      previous_bg=$c_git_div_fg
     fi
   fi
 
   ps1_git_prompt="${div}${ps1_git_prompt}"
-
 }
 
 
@@ -148,57 +257,57 @@ build_git_prompt() {
 
     # combine all the changes into one string
     git_changes="${_staged}${_conflicts}${_changed}${_untracked}${_stashed}"
-    git_changes="${c_background}${git_changes}${ResetColor}"
+    git_changes="${c_git_bg}${git_changes}${ResetColor}"
 
     # branch is dirty, color it yellow
-    prefix="${c_background}${c_gitDirty} ${g_gitBranch} ${branch}${ResetColor}"
+    prefix="${c_git_bg}${c_gitDirty_fg} ${g_gitBranch} ${branch}${ResetColor}"
   else
     # branch is clean, color is green
-    prefix="${c_background}${c_gitClean} ${g_gitBranch} ${branch}${ResetColor}"
+    prefix="${c_git_bg}${c_gitClean_fg} ${g_gitBranch} ${branch}${ResetColor}"
   fi
 
   # combine remote info with local changes
-  metadata="${git_remote}${git_changes}${c_background} ${ResetColor}"
+  metadata="${git_remote}${git_changes}${c_git_bg} ${ResetColor}"
 
   # build final git prompt
-  ps1_git_prompt="${prefix}${c_background}${state}${metadata}${ResetColor}"
+  ps1_git_prompt="${prefix}${c_git_bg}${state}${metadata}${ResetColor}"
 }
 
 
 build_hostname() {
-  local div hostname=""
+  local div
+  local c_hostname="${c_hostname_bg}${c_hostname_fg}"
+  local c_div="${c_date_bg}${c_hostname_div_fg}"
+  
+  hostname=""
 
-  if [[ -n "$SSH_CONNECTION" ]]; then
-    # only show hostname on remote hosts
-    div="${c_background}${c_div}${g_div}${ResetColor}"
-    hostname="${c_background}${c_hostname} \\h ${ResetColor}${div}"
+  if [[ -n "$SSH_CONNECTION" ]] && [[ -z "$TMUX" ]]; then
+    div="${c_div}${g_div}${ResetColor}"
+    hostname="${c_hostname} \\h ${ResetColor}${div}"
   fi
 }
 
 
 build_venv() {
-  local div env ps1_env_prompt=""
+  local div env
+
+  ps1_env_prompt=""
 
   if [[ -n $CONDA_DEFAULT_ENV ]]; then
-    div="${c_background}${c_div}${g_div}${ResetColor}"
-    env="${c_background}${c_conda} ${CONDA_DEFAULT_ENV} ${ResetColor}"
+    div="${c_venv_bg}${previous_bg}${g_div}${ResetColor}"
+    env="${c_venv_bg}${c_venv_fg} ${CONDA_DEFAULT_ENV} ${ResetColor}"
     ps1_env_prompt="${div}${env}"
+    previous_bg=$c_venv_div_fg
   fi
 }
 
 
-load_theme() {
-  if [[ -z $_PS1_THEME ]]; then $_PS1_THEME="default"; fi
-  . "$HOME"/.local/share/ps1/global
-  . "$HOME"/.local/share/ps1/"$_PS1_THEME"
-}
+# =============================================================================
+# MAIN
+# -----------------------------------------------------------------------------
 
-
-##
-## MAIN
-##
-
-load_theme
+# Save previous background color for dividers
+previous_bg=""
 
 build_hostname
 build_date
@@ -207,11 +316,9 @@ build_git
 build_venv
 build_exitstatus
 
-
-_prefix="${c_prefix}${g_prefix}${ResetColor}"
 _system="${hostname}${date}"
 _user="${current_dir}${ps1_git_prompt}${ps1_env_prompt}"
 _shell="${exit_status}"
-_suffix="${c_div}${g_prompt}${ResetColor}"
+_suffix="${c_prompt_bg}${previous_bg}${g_prompt}${ResetColor}"
 
-export PS1="${_prefix}${_system}${_user}${_shell}${_suffix}"
+export PS1="${_system}${_user}${_shell}${_suffix}"
