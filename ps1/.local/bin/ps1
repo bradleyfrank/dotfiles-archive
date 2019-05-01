@@ -119,7 +119,7 @@ g_gitChanged=$Delta
 g_gitUntracked=$NormalPlus
 g_gitStashed=$Flag
 
-c_gitPull=$fgBlue
+c_gitPull=$fgLightBlue
 c_gitPush=$fgLightGreen
 c_gitStaged=$fgWhite
 c_gitConflict=$fgBrightRed
@@ -222,11 +222,11 @@ build_git_prompt() {
 
   # set the push/pull indicators
   if [[ "$remote" =~ BEHIND ]]; then
-    git_behind=" ${c_gitPull}${g_gitPull}${remote}"
+    git_behind=" ${c_gitPull}${g_gitPull}${remote//_BEHIND_/}"
   fi
 
   if [[ "$remote" =~ AHEAD ]]; then
-    git_ahead=" ${c_gitPush}${g_gitPush}${remote}"
+    git_ahead=" ${c_gitPush}${g_gitPush}${remote//_AHEAD_/}"
   fi
 
   git_remote="${git_behind}${git_ahead}"
