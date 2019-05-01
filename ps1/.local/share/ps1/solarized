@@ -1,29 +1,29 @@
 g_div=$ThinArrow
-c_div=$fgBlack
+c_div=$fgLightGray
 
 g_prefix=""
-g_prompt="${Triangle} "
-g_exitPrompt="${Triangle} "
+g_prompt="${ThinArrow} "
+g_exitPrompt="${Triangle}"
 
 g_gitBranch=$Branch1
 g_gitPull="↓"
 g_gitPush="↑"
 g_gitStaged=$Circle
-g_gitConflict=$MultiplyX
+g_gitConflict=$CursiveX
 g_gitChanged=$Delta
 g_gitUntracked=$NormalPlus
 g_gitStashed=$Flag
 
-c_background=$bgDarkWhite
-c_backgroundError=$bgRed
-c_foregroundError=$fgWhite
+c_background=""
+c_backgroundError=""
+c_foregroundError=$fgDarkRed
 
-c_hostname=$fgOrange
-c_date=$fgBlack
-c_cwd=$fgLightBlack
-c_conda=$fgOrange
+c_hostname=$fgViolet
+c_date=$fgCyan
+c_cwd=$fgBlue
+c_conda=$fgLightCyan
 
-c_gitDirty=$fgDarkRed
+c_gitDirty=$fgOrange
 c_gitClean=$fgGreen
 
 c_gitPull=$fgLightBlack

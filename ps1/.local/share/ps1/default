@@ -1,5 +1,9 @@
 g_div=$ThinArrow
+c_div=$bgDarkGray
+
+g_prefix="${mkBold}["
 g_prompt="${Triangle} "
+g_exitPrompt="${Triangle} "
 
 g_gitBranch=$Branch1
 g_gitPull="↓"
@@ -13,13 +17,11 @@ g_gitStashed=$Flag
 c_background=$bgDarkGray
 c_backgroundError=$bgRed
 c_foregroundError=$fgWhite
-c_foregroundSuffix=$fgLightGray
-c_div=$bgDarkGray
 
 c_hostname=$fgOrange
 c_date=$fgSkyBlue
-c_conda=$fgOrange
 c_cwd=$fgWhite
+c_conda=$fgOrange
 
 c_gitDirty=$fgYellow
 c_gitClean=$fgBrightGreen

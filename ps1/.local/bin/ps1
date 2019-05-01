@@ -65,7 +65,7 @@ build_exitstatus() {
   exit_status=""
 
   if [[ $LAST_EXIT_STATUS -ne 0 ]]; then
-    div="${c_backgroundError}${c_foregroundError}${g_prompt}${ResetColor}"
+    div="${c_backgroundError}${c_foregroundError}${g_exitPrompt}${ResetColor}"
     status="${c_backgroundError}${c_foregroundError}${LAST_EXIT_STATUS}"
     exit_status="${div}${status} ${ResetColor}"
   fi
@@ -113,11 +113,11 @@ build_git_prompt() {
 
   # set the push/pull indicators
   if [[ "$remote" =~ BEHIND ]]; then
-    git_behind=" ${c_gitPull}${g_gitPull}${remote//_BEHIND}"
+    git_behind=" ${c_gitPull}${g_gitPull}${remote}"
   fi
 
   if [[ "$remote" =~ AHEAD ]]; then
-    git_ahead=" ${c_gitPush}${g_gitPush}${remote//_AHEAD}"
+    git_ahead=" ${c_gitPush}${g_gitPush}${remote}"
   fi
 
   git_remote="${git_behind}${git_ahead}"
@@ -208,9 +208,10 @@ build_venv
 build_exitstatus
 
 
+_prefix="${c_prefix}${g_prefix}${ResetColor}"
 _system="${hostname}${date}"
 _user="${current_dir}${ps1_git_prompt}${ps1_env_prompt}"
 _shell="${exit_status}"
 _suffix="${c_div}${g_prompt}${ResetColor}"
 
-export PS1="${_system}${_user}${_shell}${_suffix}"
+export PS1="${_prefix}${_system}${_user}${_shell}${_suffix}"
