@@ -3,7 +3,7 @@ c_div=$fgLightGray
 
 g_prefix=""
 g_prompt="${ThinArrow} "
-g_exitPrompt="${Triangle}"
+g_exitPrompt="${ThinArrow} "
 
 g_gitBranch=$Branch1
 g_gitPull="↓"
