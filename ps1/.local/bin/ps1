@@ -136,7 +136,7 @@ build_cwd() {
   local div working_dir pathdirs numdirs shortpwd=""
 
   # replace $HOME with tilde; replace slashes with newlines
-  working_dir="$(printf '%s' "$PWD" | sed "s|^${HOME}|~|" | tr '/' '\n')"
+  working_dir="$(echo "$PWD" | sed "s|^${HOME}|~|" | sed "s|/|\n|g")"
   # split pwd on newlines into an array
   #     (can't use the -d option; requires Bash > 4.4)
   readarray -t pathdirs <<< "$working_dir"
