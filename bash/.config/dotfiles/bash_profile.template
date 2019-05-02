@@ -11,8 +11,21 @@ export MANPATH
 
 %% source_profiled
 
+# Load solarized LS_COLORS
 if [[ -f "$HOME"/.dir_colors ]]; then
   eval "$(dircolors "$HOME"/.dir_colors)"
 fi
 
-if [[ -f "$HOME/.bashrc" ]]; then . "$HOME/.bashrc"; fi
+# Start tmux on remote connections
+if type tmux >/dev/null 2>&1 && [[ -n "$SSH_CONNECTION" ]]; then
+  if ! tmux has -t main >/dev/null 2>&1; then
+    tmux new -s main
+  else
+    tmux attach -t main
+  fi
+fi
+
+# Source local bashrc
+if [[ -f "$HOME/.bashrc" ]]; then
+  . "$HOME/.bashrc"
+fi
