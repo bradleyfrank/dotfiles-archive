@@ -61,6 +61,22 @@ dotfiles_pull() {
 }
 
 
+# Download RPMs from GitHub
+download_rpms() {
+  if type dnf >/dev/null 2>&1; then
+    if type localrepo.py >/dev/null 2>&1; then
+      localrepo.py
+    else
+      echo "Can't find localrepo.py, skipping."
+      return
+    fi
+  else
+    echo "Skipping RPM updates."
+    return
+  fi
+}
+
+
 # Update RVM
 ruby_up() {
   if ! type rvm >/dev/null 2>&1; then
@@ -89,7 +105,7 @@ opsys() {
 
 
 usage() {
-  echo "update.sh -- Updates various system environments."
+  echo "update.sh -- Updates various system components."
   echo
   echo "Usage: update -h | -a | [-i $UPDATES]"
   echo
@@ -102,6 +118,7 @@ usage() {
   echo "      d    dotfiles repo"
   echo "      i    pip3 itself"
   echo "      o    operating system"
+  echo "      l    local packages (from GitHub)"
   echo "      p    Python $PYVER packages"
   echo "      r    RVM and Ruby gems"
   echo "      s    shell profile/rc dotfiles"
@@ -114,7 +131,7 @@ usage() {
 ## Main
 ##
 
-UPDATES="abdioprs"
+UPDATES="abdiloprs"
 PYVER="$(python3 -V 2>&1 | grep -Eo '[0-9]\.[0-9]')"
 
 while getopts 'hasui:' flag; do
@@ -138,6 +155,7 @@ for (( i=0; i<${#UPDATES}; i++ )); do
     d ) dotfiles_pull ;;
     i ) pip3 install --upgrade pip ;;
     o ) opsys ;;
+    l ) download_rpms ;;
     p ) pip_upgrade_outdated -3 --verbose ;;
     r ) ruby_up ;;
     s ) generate-dotfiles ;;
