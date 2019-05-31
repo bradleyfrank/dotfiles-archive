@@ -255,20 +255,7 @@ powerline_ps1() {
 #
 case "$(uname -s)" in
   Darwin) OS="macos" ;;
-  Linux)
-    if [[ -f /etc/fedora-release ]]; then
-      OS="fedora"
-    elif [[ -f /etc/centos-release ]] || [[ -f /etc/redhat-release ]]; then
-      OS="redhat"
-    else
-      echo "OS not supported"
-      exit 1
-    fi
-    ;;
-  *)
-    echo "OS detection failed"
-    exit 1
-    ;;
+  Linux) OS="linux" ;;
 esac
 
 
