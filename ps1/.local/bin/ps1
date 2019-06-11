@@ -7,19 +7,13 @@ LAST_EXIT_STATUS="$?"
 # GLOBAL GLYPHS
 # -----------------------------------------------------------------------------
 
-ThinArrow=$'\uE0B1'
+#ThinArrow=$'\uE0B1'
 Triangle=$'\uE0B0'
 Branch1=$'\uE0A0'
-Hash=$'\u2A33'
-Cross=$'\u2A2F'
-Matrix=$'\u22B9'
-VirticalDots="⋮"
 CursiveX="✗"
-MultiplyX="✕"
 Delta="𝛥"
 NormalPlus="+"
 Flag="⚑"
-Checkmark="✓"
 Circle="●"
 
 # =============================================================================
