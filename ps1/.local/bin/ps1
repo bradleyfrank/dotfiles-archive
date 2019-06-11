@@ -33,49 +33,25 @@ ResetColor="\[\e[0;0m\]"
 # GLOBAL COLORS
 # -----------------------------------------------------------------------------
 
-bgLightGray="\[\e[48;5;7m\]"
-bgLightGreen="\[\e[38;5;10m\]"
-bgWhite="\[\e[48;5;15m\]"
-bgBlue="\[\e[48;5;33m\]"
-bgCyan="\[\e[48;5;37m\]"
-bgRed="\[\e[48;5;52m\]"
-bgViolet="\[\e[48;5;61m\]"
-bgMedGreen="\[\e[48;5;64m\]"
-bgLightBlue="\[\e[48;5;75m\]"
-bgSkyBlue="\[\e[48;5;117m\]"
-bgOrange="\[\e[48;5;208m\]"
-bgLightOrange="\[\e[48;5;214m\]"
-bgMedGray="\[\e[48;5;245m\]"
-bgDarkGray="\[\e[48;5;240m\]"
-bgDarkWhite="\[\e[48;5;253m\]"
+bg_LightSeaGreen="\[\e[48;5;37m\]"
+bg_DarkRed="\[\e[48;5;52m\]"
+bg_SlateBlue3="\[\e[48;5;61m\]"
+bg_SteelBlue1="\[\e[48;5;75m\]"
+bg_Grey35="\[\e[48;5;240m\]"
+bg_Grey54="\[\e[48;5;245m\]"
 
-fgBlack="\[\e[38;5;0m\]"
-fgLightCyan="\[\e[38;5;6m\]"
-fgLightGreen="\[\e[38;5;10m\]"
-fgWhite="\[\e[38;5;15m\]"
-fgDarkBlue="\[\e[38;5;20m\]"
-fgMedBlue="\[\e[38;5;26m\]"
-fgGreen="\[\e[38;5;28m\]"
-fgBlue="\[\e[38;5;33m\]"
-fgCyan="\[\e[38;5;37m\]"
-fgViolet="\[\e[38;5;61m\]"
-fgMedGreen="\[\e[38;5;64m\]"
-fgLightBlue="\[\e[38;5;75m\]"
-fgSkyBlue="\[\e[38;5;117m\]"
-fgBrightGreen="\[\e[38;5;148m\]"
-fgDarkRed="\[\e[38;5;160m\]"
-fgPurple="\[\e[38;5;165m\]"
-fgDarkOrange="\[\e[38;5;172m\]"
-fgGold="\[\e[38;5;178m\]"
-fgBrightRed="\[\e[38;5;196m\]"
-fgOrange="\[\e[38;5;208m\]"
-fgLightOrange="\[\e[38;5;214m\]"
-fgYellow="\[\e[38;5;220m\]"
-fgLightPurple="\[\e[38;5;213m\]"
-fgBrightOrange="\[\e[38;5;214m\]"
-fgDarkGray="\[\e[38;5;240m\]"
-fgMedGray="\[\e[38;5;245m\]"
-fgLightGray="\[\e[38;5;250m\]"
+fg_Lime="\[\e[38;5;10m\]"
+fg_White="\[\e[38;5;15m\]"
+fg_LightSeaGreen="\[\e[38;5;37m\]"
+fg_SlateBlue3="\[\e[38;5;61m\]"
+fg_SteelBlue1="\[\e[38;5;75m\]"
+fg_Red1="\[\e[38;5;196m\]"
+fg_DarkOrange="\[\e[38;5;208m\]"
+fg_Orange1="\[\e[38;5;214m\]"
+fg_Orchid1="\[\e[38;5;213m\]"
+fg_Gold1="\[\e[38;5;220m\]"
+fg_Grey35="\[\e[38;5;240m\]"
+fg_Grey54="\[\e[38;5;245m\]"
 
 # =============================================================================
 # INDIVIDUAL STYLING
@@ -85,30 +61,30 @@ g_div=$Triangle
 g_prompt="${Triangle} "
 g_exitPrompt="${Triangle} "
 
-c_hostname_bg=$bgViolet
-c_hostname_fg=$fgWhite
-c_hostname_div_fg=$fgViolet
+c_hostname_bg=$bg_SlateBlue3
+c_hostname_fg=$fg_White
+c_hostname_div_fg=$fg_SlateBlue3
 
-c_date_bg=$bgLightBlue
-c_date_fg=$fgWhite
-c_date_div_fg=$fgLightBlue
+c_date_bg=$bg_SteelBlue1
+c_date_fg=$fg_White
+c_date_div_fg=$fg_SteelBlue1
 
-c_cwd_bg=$bgMedGray
-c_cwd_fg=$fgWhite
-c_cwd_div_fg=$fgMedGray
+c_cwd_bg=$bg_Grey54
+c_cwd_fg=$fg_White
+c_cwd_div_fg=$fg_Grey54
 
-c_git_bg=$bgDarkGray
-c_gitDirty_fg=$fgLightOrange
-c_gitClean_fg=$fgLightGreen
-c_git_div_fg=$fgDarkGray
+c_git_bg=$bg_Grey35
+c_gitDirty_fg=$fg_Orange1
+c_gitClean_fg=$fg_Lime
+c_git_div_fg=$fg_Grey35
 
-c_venv_bg=$bgCyan
-c_venv_fg=$fgWhite
-c_venv_div_fg=$fgCyan
+c_venv_bg=$bg_LightSeaGreen
+c_venv_fg=$fg_White
+c_venv_div_fg=$fg_LightSeaGreen
 
 c_prompt_bg=""
-c_error_bg=$bgRed
-c_error_fg=$fgWhite
+c_error_bg=$bg_DarkRed
+c_error_fg=$fg_White
 
 g_gitBranch=$Branch1
 g_gitPull="↓"
@@ -119,13 +95,13 @@ g_gitChanged=$Delta
 g_gitUntracked=$NormalPlus
 g_gitStashed=$Flag
 
-c_gitPull=$fgLightBlue
-c_gitPush=$fgLightGreen
-c_gitStaged=$fgWhite
-c_gitConflict=$fgBrightRed
-c_gitChanged=$fgYellow
-c_gitUntracked=$fgOrange
-c_gitStashed=$fgLightPurple
+c_gitPull=$fg_SteelBlue1
+c_gitPush=$fg_Lime
+c_gitStaged=$fg_White
+c_gitConflict=$fg_Red1
+c_gitChanged=$fg_Gold1
+c_gitUntracked=$fg_DarkOrange
+c_gitStashed=$fg_Orchid1
 
 
 # =============================================================================
