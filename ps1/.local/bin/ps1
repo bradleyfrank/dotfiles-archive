@@ -183,16 +183,15 @@ build_git_prompt() {
     return 1
   fi
 
+  # https://git-scm.com/docs/git-status
   while read -r line; do
     case "$(echo "$line" | awk '{print $1}')" in
-      1|2)
-        XY="$(echo "$line" | awk '{print $2}')"
-        case "${XY:0:1}" in
-          . ) changed=$((changed+1)) ;;
-          * ) staged=$((staged+1)) ;;
-        esac
-        ;;
-      "?") untracked=$((untracked+1)) ;;
+      #
+      # branch.oid <hash>
+      # branch.head <branch>
+      # branch.upstream origin/<branch>
+      # branch.ab <ahead> <behind>
+      #
       "#")
         repo_metadata="$(echo "$line" | awk '{print $2}')"
         case "$(echo "$repo_metadata" | awk -F '.' '{print $2}')" in
@@ -204,20 +203,48 @@ build_git_prompt() {
             ;;
         esac
         ;;
+      #
+      # changed entries:
+      # 1 <XY> <sub> <mH> <mI> <mW> <hH> <hI> <path>
+      # renamed/copied entries:
+      # 2 <XY> <sub> <mH> <mI> <mW> <hH> <hI> <X><score> <path><sep><origPath>
+      #
+      1|2)
+        XY="$(echo "$line" | awk '{print $2}')"
+        case "${XY:0:1}" in
+          .) changed=$((changed+1)) ;;
+          *)
+            staged=$((staged+1))
+            case "${XY:1:2}" in
+              M|A|D|R|U|C) changed=$((changed+1)) ;;
+              *          ) ;;
+            esac
+            ;;
+        esac
+        ;;
+      #
+      # untracked items:
+      # ? <path>
+      #
+      "?") untracked=$((untracked+1)) ;;
+      #
+      # ignore everything else
+      #
       *  ) ;;
     esac
-  done <<< "$(git status -b --porcelain=v2 --ignore-submodules)"
+  done <<< "$(git status --branch --porcelain=v2 --ignore-submodules)"
 
   stashed="$(git stash list | wc -l)"
 
-  if [[ "$behind" -gt 0 ]] || [[ "$ahead" -gt 0 ]]; then
-    # set the push/pull indicators
+  if [[ "$behind" -gt 0 ]]; then
     git_behind=" ${c_gitPull}${g_gitPull}${behind}"
-    git_ahead=" ${c_gitPush}${g_gitPush}${ahead}"
-    git_remote="${git_behind}${git_ahead}"
-  else
-    git_remote=""
   fi
+  
+  if [[ "$ahead" -gt 0 ]]; then
+    git_ahead=" ${c_gitPush}${g_gitPush}${ahead}"
+  fi
+    
+  git_remote="${git_behind}${git_ahead}"
 
   if [[ "$staged" -ne 0 ]] ||
      [[ "$changed" -ne 0 ]] ||
