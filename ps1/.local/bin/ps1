@@ -1,7 +1,10 @@
 #!/usr/bin/env bash
 
-# Capture the exit status from the last command
-LAST_EXIT_STATUS="$?"
+#
+# Add to ~/.bashrc --
+# . /path/to/this/file/ps1
+# export PROMPT_COMMAND=build_ps1
+#
 
 # =============================================================================
 # GLOBAL GLYPHS
@@ -239,11 +242,11 @@ build_git_prompt() {
   if [[ "$behind" -gt 0 ]]; then
     git_behind=" ${c_gitPull}${g_gitPull}${behind}"
   fi
-  
+
   if [[ "$ahead" -gt 0 ]]; then
     git_ahead=" ${c_gitPush}${g_gitPush}${ahead}"
   fi
-    
+
   git_remote="${git_behind}${git_ahead}"
 
   if [[ "$staged" -ne 0 ]] ||
@@ -298,7 +301,7 @@ build_hostname() {
   local div
   local c_hostname="${c_hostname_bg}${c_hostname_fg}"
   local c_div="${c_date_bg}${c_hostname_div_fg}"
-  
+
   hostname=""
 
   if [[ -n "$SSH_CONNECTION" ]] && [[ -z "$TMUX" ]]; then
@@ -326,19 +329,26 @@ build_venv() {
 # MAIN
 # -----------------------------------------------------------------------------
 
-# Save previous background color for dividers
-previous_bg=""
+build_ps1() {
+  # Capture the exit status from the last command
+  LAST_EXIT_STATUS="$?"
 
-build_hostname
-build_date
-build_cwd
-build_git
-build_venv
-build_exitstatus
+  # Save previous background color for dividers
+  previous_bg=""
 
-_system="${hostname}${date}"
-_user="${current_dir}${ps1_git_prompt}${ps1_env_prompt}"
-_shell="${exit_status}"
-_suffix="${c_prompt_bg}${previous_bg}${g_prompt}${ResetColor}"
+  build_hostname
+  build_date
+  build_cwd
+  build_git
+  build_venv
+  build_exitstatus
 
-export PS1="${_system}${_user}${_shell}${_suffix}"
+  _system="${hostname}${date}"
+  _user="${current_dir}${ps1_git_prompt}${ps1_env_prompt}"
+  _shell="${exit_status}"
+  _suffix="${c_prompt_bg}${previous_bg}${g_prompt}${ResetColor}"
+
+  export PS1="${_system}${_user}${_shell}${_suffix}"
+}
+
+export -f build_ps1
