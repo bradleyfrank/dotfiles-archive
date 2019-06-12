@@ -95,4 +95,4 @@ httptrace() {
 
 # customize ps1
 . "${HOME}"/.local/bin/ps1
-export PROMPT_COMMAND=build_prompt
+export PROMPT_COMMAND=build_ps1
