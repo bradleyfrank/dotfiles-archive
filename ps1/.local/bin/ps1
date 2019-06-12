@@ -168,7 +168,7 @@ build_git() {
 
 
 build_git_prompt() {
-  local branches="" branch="" upstream="" ahead=0 behind=0
+  local branch="" upstream="" ahead=0 behind=0
   local clean=0 conflicts=0 staged=0 changed=0 untracked=0 stashed=0
   local git_ahead="" git_behind="" git_remote="" git_changes=""
   local _conflicts="" _staged="" _changed="" _untracked="" _stashed=""
@@ -184,25 +184,31 @@ build_git_prompt() {
   fi
 
   while read -r line; do
-    case "$(echo "$line" | cut -d ' ' -f1)" in
-      M|D ) changed=$((changed+1)) ;;
-      A   ) staged=$((staged+1)) ;;
-      "??") untracked=$((untracked+1)) ;;
-      "##") repo_state="$(echo "$line" | cut -d ' ' -f2)" ;;
-      *   ) ;;
+    case "$(echo "$line" | awk '{print $1}')" in
+      1|2)
+        XY="$(echo "$line" | awk '{print $2}')"
+        case "${XY:0:1}" in
+          . ) changed=$((changed+1)) ;;
+          * ) staged=$((staged+1)) ;;
+        esac
+        ;;
+      "?") untracked=$((untracked+1)) ;;
+      "#")
+        repo_metadata="$(echo "$line" | awk '{print $2}')"
+        case "$(echo "$repo_metadata" | awk -F '.' '{print $2}')" in
+          "head"    ) branch="$(echo "$line" | awk '{print $3}')" ;;
+          "upstream") upstream="$(echo "$line" | awk '{print $3}')" ;;
+          "ab"      )
+            ahead="$(echo "$line" | awk '{print $3}' | tr -d '+')"
+            behind="$(echo "$line" | awk '{print $4}' | tr -d '-')"
+            ;;
+        esac
+        ;;
+      *  ) ;;
     esac
-  done <<< "$(git status -b --porcelain=v1 --ignore-submodules)"
+  done <<< "$(git status -b --porcelain=v2 --ignore-submodules)"
 
   stashed="$(git stash list | wc -l)"
-
-  branches="$(echo "$repo_state" | awk '{print $1}')"
-  branch="$(echo "$branches" | awk -F '\\.\\.\\.' '{print $1}')"
-  upstream="$(echo "$branches" | awk -F '\\.\\.\\.' '{print $2}')"
-
-  if [[ "$upstream" != "" ]]; then
-    ahead="$(git rev-list "${upstream}".."${branch}" --count)"
-    behind="$(git rev-list "${branch}".."${upstream}" --count)"
-  fi
 
   if [[ "$behind" -gt 0 ]] || [[ "$ahead" -gt 0 ]]; then
     # set the push/pull indicators
