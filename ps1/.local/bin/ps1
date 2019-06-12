@@ -168,43 +168,60 @@ build_git() {
 
 
 build_git_prompt() {
-  local prefix metadata
+  local branches="" branch="" upstream="" ahead=0 behind=0
+  local clean=0 conflicts=0 staged=0 changed=0 untracked=0 stashed=0
   local git_ahead="" git_behind="" git_remote="" git_changes=""
-  local clean branch state remote staged conflicts changed untracked stashed
+  local _conflicts="" _staged="" _changed="" _untracked="" _stashed=""
+  local prefix metadata
 
-  # call external script (probably in local bin folder)
-  readarray -t git_status <<< "$(parse-git-status)"
-  if [[ ${git_status[*]} == "" ]]; then
+  if git_dir="$(git rev-parse --git-dir 2>/dev/null)"; then
+    # The .git config directory does not have any metadata, so exit
+    if [[ "$git_dir" == "." ]]; then
+      return 1
+    fi
+  else
     return 1
   fi
 
-  clean="${git_status[0]}"
-  branch="${git_status[1]}"
-  state="${git_status[2]}"
-  remote="${git_status[3]}"
-  upstream="${git_status[4]}"
-  staged="${git_status[5]}"
-  conflicts="${git_status[6]}"
-  changed="${git_status[7]}"
-  untracked="${git_status[8]}"
-  stashed="${git_status[9]}"
+  while read -r line; do
+    case "$(echo "$line" | cut -d ' ' -f1)" in
+      M|D ) changed=$((changed+1)) ;;
+      A   ) staged=$((staged+1)) ;;
+      "??") untracked=$((untracked+1)) ;;
+      "##") repo_state="$(echo "$line" | cut -d ' ' -f2)" ;;
+      *   ) ;;
+    esac
+  done <<< "$(git status -b --porcelain=v1 --ignore-submodules)"
 
+  stashed="$(git stash list | wc -l)"
 
-  # set the push/pull indicators
-  if [[ "$remote" =~ BEHIND ]]; then
-    git_behind=" ${c_gitPull}${g_gitPull}${remote//_BEHIND_/}"
+  branches="$(echo "$repo_state" | awk '{print $1}')"
+  branch="$(echo "$branches" | awk -F '\\.\\.\\.' '{print $1}')"
+  upstream="$(echo "$branches" | awk -F '\\.\\.\\.' '{print $2}')"
+
+  if [[ "$upstream" != "" ]]; then
+    ahead="$(git rev-list "${upstream}".."${branch}" --count)"
+    behind="$(git rev-list "${branch}".."${upstream}" --count)"
   fi
 
-  if [[ "$remote" =~ AHEAD ]]; then
-    git_ahead=" ${c_gitPush}${g_gitPush}${remote//_AHEAD_/}"
+  if [[ "$behind" -gt 0 ]] || [[ "$ahead" -gt 0 ]]; then
+    # set the push/pull indicators
+    git_behind=" ${c_gitPull}${g_gitPull}${behind}"
+    git_ahead=" ${c_gitPush}${g_gitPush}${ahead}"
+    git_remote="${git_behind}${git_ahead}"
+  else
+    git_remote=""
   fi
 
-  git_remote="${git_behind}${git_ahead}"
+  if [[ "$staged" -ne 0 ]] ||
+     [[ "$changed" -ne 0 ]] ||
+     [[ "$untracked" -ne 0 ]] ||
+     [[ "$stashed" -ne 0 ]]; then
+       clean=1
+   fi
 
   # set the various repo indictors
   if [[ "$clean" -eq 1 ]]; then
-    local _staged="" _conflicts="" _changed="" _untracked="" _stashed=""
-
     if [[ $staged -gt 0 ]]; then
       _staged=" ${c_gitStaged}${g_gitStaged}${staged}"
     fi
@@ -240,7 +257,7 @@ build_git_prompt() {
   metadata="${git_remote}${git_changes}${c_git_bg} ${ResetColor}"
 
   # build final git prompt
-  ps1_git_prompt="${prefix}${c_git_bg}${state}${metadata}${ResetColor}"
+  ps1_git_prompt="${prefix}${c_git_bg}${metadata}${ResetColor}"
 }
 
 
