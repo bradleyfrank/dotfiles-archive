@@ -1,9 +1,17 @@
 #!/usr/bin/env bash
 
 #
-# Add to ~/.bashrc ...
+# Instructions for use:
+#
+# (1) Add to ~/.bashrc ...
 # . /path/to/this/file/ps1
 # export PROMPT_COMMAND=build_ps1
+#
+# (2) Use a powerline font for the terminal
+# https://github.com/powerline/fonts
+#
+# (3) Current color selections adapted for Solarized Light
+# https://ethanschoonover.com/solarized/
 #
 
 # =============================================================================
@@ -18,28 +26,11 @@ show_hostname=0
 date_format="%b-%d %H:%M:%S"
 
 # =============================================================================
-# GLOBAL GLYPHS
-# -----------------------------------------------------------------------------
-
-#ThinArrow=$'\uE0B1'
-Triangle=$'\uE0B0'
-Branch1=$'\uE0A0'
-CursiveX="✗"
-Delta="𝛥"
-NormalPlus="+"
-Flag="⚑"
-Circle="●"
-
-# =============================================================================
-# GLOBAL STYLING
+# ANSI COLOR DEFINITIONS
 # -----------------------------------------------------------------------------
 
 mkBold="\[\e[1m\]"
 ResetColor="\[\e[0;0m\]"
-
-# =============================================================================
-# GLOBAL COLORS
-# -----------------------------------------------------------------------------
 
 # https://jonasjacek.github.io/colors/
 
@@ -64,12 +55,8 @@ fg_Grey35="\[\e[38;5;240m\]"
 fg_Grey54="\[\e[38;5;245m\]"
 
 # =============================================================================
-# INDIVIDUAL STYLING
+# SEGMENT COLORS
 # -----------------------------------------------------------------------------
-
-g_div=$Triangle
-g_prompt="${Triangle} "
-g_exitPrompt="${Triangle} "
 
 c_hostname_bg=$bg_SlateBlue3
 c_hostname_fg=$fg_White
@@ -96,15 +83,6 @@ c_prompt_bg=""
 c_error_bg=$bg_DarkRed
 c_error_fg=$fg_White
 
-g_gitBranch=$Branch1
-g_gitPull="↓"
-g_gitPush="↑"
-g_gitStaged=$Circle
-g_gitConflict=$CursiveX
-g_gitChanged=$Delta
-g_gitUntracked=$NormalPlus
-g_gitStashed=$Flag
-
 c_gitPull=$fg_SteelBlue1
 c_gitPush=$fg_Lime
 c_gitStaged=$fg_White
@@ -113,6 +91,24 @@ c_gitChanged=$fg_Gold1
 c_gitUntracked=$fg_DarkOrange
 c_gitStashed=$fg_Orchid1
 
+# =============================================================================
+# SEGMENT GLYPHS
+# -----------------------------------------------------------------------------
+
+# https://unicode-table.com/en/
+
+g_div=$'\uE0B0'          # solid triangle; requires powerline font
+g_prompt="${g_div} "
+g_exitPrompt="${g_div} "
+
+g_gitBranch=$'\uE0A0'    # branch symbol; alternatives: 2325, 2387
+g_gitPull=$'\u2193'      # down arrow
+g_gitPush=$'\u2191'      # up arrow
+g_gitStaged=$'\u2713'    # check mark
+g_gitConflict=$'\u2718'  # ballot cross mark
+g_gitChanged=$'\u002A'   # asterisk
+g_gitUntracked=$'\u2026' # ellipsis
+g_gitStashed=$'\u2691'   # flag
 
 # =============================================================================
 # FUNCTIONS
