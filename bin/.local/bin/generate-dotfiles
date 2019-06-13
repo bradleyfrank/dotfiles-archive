@@ -146,7 +146,7 @@ source_profiled() {
 #
 alias_anaconda() {
   if [[ -f /usr/local/anaconda3/bin/activate ]]; then
-    OUTPUT="alias anaconda='source /usr/local/anaconda3/bin/activate root'"
+    OUTPUT="alias ekans='. /usr/local/anaconda3/bin/activate'"
   else
     return 1
   fi
