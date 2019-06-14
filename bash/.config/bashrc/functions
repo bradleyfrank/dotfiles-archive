@@ -80,7 +80,7 @@ tardir() {
 
 
 # download YouTube video as music only
-youtube-dl-music {
+youtube-dl-music() {
   if [[ "$(uname -s)" == "Darwin" ]]; then
     youtube-dl -x --audio-format m4a --postprocessor-args "-strict experimental" "$1"
   else
