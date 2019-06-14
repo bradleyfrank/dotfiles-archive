@@ -52,7 +52,6 @@ mydots() {
 
 # update user Python packages
 pup() {
-  pip_upgrade_outdated -2 --user --verbose
   pip_upgrade_outdated -3 --user --verbose
 }
 
