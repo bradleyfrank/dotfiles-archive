@@ -1,37 +1,18 @@
-#!/bin/bash
-
-set -eu
-
-
-# ==============================================================================
-# Functions
-# ==============================================================================
-
+#!/usr/bin/env bash
 
 # Update Anaconda
-anaconda_up() {
+coil() {
   # shellcheck source=/dev/null
-  if ! source /usr/local/anaconda3/bin/activate root >/dev/null 2>&1; then
-    echo "Anaconda3 not found on system."
-    return
-  fi
-
+  . /usr/local/anaconda3/bin/activate
   conda update -n base conda -y
   conda update --prefix /usr/local/anaconda3 anaconda -y 
   conda clean --all -y
-
-  # shellcheck source=/dev/null
   conda deactivate
 }
 
 
 # Update HomeBrew
-brew_up() {
-  if ! type brew >/dev/null 2>&1; then
-    echo "HomeBrew not found on system."
-    return
-  fi
-
+steep() {
   brew update
   brew upgrade
   brew cask upgrade
@@ -40,128 +21,76 @@ brew_up() {
 
 
 # Update Dotfiles repo
-dotfiles_pull() {
-	local packages repo="$HOME/.dotfiles"
-
-  if [[ -d "$repo" ]]; then
-    pushd "$repo" >/dev/null 2>&1
-    git stash
-    git pull
-    generate-dotfiles
-    git submodule update --init --recursive
-
-    shopt -s nullglob
-    packages=(*/)
-    for pkg in "${packages[@]}"; do
-     stow "$(echo "$pkg" | cut -d '/' -f 1)"
-    done
-
-    popd >/dev/null 2>&1
-  fi
+mydots() {
+  pushd "$HOME"/.dotfiles >/dev/null 2>&1 || return 1
+  git stash
+  git pull
+  generate-dotfiles
+  git submodule update --init --recursive
+  for dir in */; do stow --restow "${dir%/}"; done
+  popd >/dev/null 2>&1 || return 1
 }
 
 
-# Download RPMs from GitHub
-download_rpms() {
-  if type dnf >/dev/null 2>&1; then
-    if type localrepo.py >/dev/null 2>&1; then
-      localrepo.py
-    else
-      echo "Can't find localrepo.py, skipping."
-      return
-    fi
-  else
-    echo "Skipping RPM updates."
-    return
-  fi
+# Update user Python packages
+pup() {
+  pip_upgrade_outdated -2 --user --verbose
+  pip_upgrade_outdated -3 --user --verbose
 }
 
 
 # Update RVM
-ruby_up() {
-  if ! type rvm >/dev/null 2>&1; then
-    echo "No RVM installation found."
-    return
-  fi
-
+shine() {
   rvm get stable
   rvm gemset update
   rvm cleanup all
 }
 
 
-# Update OS
-opsys() {
-  if type softwareupdate >/dev/null 2>&1; then
-    sudo softwareupdate -ia
-  elif type yum >/dev/null 2>&1; then
-    sudo yum update -y
-  elif type dnf >/dev/null 2>&1; then
-    sudo dnf upgrade -y
-  else
-    return
-  fi
-}
-
-
+# Show program help/usage
 usage() {
-  echo "update.sh -- Updates various system components."
+  echo "update -- UPDATE ALL THE THINGS!"
   echo
-  echo "Usage: update -h | -a | [-i $UPDATES]"
+  echo "Usage: update -[option]"
   echo
-  echo "Options:"
-  echo "-h    print help menu and exit"
-  echo "-a    perform all updates (default);  implies -i $UPDATES"
-  echo "-i    update individual subsystem:"
-  echo "      a    Anaconda"
-  echo "      b    HomeBrew formulas and casks"
-  echo "      d    dotfiles repo"
-  echo "      i    pip3 itself"
-  echo "      o    operating system"
-  echo "      l    local packages (from GitHub)"
-  echo "      p    Python $PYVER packages"
-  echo "      r    RVM and Ruby gems"
-  echo "      s    shell profile/rc dotfiles"
+  echo "options:"
+  echo "  -h    print help menu and exit"
+  echo "  -a    update Anaconda and Conda packages"
+  echo "  -b    update HomeBrew formulas and casks"
+  echo "  -d    update dotfiles repo and restow packages"
+  echo "  -p    Update user Python packages"
+  echo "  -r    update RVM and Ruby gems"
+  echo "  -s    regenerate bash_profile and bashrc"
+  echo "  -y    download and update external RPMs (linux only)"
   echo
   exit 0
 }
 
+error() {
+  echo "Invalid option. Usage: update [$OPTIONS]"
+  exit 0
+}
 
-##
-## Main
-##
 
-UPDATES="abdiloprs"
-PYVER="$(python3 -V 2>&1 | grep -Eo '[0-9]\.[0-9]')"
+# Define all options
+OPTIONS="habdprsy"
 
-while getopts 'hasui:' flag; do
+while getopts ":${OPTIONS}" flag; do
   case "${flag}" in
     h ) usage ;;
-    a ) UPDATES="$UPDATES" ;;
-    s ) UPDATES="o" ;;
-    u ) UPDATES="bdprs" ;;
-    i ) UPDATES="$OPTARG" ;;
-    : ) echo "Missing argument: $OPTARG requires an argument" 1>&2 ; exit 1 ;;
-    \?) echo "Invalid option: $OPTARG" 1>&2 ; exit 1 ;;
-  esac
-done
-
-
-for (( i=0; i<${#UPDATES}; i++ )); do
-  update="${UPDATES:$i:1}"
-  case "$update" in
-    a ) anaconda_up ;;
-    b ) brew_up ;;
-    d ) dotfiles_pull ;;
-    i ) pip3 install --upgrade pip ;;
-    o ) opsys ;;
-    l ) download_rpms ;;
-    p ) pip_upgrade_outdated -3 --verbose ;;
-    r ) ruby_up ;;
+    a ) coil ;;
+    b ) steep ;;
+    d ) mydots ;;
+    p ) pup ;;
+    r ) shine ;;
     s ) generate-dotfiles ;;
-    * ) echo "Invalid option: $update" 1>&2 ; exit 1 ;;
+    y ) yum2 ;;
+    \?) error ;;
+    * ) error ;;
   esac
 done
+
+if [[ $OPTIND -eq 1 ]]; then error; fi
 
 echo
 exit 0
