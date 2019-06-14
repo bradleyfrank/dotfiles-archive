@@ -2,53 +2,44 @@
 
 set -eu
 
-extract_rpm() {
-  local basename
-  local cpiofile
+SAVEIFS=$IFS
+IFS="$(printf '\n\t')"
 
-  basename="$(echo "$1" | awk -F '.' '{print $1}')"
-  cpiofile="$basename.cpio"
-
-  mkdir "$basename"
-  rpm2cpio "$1" > "$basename"/"$cpiofile" 2>/dev/null
-
-  pushd "$basename" >/dev/null
-  cpio -id < "$cpiofile" >/dev/null 2>&1
-  rm -rf "$cpiofile"
-  popd >/dev/null
-}
-
-if [[ -z "$1" ]]; then
-  echo "Usage: extract <path/file_name>"
-  echo "       extract <path/file_name_1> [path/file_name_2] [path/file_name_3]"
-else
+extract() {
+ if [[ -z "$1" ]]; then
+  # display usage if no parameters given
+  echo "Usage: extract <path/to/file1> [file2] [file3] ... [fileN]"
+ else
   for n in "$@"
   do
-    if [[ -f "$n" ]]; then
-      case "${n%,}" in
-        *.7z|*.arj|*.cab|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.udf|*.wim|*.xar)
-                7z x ./"$n"                       ;;
-        *.bz2)  bunzip2 ./"$n"                    ;;
-        *.cpio) cpio -id < ./"$n"                 ;;
-        *.exe)  cabextract ./"$n"                 ;;
-        *.gz)   gunzip ./"$n"                     ;;
-        *.lzma) unlzma ./"$n"                     ;;
-        *.pax)  pax -r -f "$n"                    ;;
-        *.pkg)  pkgutil --expand "$n" "${n:0:-4}" ;;
-        *.rar)  unrar x -ad ./"$n"                ;;
-        *.rpm)  extract_rpm "$n"                  ;;
-        *.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar)
-                tar xvf "$n"                      ;;
-        *.xz)   unxz ./"$n"                       ;;
-        *.zip|*.war|*.jar)
-                unzip ./"$n"                      ;;
-        *.z)    uncompress ./"$n"                 ;;
-        *)      echo "extract: '$n' - unknown archive method"
-                return 1                          ;;
-      esac
+    if [[ -f "$n" ]] ; then
+        case "${n%,}" in
+          *.cbt|*.tar.bz2|*.tar.gz|*.tar.xz|*.tbz2|*.tgz|*.txz|*.tar) 
+                        tar xvf "$n"       ;;
+          *.lzma)       unlzma ./"$n"      ;;
+          *.bz2)        bunzip2 ./"$n"     ;;
+          *.cbr|*.rar)  unrar x -ad ./"$n" ;;
+          *.gz)         gunzip ./"$n"      ;;
+          *.cbz|*.epub|*.zip)
+                        unzip ./"$n"       ;;
+          *.z)          uncompress ./"$n"  ;;
+          *.7z|*.arj|*.cab|*.cb7|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.pkg|*.rpm|*.udf|*.wim|*.xar)
+                        7z x ./"$n"        ;;
+          *.xz)         unxz ./"$n"        ;;
+          *.exe)        cabextract ./"$n"  ;;
+          *.cpio)       cpio -id < ./"$n"  ;;
+          *.cba|*.ace)  unace x ./"$n"     ;;
+          *)
+                        echo "extract: '$n' - unknown archive method"
+                        return 1
+                        ;;
+        esac
     else
-      echo "'$n' - file does not exist"
-      return 1
+        echo "'$n' - file does not exist"
+        return 1
     fi
   done
 fi
+}
+
+IFS=$SAVEIFS
