@@ -1,52 +1,5 @@
 #!/usr/bin/env bash
 
-# Update Anaconda
-coil() {
-  # shellcheck source=/dev/null
-  . /usr/local/anaconda3/bin/activate
-  conda update -n base conda -y
-  conda update --prefix /usr/local/anaconda3 anaconda -y 
-  conda clean --all -y
-  conda deactivate
-}
-
-
-# Update HomeBrew
-steep() {
-  brew update
-  brew upgrade
-  brew cask upgrade
-  brew cleanup
-}
-
-
-# Update Dotfiles repo
-mydots() {
-  pushd "$HOME"/.dotfiles >/dev/null 2>&1 || return 1
-  git stash
-  git pull
-  generate-dotfiles
-  git submodule update --init --recursive
-  for dir in */; do stow --restow "${dir%/}"; done
-  popd >/dev/null 2>&1 || return 1
-}
-
-
-# Update user Python packages
-pup() {
-  pip_upgrade_outdated -2 --user --verbose
-  pip_upgrade_outdated -3 --user --verbose
-}
-
-
-# Update RVM
-shine() {
-  rvm get stable
-  rvm gemset update
-  rvm cleanup all
-}
-
-
 # Show program help/usage
 usage() {
   echo "update -- UPDATE ALL THE THINGS!"
@@ -70,7 +23,6 @@ error() {
   echo "Invalid option. Usage: update [$OPTIONS]"
   exit 0
 }
-
 
 # Define all options
 OPTIONS="habdprsy"

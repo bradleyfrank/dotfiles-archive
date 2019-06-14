@@ -67,30 +67,8 @@ export HISTTIMEFORMAT='%F %T '
 # https://github.com/dvorka/hstr/blob/master/CONFIGURATION.md
 bind "'\C-r': '\C-a hh -- \C-j'"
 
-
-clint() {
-  docker-compose -f "$1" config --quiet
-}
-
-decrypt() {
-  openssl enc -d -aes-256-cbc -in "$1" -out "$1.decrypted"
-}
-
-encrypt() {
-  openssl enc -aes-256-cbc -salt -in "$1" -out "$1.encrypted"
-}
-
-gedit() {
-  nohup /usr/bin/gedit "$@" >/dev/null 2>&1 &
-}
-
-httptrace() {
-  curl -s -L -D - "$1" -o /dev/null -w "%{url_effective}\n"
-}
-
-tardir() {
-  tar -czf "${1%/}".tar.gz "$1"
-}
+# source functions
+. "${HOME}"/.config/bashrc/functions
 
 # customize ps1
 . "${HOME}"/.local/bin/ps1
