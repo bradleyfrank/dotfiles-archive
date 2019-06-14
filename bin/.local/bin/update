@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+# Source custom functions
+. "${HOME}"/.config/bashrc/functions
+
 # Show program help/usage
 usage() {
   echo "update -- UPDATE ALL THE THINGS!"
