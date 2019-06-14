@@ -77,3 +77,13 @@ steep() {
 tardir() {
   tar -czf "${1%/}".tar.gz "$1"
 }
+
+
+# download YouTube video as music only
+youtube-dl-music {
+  if [[ "$(uname -s)" == "Darwin" ]]; then
+    youtube-dl -x --audio-format m4a --postprocessor-args "-strict experimental" "$1"
+  else
+    youtube-dl -x --audio-format m4a "$1"
+  fi
+}
