@@ -48,11 +48,13 @@ export CLICOLOR=1
 %% export_termopts
 %%
 
-# tab-completion settings
+# cd & tab-completion settings
+shopt -s cdspell
 bind "set completion-ignore-case on"
 bind "set completion-map-case on"
 bind "set show-all-if-ambiguous on"
 bind "set mark-symlinked-directories on"
+bind "set visible-stats on"
 
 # history settings
 shopt -s histappend
