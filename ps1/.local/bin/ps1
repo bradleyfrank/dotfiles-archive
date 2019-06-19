@@ -26,7 +26,7 @@
 show_hostname=0
 
 # customize date (see `man date` for codes)
-date_format="%b-%d %H:%M:%S"
+date_format="%m-%d %H:%M:%S"
 
 # =============================================================================
 # ANSI COLOR DEFINITIONS
