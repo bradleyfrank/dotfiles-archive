@@ -20,13 +20,12 @@ else
         *.gz)               gunzip ./"$n" ;;
         *.cbz|*.epub|*.zip) mkdir "${n%.*}" && unzip "$n" -d "${n%.*}" ;;
         *.z)                uncompress ./"$n" ;;
-        *.7z|*.arj|*.cab|*.cb7|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.pkg|*.udf|*.wim|*.xar)
+        *.7z|*.arj|*.cab|*.cb7|*.chm|*.deb|*.dmg|*.iso|*.lzh|*.msi|*.pkg|*.rpm|*.udf|*.wim|*.xar)
                             7z x ./"$n" ;;
         *.xz)               unxz ./"$n" ;;
         *.exe)              cabextract ./"$n" ;;
         *.cpio)             mkdir "${n%.*}" && mv "$n" "${n%.*}"/ && (cd "${n%.*}" && cpio -id < ./"$n") ;;
         *.cba|*.ace)        unace x ./"$n" ;;
-        *.rpm)              7z x ./"$n" ;;
         *)                  echo "unknown archive method" ; return 1 ;;
       esac
     else
