@@ -26,7 +26,11 @@
 show_hostname=0
 
 # customize date (see `man date` for codes)
-date_format="%m-%d %H:%M:%S"
+date_format="%m-%d $(echo -e '\uE0B1') %H:%M:%S"
+
+# show command history number (1)
+# hide command history number (0)
+show_history_num=0
 
 # =============================================================================
 # ANSI COLOR DEFINITIONS
@@ -41,6 +45,7 @@ bg_LightSeaGreen="\[\e[48;5;37m\]"
 bg_DarkRed="\[\e[48;5;52m\]"
 bg_SlateBlue3="\[\e[48;5;61m\]"
 bg_SteelBlue1="\[\e[48;5;75m\]"
+bg_DarkOrange3="\[\e[48;5;166m\]"
 bg_Grey35="\[\e[48;5;240m\]"
 bg_Grey54="\[\e[48;5;245m\]"
 
@@ -49,6 +54,7 @@ fg_White="\[\e[38;5;15m\]"
 fg_LightSeaGreen="\[\e[38;5;37m\]"
 fg_SlateBlue3="\[\e[38;5;61m\]"
 fg_SteelBlue1="\[\e[38;5;75m\]"
+fg_DarkOrange3="\[\e[38;5;166m\]"
 fg_Red1="\[\e[38;5;196m\]"
 fg_DarkOrange="\[\e[38;5;208m\]"
 fg_Orange1="\[\e[38;5;214m\]"
@@ -69,6 +75,10 @@ c_date_bg=$bg_SteelBlue1
 c_date_fg=$fg_White
 c_date_div_fg=$fg_SteelBlue1
 
+c_history_bg=$bg_DarkOrange3
+c_history_fg=$fg_White
+c_history_div_fg=$fg_DarkOrange3
+
 c_cwd_bg=$bg_Grey54
 c_cwd_fg=$fg_White
 c_cwd_div_fg=$fg_Grey54
@@ -87,7 +97,7 @@ c_error_bg=$bg_DarkRed
 c_error_fg=$fg_White
 
 c_gitPull=$fg_SteelBlue1
-c_gitPush=$fg_Lime
+c_gitPush=$fg_LightSeaGreen
 c_gitStaged=$fg_White
 c_gitConflict=$fg_Red1
 c_gitChanged=$fg_Gold1
@@ -101,6 +111,7 @@ c_gitStashed=$fg_Orchid1
 # https://unicode-table.com/en/
 
 g_div=$'\uE0B0'          # solid triangle; requires powerline font
+#g_thinDiv=$'\uE0B1'      # thin arrow
 g_prompt="${g_div} "
 g_exitPrompt="${g_div} "
 
@@ -119,6 +130,8 @@ g_gitStashed=$'\u2691'   # flag
 
 build_cwd() {
   local div working_dir pathdirs numdirs shortpwd=""
+
+  div="${c_cwd_bg}${previous_bg}${g_div}${ResetColor}"
 
   # replace $HOME with tilde; replace slashes with newlines
   working_dir="$(echo "$PWD" | sed "s|^${HOME}|~|" | sed "s|/|\n|g")"
@@ -139,17 +152,15 @@ build_cwd() {
 
   # add the cwd back in so it's shown with a full name
   shortpwd="${shortpwd}${mkBold}${pathdirs[$numdirs]}"
-  current_dir="${c_cwd_bg}${c_cwd_fg} ${shortpwd} ${ResetColor}"
+  current_dir="${div}${c_cwd_bg}${c_cwd_fg} ${shortpwd} ${ResetColor}"
 
   previous_bg=$c_cwd_div_fg
 }
 
 
 build_date() {
-  local div
-
-  div="${c_date_div_fg}${c_cwd_bg}${g_div}${ResetColor}"
-  date="${c_date_bg} ${c_date_fg}$(date +"${date_format}") ${ResetColor}${div}"
+  date="${c_date_bg} ${c_date_fg}$(date +"${date_format}") ${ResetColor}"
+  previous_bg=$c_date_div_fg
 }
 
 
@@ -217,23 +228,21 @@ build_git_prompt() {
   untracked="$(git ls-files . --exclude-standard --others | wc -l)"
   stashed="$(git stash list | wc -l)"
 
+  if [[ ("$staged" -ne 0 || "$changed" -ne 0 || "$untracked" -ne 0 || "$stashed" -ne 0) ]]; then
+    clean=1
+  fi
+
   if [[ "$behind" -gt 0 ]]; then
     git_behind=" ${c_gitPull}${g_gitPull}${behind}"
+    clean=1
   fi
 
   if [[ "$ahead" -gt 0 ]]; then
     git_ahead=" ${c_gitPush}${g_gitPush}${ahead}"
+    clean=1
   fi
 
   git_remote="${git_behind}${git_ahead}"
-
-  # a custom check to determine if the repo is "clean"
-  if [[ "$staged" -ne 0 ]] ||
-     [[ "$changed" -ne 0 ]] ||
-     [[ "$untracked" -ne 0 ]] ||
-     [[ "$stashed" -ne 0 ]]; then
-       clean=1
-   fi
 
   # set the various repo indictors for any of the "dirty" statuses
   # NOTE: conflict is not yet implemented and is just a placeholder for now
@@ -263,7 +272,8 @@ build_git_prompt() {
     git_changes="${c_git_bg}${git_changes}${ResetColor}"
 
     # branch is dirty, color it yellow
-    prefix="${c_git_bg}${c_gitDirty_fg} ${g_gitBranch} ${branch}${ResetColor}"
+    prefix="${g_gitBranch} ${branch}"
+    prefix="${c_git_bg}${c_gitDirty_fg} ${prefix}${ResetColor}"
   else
     # branch is clean, color is green
     prefix="${c_git_bg}${c_gitClean_fg} ${g_gitBranch} ${branch}${ResetColor}"
@@ -273,20 +283,31 @@ build_git_prompt() {
   metadata="${git_remote}${git_changes}${c_git_bg} ${ResetColor}"
 
   # build final git prompt
-  ps1_git_prompt="${prefix}${c_git_bg}${metadata}${ResetColor}"
+  ps1_git_prompt="${prefix}${c_git_bg}${metadata}"
+}
+
+
+build_history_num() {
+  local div
+
+  if [[ $show_history_num -eq 1 ]]; then
+    div="${c_history_bg}${previous_bg}${g_div}${ResetColor}"
+    histnum="${div}${c_history_bg}${c_history_fg} \! ${ResetColor}"
+    previous_bg=$c_history_div_fg
+  fi
 }
 
 
 build_hostname() {
   local div
   local c_hostname="${c_hostname_bg}${c_hostname_fg}"
-  local c_div="${c_date_bg}${c_hostname_div_fg}"
 
   hostname=""
 
   if [[ ( -n "$SSH_CONNECTION" && -z "$TMUX" ) || "$show_hostname" -eq 1 ]]; then
-    div="${c_div}${g_div}${ResetColor}"
+    div="${c_hostname_div_fg}${previous_bg}${g_div}${ResetColor}"
     hostname="${c_hostname} \\h ${ResetColor}${div}"
+    previous_bg=$c_hostname_div_fg
   fi
 }
 
@@ -315,13 +336,14 @@ build_ps1() {
 
   build_hostname
   build_date
+  build_history_num
   build_cwd
   build_git
   build_venv
   build_exitstatus
 
   _system="${hostname}${date}"
-  _environ="${current_dir}${ps1_git_prompt}${ps1_env_prompt}"
+  _environ="${histnum}${current_dir}${ps1_git_prompt}${ps1_env_prompt}"
   _shell="${exit_status}"
   _suffix="${c_prompt_bg}${previous_bg}${g_prompt}${ResetColor}"
 
