@@ -180,7 +180,7 @@ build_git() {
 
 
 build_git_prompt() {
-  local branch="" ab_status ahead=0 behind=0 clean=0
+  local branch="" origin ab_status ahead=0 behind=0 clean=0
   local conflicts=0 staged=0 changed=0 untracked=0 stashed=0
   local git_ahead="" git_behind="" git_remote="" git_changes=""
   local _conflicts="" _staged="" _changed="" _untracked="" _stashed=""
@@ -199,11 +199,11 @@ build_git_prompt() {
   # retrieve Git status and metadata
   #
   branch="$(git rev-parse --abbrev-ref HEAD)"
-  upstream="$(git config --get branch."$branch".remote)"
+  origin="$(git rev-parse --abbrev-ref @\{upstream\})"
 
   # count commits ahead and behind of upstream
-  if [[ -n $upstream ]]; then
-      ab_status="$(git rev-list --count --left-right "${upstream}...HEAD" 2>/dev/null)"
+  if [[ -n $origin ]]; then
+      ab_status="$(git rev-list --count --left-right "${origin}...HEAD" 2>/dev/null)"
       behind="${ab_status%	*}"
       ahead="${ab_status#*	}"
   fi
