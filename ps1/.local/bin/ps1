@@ -1,5 +1,8 @@
 #!/usr/bin/env bash
 
+  # Capture the exit status from the last command
+  LAST_EXIT_STATUS="$?"
+
 #
 # Instructions for use:
 #
@@ -307,9 +310,6 @@ build_venv() {
 # -----------------------------------------------------------------------------
 
 build_ps1() {
-  # Capture the exit status from the last command
-  LAST_EXIT_STATUS="$?"
-
   # Save previous background color for dividers
   previous_bg=""
 
