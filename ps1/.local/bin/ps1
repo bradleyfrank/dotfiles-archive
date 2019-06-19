@@ -26,7 +26,7 @@
 show_hostname=0
 
 # customize date (see `man date` for codes)
-date_format="%m-%d $(echo -e '\uE0B1') %H:%M:%S"
+date_format="%H:%M:%S"
 
 # show command history number (1)
 # hide command history number (0)
