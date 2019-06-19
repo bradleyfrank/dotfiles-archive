@@ -330,7 +330,7 @@ build_user() {
     c_previous_bg=$c_user_div_fg
   fi
 
-  if [[ ( "$username" == "root" || $show_username -eq 1 ) ]]; then
+  if [[ ( "$user" == "root" || $show_username -eq 1 ) ]]; then
     div="${c_div}${g_div}${ResetColor}"
     username="${div}${c_user} ${user} ${ResetColor}"
     previous_bg=$c_previous_bg
