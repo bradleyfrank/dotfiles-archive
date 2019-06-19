@@ -180,7 +180,7 @@ build_git() {
 
 
 build_git_prompt() {
-  local branch="" ahead=0 behind=0 clean=0
+  local branch="" ab_status ahead=0 behind=0 clean=0
   local conflicts=0 staged=0 changed=0 untracked=0 stashed=0
   local git_ahead="" git_behind="" git_remote="" git_changes=""
   local _conflicts="" _staged="" _changed="" _untracked="" _stashed=""
@@ -196,61 +196,22 @@ build_git_prompt() {
   fi
 
   #
-  # read git status --branch --porcelain=v2 and parse the results
-  # https://git-scm.com/docs/git-status
+  # retrieve Git status and metadata
   #
-  while read -r line; do
-    case "$(echo "$line" | awk '{print $1}')" in
-      #
-      # branch.oid <hash>
-      # branch.head <branch>
-      # branch.upstream origin/<branch>
-      # branch.ab <ahead> <behind>
-      #
-      "#")
-        repo_metadata="$(echo "$line" | awk '{print $2}')"
-        # each piece of the branch metadata is easily parsed with awk
-        case "$(echo "$repo_metadata" | awk -F '.' '{print $2}')" in
-          "head" ) branch="$(echo "$line" | awk '{print $3}')" ;;
-          "ab"   )
-            ahead="$(echo "$line" | awk '{print $3}' | tr -d '+')"
-            behind="$(echo "$line" | awk '{print $4}' | tr -d '-')"
-            ;;
-        esac
-        ;;
-      #
-      # changed entries:
-      # 1 <XY> <sub> <mH> <mI> <mW> <hH> <hI> <path>
-      # renamed/copied entries:
-      # 2 <XY> <sub> <mH> <mI> <mW> <hH> <hI> <X><score> <path><sep><origPath>
-      #
-      1|2)
-        XY="$(echo "$line" | awk '{print $2}')"
-        # a changed file is just changed, but staged files can also be changed
-        case "${XY:0:1}" in
-          .) changed=$((changed+1)) ;;
-          *)
-            staged=$((staged+1))
-            case "${XY:1:2}" in
-              M|A|D|R|U|C) changed=$((changed+1)) ;;
-              *          ) ;;
-            esac
-            ;;
-        esac
-        ;;
-      #
-      # untracked items:
-      # ? <path>
-      #
-      "?") untracked=$((untracked+1)) ;;
-      #
-      # ignore everything else
-      #
-      *  ) ;;
-    esac
-  done <<< "$(git status --branch --porcelain=v2 --ignore-submodules)"
+  branch="$(git rev-parse --abbrev-ref HEAD)"
+  upstream="$(git config --get branch."$branch".remote)"
 
-  # count stashed entries
+  # count commits ahead and behind of upstream
+  if [[ -n $upstream ]]; then
+      ab_status="$(git rev-list --count --left-right "${upstream}...HEAD" 2>/dev/null)"
+      behind="${ab_status%	*}"
+      ahead="${ab_status#*	}"
+  fi
+
+  # count changed files, files staged for commit, untracked files, and number of stashes
+  changed="$(git diff --name-only | wc -l)"
+  staged="$(git diff --staged --name-only | wc -l)"
+  untracked="$(git ls-files . --exclude-standard --others | wc -l)"
   stashed="$(git stash list | wc -l)"
 
   if [[ "$behind" -gt 0 ]]; then
