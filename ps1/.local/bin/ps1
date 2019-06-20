@@ -234,6 +234,7 @@ build_git_prompt() {
     staged="$(git diff --staged --name-only | wc -l)"
     untracked="$(git ls-files . --exclude-standard --others | wc -l)"
     stashed="$(git stash list | wc -l)"
+    conflicts="$(git diff --name-status --diff-filter=U | wc -l)"
   elif [[ -d "$(git rev-parse --git-path rebase-merge)" ]] || \
        [[ -d "$(git rev-parse --git-path rebase-apply)" ]]; then
     branch="REBASE"
@@ -247,7 +248,11 @@ build_git_prompt() {
       ahead="${ab_status#*	}"
   fi
 
-  if [[ ("$staged" -ne 0 || "$changed" -ne 0 || "$untracked" -ne 0 || "$stashed" -ne 0) ]]; then
+  if [[ "$staged" -ne 0 ]] || \
+     [[ "$changed" -ne 0 ]] || \
+     [[ "$untracked" -ne 0 ]] || \
+     [[ "$stashed" -ne 0) ]] || \
+     [[ "$conflicts" -ne 0 ]]; then
     clean=1
   fi
 
@@ -264,7 +269,6 @@ build_git_prompt() {
   git_remote="${git_behind}${git_ahead}"
 
   # set the various repo indictors for any of the "dirty" statuses
-  # NOTE: conflict is not yet implemented and is just a placeholder for now
   if [[ "$clean" -eq 1 ]]; then
     if [[ $staged -gt 0 ]]; then
       _staged=" ${c_gitStaged}${g_gitStaged}${staged}"
