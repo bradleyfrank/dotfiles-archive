@@ -15,7 +15,7 @@
 #
 
 # =============================================================================
-# SETTINGS
+# USER SETTINGS
 # -----------------------------------------------------------------------------
 
 # always show hostname (1)
@@ -28,6 +28,13 @@ date_format="%H:%M:%S"
 # always show username (1)
 # only show root username (0)
 show_username=0
+
+# =============================================================================
+# SCRIPT SETTINGS
+# -----------------------------------------------------------------------------
+
+_true=0
+_false=1
 
 # =============================================================================
 # ANSI COLOR DEFINITIONS
@@ -135,6 +142,20 @@ g_gitUntracked=$'\u2026' # ellipsis
 g_gitStashed=$'\u2691'   # flag
 
 # =============================================================================
+# HELPER FUNCTIONS
+# -----------------------------------------------------------------------------
+
+_build_div_segment() {
+  local c_fg=$previous_bg c_bg=$1
+
+  if [[ $prior_segment -eq $_true ]]; then
+    echo "${c_bg}${c_fg}${g_exitPrompt}${ResetColor}"
+  else
+    echo "${c_bg} "
+  fi
+}
+
+# =============================================================================
 # FUNCTIONS
 # -----------------------------------------------------------------------------
 
@@ -165,12 +186,19 @@ build_cwd() {
   current_dir="${div}${c_cwd_bg}${c_cwd_fg} ${shortpwd} ${ResetColor}"
 
   previous_bg=$c_cwd_div_fg
+  prior_segment=$_true
 }
 
 
 build_date() {
-  date="${c_date_bg} ${c_date_fg}$(date +"${date_format}") ${ResetColor}"
+  local div datestamp
+
+  div="$(_build_div_segment "$c_date_bg")"
+  datestamp="$(date +"${date_format}")"
+  date="${div}${c_date_bg}${c_date_fg}${datestamp} ${ResetColor}"
+
   previous_bg=$c_date_div_fg
+  prior_segment=$_true
 }
 
 
@@ -180,7 +208,7 @@ build_exitstatus() {
   exit_status=""
 
   if [[ $LAST_EXIT_STATUS -ne 0 ]]; then
-    div="${c_error_bg}${previous_bg}${g_exitPrompt}${ResetColor}"
+    div="$(_build_div_segment "$c_error_bg")"
     status="${c_error_bg}${c_error_fg}${LAST_EXIT_STATUS}"
     exit_status="${div}${status} ${ResetColor}"
   fi
@@ -188,14 +216,15 @@ build_exitstatus() {
 
 
 build_git() {
-  local div=""
+  local div
 
   ps1_git_prompt=""
 
   if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
     if build_git_prompt; then
-      div="${c_git_bg}${previous_bg}${g_div}${ResetColor}"
+      div="$(_build_div_segment "$c_git_bg")"
       previous_bg=$c_git_div_fg
+      prior_segment=$_true
     fi
   fi
 
@@ -219,14 +248,11 @@ build_git_prompt() {
     return 1
   fi
 
-  #
   # retrieve Git status and metadata
-  #
   branch="$(git symbolic-ref --short HEAD 2>/dev/null)"
   origin="$(git rev-parse --abbrev-ref @\{upstream\} 2>/dev/null)"
 
   if [[ -n $branch ]]; then
-    # count changed files, files staged for commit, untracked files, and number of stashes
     changed="$(git diff --name-only | wc -l)"
     staged="$(git diff --staged --name-only | wc -l)"
     untracked="$(git ls-files . --exclude-standard --others | wc -l)"
@@ -293,10 +319,10 @@ build_git_prompt() {
 
     # branch is dirty, color it yellow
     prefix="${g_gitBranch} ${branch}"
-    prefix="${c_git_bg}${c_gitDirty_fg} ${prefix}${ResetColor}"
+    prefix="${c_git_bg}${c_gitDirty_fg}${prefix}${ResetColor}"
   else
     # branch is clean, color is green
-    prefix="${c_git_bg}${c_gitClean_fg} ${g_gitBranch} ${branch}${ResetColor}"
+    prefix="${c_git_bg}${c_gitClean_fg}${g_gitBranch} ${branch}${ResetColor}"
   fi
 
   # combine remote info with local changes
@@ -308,39 +334,40 @@ build_git_prompt() {
 
 
 build_hostname() {
-  local div
-  local c_hostname="${c_hostname_bg}${c_hostname_fg}"
-
   hostname=""
 
-  if [[ ( -n "$SSH_CONNECTION" && -z "$TMUX" ) || "$show_hostname" -eq 1 ]]; then
-    div="${c_hostname_div_fg}${previous_bg}${g_div}${ResetColor}"
-    hostname="${c_hostname} \\h ${ResetColor}${div}"
+  if [[ ( -n "$SSH_CONNECTION" && -z "$TMUX" ) ]] || \
+     [[ "$show_hostname" -eq 1 ]]; then
+    div="$(_build_div_segment "$c_hostname_bg")"
+    hostname="${div}${c_hostname_bg}${c_hostname_fg}\\h ${ResetColor}"
+
     previous_bg=$c_hostname_div_fg
+    prior_segment=$_true
   fi
 }
 
 
 build_user() {
   local div user
-  local c_div c_user c_previous_bg
+  local c_user c_previous_bg
 
   user=$(id -un)
+  username=""
 
   if [[ "$user" == "root" ]]; then
-    c_div="${c_root_bg}${previous_bg}"
+    div="$(_build_div_segment "$c_root_bg")"
     c_user="${c_root_bg}${c_root_fg}"
     c_previous_bg=$c_root_div_fg
   else
-    c_div="${c_user_bg}${previous_bg}"
+    div="$(_build_div_segment "$c_user_bg")"
     c_user="${c_user_bg}${c_user_fg}"
     c_previous_bg=$c_user_div_fg
   fi
 
   if [[ ( "$user" == "root" || $show_username -eq 1 ) ]]; then
-    div="${c_div}${g_div}${ResetColor}"
-    username="${div}${c_user} ${user} ${ResetColor}"
+    username="${div}${c_user}${user} ${ResetColor}"
     previous_bg=$c_previous_bg
+    prior_segment=$_true
   fi
 }
 
@@ -351,10 +378,12 @@ build_venv() {
   ps1_env_prompt=""
 
   if [[ -n $CONDA_DEFAULT_ENV ]]; then
-    div="${c_venv_bg}${previous_bg}${g_div}${ResetColor}"
-    venv="${c_venv_bg}${c_venv_fg} ${CONDA_DEFAULT_ENV} ${ResetColor}"
+    div="$(_build_div_segment "$c_venv_bg")"
+    venv="${c_venv_bg}${c_venv_fg}${CONDA_DEFAULT_ENV} ${ResetColor}"
     ps1_env_prompt="${div}${venv}"
+
     previous_bg=$c_venv_div_fg
+    prior_segment=$_true
   fi
 }
 
@@ -366,6 +395,9 @@ build_venv() {
 build_ps1() {
   # Capture the exit status from the last command
   LAST_EXIT_STATUS="$?"
+
+  # Set initial segment status
+  prior_segment=$_false
 
   # Save previous background color for dividers
   previous_bg=""
