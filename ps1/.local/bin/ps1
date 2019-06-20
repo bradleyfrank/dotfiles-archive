@@ -251,7 +251,7 @@ build_git_prompt() {
   if [[ "$staged" -ne 0 ]] || \
      [[ "$changed" -ne 0 ]] || \
      [[ "$untracked" -ne 0 ]] || \
-     [[ "$stashed" -ne 0) ]] || \
+     [[ "$stashed" -ne 0 ]] || \
      [[ "$conflicts" -ne 0 ]]; then
     clean=1
   fi
