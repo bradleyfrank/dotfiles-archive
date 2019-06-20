@@ -225,8 +225,19 @@ build_git_prompt() {
   #
   # retrieve Git status and metadata
   #
-  branch="$(git symbolic-ref --short HEAD)"
+  branch="$(git symbolic-ref --short HEAD 2>/dev/null)"
   origin="$(git rev-parse --abbrev-ref @\{upstream\} 2>/dev/null)"
+
+  if [[ -n $branch ]]; then
+    # count changed files, files staged for commit, untracked files, and number of stashes
+    changed="$(git diff --name-only | wc -l)"
+    staged="$(git diff --staged --name-only | wc -l)"
+    untracked="$(git ls-files . --exclude-standard --others | wc -l)"
+    stashed="$(git stash list | wc -l)"
+  elif [[ -d "$(git rev-parse --git-path rebase-merge)" ]] || \
+       [[ -d "$(git rev-parse --git-path rebase-apply)" ]]; then
+    branch="REBASE"
+  fi
 
   # count commits ahead and behind of upstream
   if [[ -n $origin ]]; then
@@ -234,12 +245,6 @@ build_git_prompt() {
       behind="${ab_status%	*}"
       ahead="${ab_status#*	}"
   fi
-
-  # count changed files, files staged for commit, untracked files, and number of stashes
-  changed="$(git diff --name-only | wc -l)"
-  staged="$(git diff --staged --name-only | wc -l)"
-  untracked="$(git ls-files . --exclude-standard --others | wc -l)"
-  stashed="$(git stash list | wc -l)"
 
   if [[ ("$staged" -ne 0 || "$changed" -ne 0 || "$untracked" -ne 0 || "$stashed" -ne 0) ]]; then
     clean=1
