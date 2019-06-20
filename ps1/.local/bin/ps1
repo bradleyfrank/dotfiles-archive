@@ -237,6 +237,7 @@ build_git_prompt() {
   elif [[ -d "$(git rev-parse --git-path rebase-merge)" ]] || \
        [[ -d "$(git rev-parse --git-path rebase-apply)" ]]; then
     branch="REBASE"
+    clean=1
   fi
 
   # count commits ahead and behind of upstream
