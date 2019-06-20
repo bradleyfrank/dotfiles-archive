@@ -225,7 +225,7 @@ build_git_prompt() {
   #
   # retrieve Git status and metadata
   #
-  branch="$(git rev-parse --abbrev-ref HEAD)"
+  branch="$(git symbolic-ref --short HEAD)"
   origin="$(git rev-parse --abbrev-ref @\{upstream\} 2>/dev/null)"
 
   # count commits ahead and behind of upstream
