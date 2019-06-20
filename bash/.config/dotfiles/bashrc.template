@@ -71,7 +71,7 @@ bind "'\C-r': '\C-a hh -- \C-j'"
 
 # source functions
 . "${HOME}"/.config/bashrc/functions
+. "${HOME}"/.config/bashrc/ps1
 
 # customize ps1
-. "${HOME}"/.local/bin/ps1
 export PROMPT_COMMAND="build_ps1; history -a; history -n"
