@@ -74,4 +74,4 @@ bind "'\C-r': '\C-a hh -- \C-j'"
 
 # customize ps1
 . "${HOME}"/.local/bin/ps1
-export PROMPT_COMMAND="history -a; history -n; build_ps1"
+export PROMPT_COMMAND="build_ps1; history -a; history -n"
