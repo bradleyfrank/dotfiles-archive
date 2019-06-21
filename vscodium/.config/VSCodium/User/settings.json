@@ -6,8 +6,8 @@
     "workbench.colorCustomizations": {
         "editorRuler.foreground": "#747474",
         "[Solarized Light]": {
-            "editor.selectionBackground": "#93a1a1",
-		        "editor.selectionForeground": "#EEE8D5",
+            "editor.selectionBackground": "#93a1a166",
+            "editor.findMatchBackground": "#93a1a166",
         }
     },
     "workbench.startupEditor": "none",
@@ -19,6 +19,11 @@
     "editor.fontSize": 13,
     "editor.tabSize": 2,
     "editor.renderWhitespace": "none",
+    "editor.tokenColorCustomizations": {
+      "[Solarized Light]": {
+          "comments": "#6c71c4",
+      }
+    },
     "explorer.openEditors.visible": 0,
     "git.confirmSync": false,
     "terminal.integrated.fontSize": 13,
