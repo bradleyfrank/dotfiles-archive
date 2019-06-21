@@ -4,9 +4,11 @@
     "workbench.list.openMode": "doubleClick",
     "workbench.colorTheme": "Solarized Light",
     "workbench.colorCustomizations": {
-        "terminal.background": "#353a44",
-        "terminal.foreground": "#d9d9d9",
-        "editorRuler.foreground": "#747474"
+        "editorRuler.foreground": "#747474",
+        "[Solarized Light]": {
+            "editor.selectionBackground": "#93a1a1",
+		        "editor.selectionForeground": "#EEE8D5",
+        }
     },
     "workbench.startupEditor": "none",
     "workbench.statusBar.feedback.visible": false,
