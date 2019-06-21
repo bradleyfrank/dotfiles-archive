@@ -25,10 +25,6 @@ show_hostname=0
 # customize date (see `man date` for codes)
 date_format="%H:%M:%S"
 
-# always show username (1)
-# only show root username (0)
-show_username=0
-
 # =============================================================================
 # SCRIPT SETTINGS
 # -----------------------------------------------------------------------------
@@ -46,11 +42,9 @@ ResetColor="\[\e[0;0m\]"
 # https://jonasjacek.github.io/colors/
 
 bg_LightSeaGreen="\[\e[48;5;37m\]"
-bg_DarkRed="\[\e[48;5;52m\]"
 bg_SlateBlue3="\[\e[48;5;61m\]"
 bg_SteelBlue1="\[\e[48;5;75m\]"
 bg_DeepPink4="\[\e[48;5;125m\]"
-bg_DarkOrange3="\[\e[48;5;166m\]"
 bg_Grey35="\[\e[48;5;240m\]"
 bg_Grey54="\[\e[48;5;245m\]"
 
@@ -60,8 +54,6 @@ fg_LightSeaGreen="\[\e[38;5;37m\]"
 fg_SlateBlue3="\[\e[38;5;61m\]"
 fg_SteelBlue1="\[\e[38;5;75m\]"
 fg_DeepPink4="\[\e[38;5;125m\]"
-fg_DarkOrange3="\[\e[38;5;166m\]"
-fg_Red1="\[\e[38;5;196m\]"
 fg_DarkOrange="\[\e[38;5;208m\]"
 fg_Orange1="\[\e[38;5;214m\]"
 fg_Orchid1="\[\e[38;5;213m\]"
@@ -83,14 +75,6 @@ c_date_bg=$bg_SteelBlue1
 c_date_fg=$fg_White
 c_date_div_fg=$fg_SteelBlue1
 
-# User segment colors
-c_user_bg=$bg_DarkOrange3
-c_user_fg=$fg_White
-c_user_div_fg=$fg_DarkOrange3
-c_root_bg=$bg_DeepPink4
-c_root_fg=$fg_White
-c_root_div_fg=$fg_DeepPink4
-
 # Working directory colors
 c_cwd_bg=$bg_Grey54
 c_cwd_fg=$fg_White
@@ -109,14 +93,14 @@ c_venv_div_fg=$fg_LightSeaGreen
 
 # Suffix segment colors
 c_prompt_bg=""
-c_error_bg=$bg_DarkRed
+c_error_bg=$bg_DeepPink4
 c_error_fg=$fg_White
 
 # Git glyph colors
 c_gitPull=$fg_SteelBlue1
 c_gitPush=$fg_LightSeaGreen
 c_gitStaged=$fg_White
-c_gitConflict=$fg_Red1
+c_gitConflict=$fg_DeepPink4
 c_gitChanged=$fg_Gold1
 c_gitUntracked=$fg_DarkOrange
 c_gitStashed=$fg_Orchid1
@@ -347,31 +331,6 @@ build_hostname() {
 }
 
 
-build_user() {
-  local div user
-  local c_user c_previous_bg
-
-  user=$(id -un)
-  username=""
-
-  if [[ "$user" == "root" ]]; then
-    div="$(_build_div_segment "$c_root_bg")"
-    c_user="${c_root_bg}${c_root_fg}"
-    c_previous_bg=$c_root_div_fg
-  else
-    div="$(_build_div_segment "$c_user_bg")"
-    c_user="${c_user_bg}${c_user_fg}"
-    c_previous_bg=$c_user_div_fg
-  fi
-
-  if [[ ( "$user" == "root" || $show_username -eq 1 ) ]]; then
-    username="${div}${c_user}${user} ${ResetColor}"
-    previous_bg=$c_previous_bg
-    prior_segment=$_true
-  fi
-}
-
-
 build_venv() {
   local div venv
 
@@ -404,14 +363,13 @@ build_ps1() {
 
   build_hostname
   build_date
-  build_user
   build_cwd
   build_git
   build_venv
   build_exitstatus
 
   _system="${hostname}${date}"
-  _environ="${username}${current_dir}${ps1_git_prompt}${ps1_env_prompt}"
+  _environ="${current_dir}${ps1_git_prompt}${ps1_env_prompt}"
   _shell="${exit_status}"
   _suffix="${c_prompt_bg}${previous_bg}${g_prompt}${ResetColor}"
 
