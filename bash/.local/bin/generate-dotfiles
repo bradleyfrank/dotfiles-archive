@@ -8,9 +8,6 @@ PIP="NaN"
 DATE=$(date +%Y%m%d%H%M%S)
 
 CONF_DIR="$HOME/.config"
-DOTFILES_CONF_DIR="$CONF_DIR/dotfiles"
-DOTFILES_ARCHIVE="$DOTFILES_CONF_DIR/archive"
-
 PROFILE_TEMPLATE="$(find -L "$CONF_DIR" -name bash_profile.template | head -1)"
 RC_TEMPLATE="$(find -L "$CONF_DIR" -name bashrc.template | head -1)"
 
@@ -55,17 +52,6 @@ convert_template() {
 ##
 ## bash_profile functions
 ##
-
-#
-# Add rbenv to PATH if installed
-#
-path_rbenv() {
-  if [[ -x "$HOME"/.rbenv/bin/rbenv ]]; then
-    OUTPUT="PATH=\"\$HOME/.rbenv/bin:\$PATH\""
-  else
-    return 1
-  fi
-}
 
 
 #
@@ -230,22 +216,6 @@ export_python_site() {
 }
 
 
-#
-# Sets PS1 to use Powerline (usually reserved for local hosts)
-#
-powerline_ps1() {
-  # Skip if Pip not found on system
-  if [[ "$PIP" == "NaN" ]]; then return 1; fi
-
-  OUTPUT="$(printf '%s\n' \
-    'powerline-daemon -q' \
-    'POWERLINE_BASH_CONTINUATION=1' \
-    'POWERLINE_BASH_SELECT=1' \
-    '. $USER_SITE/powerline/bindings/bash/powerline.sh'
-  )"
-}
-
-
 ##
 ## Main Exec
 ##
@@ -275,17 +245,11 @@ fi
 convert_template "$PROFILE_TEMPLATE" "$PROFILE_TEMP"
 convert_template "$RC_TEMPLATE" "$RC_TEMP"
 
-
 #
-# Backup existing profiles
+# Backup existing profile/rc
 #
-if [[ ! -d "$DOTFILES_ARCHIVE" ]];
-  then mkdir -p "$DOTFILES_ARCHIVE"
-fi
-
-touch "$PROFILE" "$RC" # Ensure files exist or 'mv' will fail
-mv "$PROFILE" "$DOTFILES_ARCHIVE"/bash_profile."$DATE"
-mv "$RC" "$DOTFILES_ARCHIVE"/bashrc."$DATE"
+mv "$PROFILE"{,."$DATE"}
+mv "$RC"{,."$DATE"}
 
 
 #
