@@ -4,7 +4,6 @@ set -eu
 
 OS=""
 OUTPUT=""
-PIP="NaN"
 DATE=$(date +%Y%m%d%H%M%S)
 
 CONF_DIR="$HOME/.config"
@@ -31,9 +30,10 @@ convert_template() {
 
   IFS=''
   while read -r line || [[ -n "$line" ]]; do
-    if echo "$line" | grep -qE '%%'; then
-      # get variable - which serves as a function
-      func=$(echo "$line" | sed -e 's/^[ ]*//' | cut -d ' ' -f 2)
+    # regex search for '%% <function name>'
+    if echo "$line" | grep -qE '^%%'; then
+      # get the function name
+      func=$(echo "$line" | cut -d ' ' -f 2)
 
       # set an empty line to 'skip' so the line isn't printed
       if [[ "$func" == "%%" ]]; then func="skip"; fi
@@ -53,7 +53,6 @@ convert_template() {
 ## bash_profile functions
 ##
 
-
 #
 # Mac needs to add ~/Library Python 3.7 to PATH
 #
@@ -64,7 +63,6 @@ mac_path_anaconda() {
     return 1
   fi
 }
-
 
 #
 # Add GNU packages to Mac's PATH
@@ -83,7 +81,6 @@ mac_path_brewgnu() {
   OUTPUT="${tmpout%??}"
 }
 
-
 #
 # Add GNU packages to Mac's MANPATH
 #
@@ -101,6 +98,18 @@ mac_manpath_brewgnu() {
   OUTPUT="${tmpout%??}"
 }
 
+#
+# Add Homebrew environment variables
+#
+homebrew_shellenv() {
+  if [[ "$OS" == "linux" ]] && [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+    OUTPUT="eval \$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
+  elif [[ "$OS" == "macos" ]] && [[ -x /usr/local/bin/brew ]]; then
+    OUTPUT="eval \$(/usr/local/bin/brew shellenv)"
+  else
+    return 1
+  fi
+}
 
 #
 # Source custom Bash scripts
@@ -170,7 +179,6 @@ alias_rmate() {
   fi
 }
 
-
 #
 # Use keychain if installed with specific per-system options
 #
@@ -188,7 +196,6 @@ eval_keychain() {
   OUTPUT="eval \"\$(keychain $flags ${inherit}${keys})\""
 }
 
-
 #
 # Enable MacOS terminal options
 #
@@ -197,7 +204,6 @@ export_termopts() {
 
   OUTPUT=$(printf "export EDITOR=\"/usr/local/bin/mate -w\"\\n")
 }
-
 
 #
 # Find and export Python user site-packages location
@@ -228,17 +234,6 @@ case "$(uname -s)" in
   Linux) OS="linux" ;;
 esac
 
-
-#
-# Find Pip executable
-#
-if type pip3 >/dev/null 2>&1; then
-  PIP="pip3"
-elif type pip >/dev/null 2>&1; then
-  PIP="pip"
-fi
-
-
 #
 # Parse templates
 #
@@ -250,7 +245,6 @@ convert_template "$RC_TEMPLATE" "$RC_TEMP"
 #
 mv "$PROFILE"{,."$DATE"}
 mv "$RC"{,."$DATE"}
-
 
 #
 # Move new profiles into place
