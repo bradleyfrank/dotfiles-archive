@@ -120,9 +120,9 @@ c_error_fg=$fg_SolarRed
 
 # Git glyph colors
 c_gitPull=$fg_SolarMagenta
-c_gitPush=$fg_SolarGreen
+c_gitPush=$fg_Lime
 c_gitStaged=$fg_SteelBlue1
-c_gitConflict=$fg_DeepPink4
+c_gitConflict=$fg_SolarRed
 c_gitChanged=$fg_Gold1
 c_gitUntracked=$fg_Orange1
 c_gitStashed=$fg_Orchid1
