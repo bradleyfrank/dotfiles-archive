@@ -8,13 +8,11 @@ MANPATH="$HOME/.local/share/man:/usr/local/share/man:/usr/share/man"
 export MANPATH
 
 %% homebrew_shellenv
-%%
+
 %% source_profiled
 
 # Load solarized LS_COLORS
-if [[ -f "$HOME"/.dir_colors ]]; then
-  eval "$(dircolors "$HOME"/.dir_colors)"
-fi
+eval "$(dircolors "$HOME"/.dir_colors)"
 
 # Start tmux on remote connections
 if type tmux >/dev/null 2>&1 && [[ -n "$SSH_CONNECTION" ]]; then
