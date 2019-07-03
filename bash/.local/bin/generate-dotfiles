@@ -4,7 +4,7 @@ set -eu
 
 OS=""
 OUTPUT=""
-DATE=$(date +%Y%m%d%H%M%S)
+DATE=$(date +%Y%m%d-%H) # YYYYMMDD-HH
 
 CONF_DIR="$HOME/.config"
 PROFILE_TEMPLATE="$(find -L "$CONF_DIR" -name bash_profile.template | head -1)"
@@ -53,9 +53,7 @@ convert_template() {
 ## bash_profile functions
 ##
 
-#
 # Mac needs to add ~/Library Python 3.7 to PATH
-#
 mac_path_anaconda() {
   if [[ "$OS" == "macos" ]] && [[ -d "$HOME/Library/Python/3.7/bin" ]]; then
     OUTPUT="PATH=\"\$HOME/Library/Python/3.7/bin:\$PATH\""
@@ -64,9 +62,7 @@ mac_path_anaconda() {
   fi
 }
 
-#
 # Add GNU packages to Mac's PATH
-#
 mac_path_brewgnu() {
   if [[ "$OS" != "macos" ]]; then return 1; fi
 
@@ -81,9 +77,7 @@ mac_path_brewgnu() {
   OUTPUT="${tmpout%??}"
 }
 
-#
 # Add GNU packages to Mac's MANPATH
-#
 mac_manpath_brewgnu() {
   if [[ "$OS" != "macos" ]]; then return 1; fi
 
@@ -98,9 +92,7 @@ mac_manpath_brewgnu() {
   OUTPUT="${tmpout%??}"
 }
 
-#
 # Add Homebrew environment variables
-#
 homebrew_shellenv() {
   if [[ "$OS" == "linux" ]] && [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
     OUTPUT="eval \$(/home/linuxbrew/.linuxbrew/bin/brew shellenv)"
@@ -111,9 +103,7 @@ homebrew_shellenv() {
   fi
 }
 
-#
 # Source custom Bash scripts
-#
 source_profiled() {
   local tmpout
 
@@ -136,9 +126,7 @@ source_profiled() {
 ## bashrc functions
 ##
 
-#
 # Various aliases that replace known/built-in commands
-#
 alias_anaconda() {
   if [[ -f /usr/local/anaconda3/bin/activate ]]; then
     OUTPUT="alias ekans='. /usr/local/anaconda3/bin/activate'"
@@ -179,9 +167,7 @@ alias_rmate() {
   fi
 }
 
-#
 # Use keychain if installed with specific per-system options
-#
 eval_keychain() {
   if ! type keychain >/dev/null 2>&1; then return 1; fi
 
@@ -196,18 +182,14 @@ eval_keychain() {
   OUTPUT="eval \"\$(keychain $flags ${inherit}${keys})\""
 }
 
-#
 # Enable MacOS terminal options
-#
 export_termopts() {
   if [[ "$OS" != "macos" ]]; then return 1; fi
 
   OUTPUT=$(printf "export EDITOR=\"/usr/local/bin/mate -w\"\\n")
 }
 
-#
 # Find and export Python user site-packages location
-#
 export_python_site() {
   local site pyver
 
@@ -226,29 +208,28 @@ export_python_site() {
 ## Main Exec
 ##
 
-#
 # Determine OS
-#
 case "$(uname -s)" in
   Darwin) OS="macos" ;;
   Linux) OS="linux" ;;
 esac
 
-#
 # Parse templates
-#
 convert_template "$PROFILE_TEMPLATE" "$PROFILE_TEMP"
 convert_template "$RC_TEMPLATE" "$RC_TEMP"
 
-#
 # Backup existing profile/rc
-#
 mv "$PROFILE"{,."$DATE"}
 mv "$RC"{,."$DATE"}
 
-#
+# Remove archived profile/rc files older than 2 weeks
+find "$HOME" \
+  -maxdepth 1 \
+  \( -name '.bashrc.*' -o -name '.bash_profile.*' \) \
+  -not -newermt "$(date -d "2 weeks ago" "+%F")" \
+  -delete
+
 # Move new profiles into place
-#
 command cp "$PROFILE_TEMP" "$PROFILE"
 command cp "$RC_TEMP" "$RC"
 chown "$USER" "$PROFILE" "$RC"
