@@ -646,11 +646,11 @@
 	<key>NSWindow Frame SessionsPreferences</key>
 	<string>269 125 606 469 0 0 1920 1057 </string>
 	<key>NSWindow Frame SharedPreferences</key>
-	<string>68 463 928 394 0 0 1920 1057 </string>
+	<string>729 314 1018 447 0 0 1920 1057 </string>
 	<key>NSWindow Frame UKCrashReporter</key>
 	<string>155 473 592 584 0 0 1920 1057 </string>
 	<key>NSWindow Frame iTerm Window 0</key>
-	<string>300 150 1210 815 0 0 1920 1057 </string>
+	<string>337 45 1410 932 0 0 1920 1057 </string>
 	<key>NSWindow Frame iTerm Window 1</key>
 	<string>258 133 1210 860 0 0 1920 1057 </string>
 	<key>New Bookmarks</key>
@@ -2567,6 +2567,8 @@
 				<key>Red Component</key>
 				<real>0.0</real>
 			</dict>
+			<key>Minimum Contrast</key>
+			<real>0.0</real>
 			<key>Mouse Reporting</key>
 			<true/>
 			<key>Name</key>
@@ -2617,6 +2619,8 @@
 			<string></string>
 			<key>Silence Bell</key>
 			<true/>
+			<key>Smart Cursor Color</key>
+			<false/>
 			<key>Sync Title</key>
 			<false/>
 			<key>Tags</key>
@@ -3410,7 +3414,7 @@
 	<key>NoSyncInstallationId</key>
 	<string>5E826B0C-1B25-4341-97B0-8FBCDF6C3A2C</string>
 	<key>NoSyncLastTipTime</key>
-	<real>583162248.65895104</real>
+	<real>583680340.91711497</real>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile</key>
 	<true/>
 	<key>NoSyncNeverRemindPrefsChangesLostForFile_selection</key>
@@ -3424,6 +3428,7 @@
 		<string>000</string>
 		<string>0000</string>
 		<string>0001</string>
+		<string>0002</string>
 	</array>
 	<key>OpenTmuxWindowsIn</key>
 	<integer>0</integer>
@@ -3475,7 +3480,7 @@
 	<key>SUHasLaunchedBefore</key>
 	<true/>
 	<key>SULastCheckTime</key>
-	<date>2019-06-25T13:30:47Z</date>
+	<date>2019-07-01T13:25:47Z</date>
 	<key>SUSendProfileInfo</key>
 	<false/>
 	<key>ShowBookmarkName</key>
