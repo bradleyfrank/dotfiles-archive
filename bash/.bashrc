@@ -68,6 +68,10 @@ export HISTTIMEFORMAT='%F %T '
 bind "'\C-r': '\C-a hh -- \C-j'"
 export HH_CONFIG=hicolor
 
+# Load and enable solarized LS_COLORS
+eval "$(dircolors "$HOME"/.dir_colors)"
+export CLICOLOR=1
+
 # Update Anaconda
 coil() {
   . /usr/local/anaconda3/bin/activate

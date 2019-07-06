@@ -13,7 +13,7 @@ if [[ -x /usr/local/bin/brew ]]; then
 elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
   _brew="/home/linuxbrew/.linuxbrew"
 else
-  _brew=1
+  _brew=""
 fi
 
 # Common PATH locations for MacOS & Linux
@@ -26,7 +26,7 @@ if [[ "$_os" == "macos" ]]; then
   PATH="$PATH:$HOME/Library/Python/3.7/bin"
   PATH="$PATH:/opt/X11/bin"
   # Homebrew (prefix to PATH)
-  if [[ "$_brew" -ne 1 ]]; then
+  if [[ -n "$_brew" ]]; then
     PATH="$_brew/opt/coreutils/libexec/gnubin:$PATH"
     PATH="$_brew/opt/gnu-tar/libexec/gnubin:$PATH"
     PATH="$_brew/opt/ed/libexec/gnubin:$PATH"
@@ -37,7 +37,7 @@ if [[ "$_os" == "macos" ]]; then
   fi
 elif [[ "$_os" == "linux" ]]; then
   # Homebrew (prefix to PATH)
-  if [[ "$_brew" -ne 1 ]]; then
+  if [[ -n "$_brew" ]]; then
     PATH="$_brew/bin:$PATH"
   fi
 fi
@@ -48,7 +48,7 @@ export PATH
 MANPATH="$HOME/.local/share/man:$MANPATH"
 MANPATH="/usr/local/share/man:/usr/share/man:$MANPATH"
 
-if [[ "$_os" == "macos" ]]; then
+if [[ "$_os" == "macos" && -n "$_brew" ]]; then
   # Homebrew (prefix to MANPATH)
   MANPATH="$_brew/opt/coreutils/libexec/gnuman:$MANPATH"
   MANPATH="$_brew/opt/gnu-tar/libexec/gnuman:$MANPATH"
@@ -62,7 +62,7 @@ fi
 export MANPATH
 
 # Load additional Homebrew environment variables
-if [[ "$_brew" -ne 1 ]]; then
+if [[ -n "$_brew" ]]; then
   export HOMEBREW_PREFIX="$_brew"
   export HOMEBREW_CELLAR="$_brew/Cellar"
   export HOMEBREW_REPOSITORY="$_brew/Homebrew"
@@ -74,10 +74,6 @@ case "$_os" in
   macos) . /usr/local/etc/profile.d/bash_completion.sh ;;
   linux) . /etc/profile.d/bash_completion.sh ;;
 esac
-
-# Load and enable solarized LS_COLORS
-eval "$(dircolors "$HOME"/.dir_colors)"
-export CLICOLOR=1
 
 # Start tmux on remote connections
 if type tmux >/dev/null 2>&1 && [[ -n "$SSH_CONNECTION" ]]; then
