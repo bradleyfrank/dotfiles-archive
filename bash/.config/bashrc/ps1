@@ -14,16 +14,29 @@
 # https://ethanschoonover.com/solarized/
 #
 
+
 # =============================================================================
 # USER SETTINGS
 # -----------------------------------------------------------------------------
 
-# always show hostname (1)
-# only show hostname in SSH sessions w/o tmux (0)
+# (1) always show hostname (0) only show hostname in SSH sessions w/o tmux
 show_hostname=0
 
 # customize date (see `man date` for codes)
 date_format="%H:%M:%S"
+
+# unstaged (*) and staged (+) changes will be shown
+GIT_PS1_SHOWDIRTYSTATE=1
+
+# if something is stashed, then a '$' will be shown
+GIT_PS1_SHOWSTASHSTATE=1
+
+# if there are untracked files, then a '%' will be shown
+GIT_PS1_SHOWUNTRACKEDFILES=1
+
+# show number of commits ahead/behind (+/-) upstream
+GIT_PS1_SHOWUPSTREAM="auto verbose"
+
 
 # =============================================================================
 # SCRIPT SETTINGS
@@ -31,6 +44,7 @@ date_format="%H:%M:%S"
 
 _true=0
 _false=1
+
 
 # =============================================================================
 # ANSI COLOR DEFINITIONS
@@ -63,9 +77,9 @@ fg_SolarRed="\[\e[38;5;160m\]"
 #bg_SolarYellow="\[\e[48;5;136m\]"
 #fg_SolarYellow="\[\e[38;5;136m\]"
 #bg_SolarMagenta="\[\e[48;5;125m\]"
-fg_SolarMagenta="\[\e[38;5;125m\]"
+#fg_SolarMagenta="\[\e[38;5;125m\]"
 #bg_SolarGreen="\[\e[48;5;64m\]"
-fg_SolarGreen="\[\e[38;5;64m\]"
+#fg_SolarGreen="\[\e[38;5;64m\]"
 bg_SolarViolet="\[\e[48;5;61m\]"
 fg_SolarViolet="\[\e[38;5;61m\]"
 bg_SolarCyan="\[\e[48;5;37m\]"
@@ -76,12 +90,13 @@ fg_SolarBlue="\[\e[38;5;33m\]"
 # Additional colors (https://jonasjacek.github.io/colors/)
 fg_Lime="\[\e[38;5;10m\]"
 fg_White="\[\e[38;5;15m\]"
-fg_SteelBlue1="\[\e[38;5;75m\]"
-fg_DeepPink4="\[\e[38;5;125m\]"
+#fg_SteelBlue1="\[\e[38;5;75m\]"
+#fg_DeepPink4="\[\e[38;5;125m\]"
 fg_DarkOrange="\[\e[38;5;208m\]"
-fg_Orange1="\[\e[38;5;214m\]"
-fg_Orchid1="\[\e[38;5;213m\]"
-fg_Gold1="\[\e[38;5;220m\]"
+#fg_Orange1="\[\e[38;5;214m\]"
+#fg_Orchid1="\[\e[38;5;213m\]"
+#fg_Gold1="\[\e[38;5;220m\]"
+
 
 # =============================================================================
 # SEGMENT COLORS
@@ -108,7 +123,7 @@ c_gitDirty_fg=$fg_DarkOrange
 c_gitClean_fg=$fg_Lime
 c_git_div_fg=$fg_SolarBase01
 
-# Anaconda segment colors
+# Virtual environment segment colors
 c_venv_bg=$bg_SolarCyan
 c_venv_fg=$fg_White
 c_venv_div_fg=$fg_SolarCyan
@@ -118,14 +133,6 @@ c_prompt_bg=""
 c_error_bg=$bg_SolarBase02
 c_error_fg=$fg_SolarRed
 
-# Git glyph colors
-c_gitPull=$fg_SolarMagenta
-c_gitPush=$fg_Lime
-c_gitStaged=$fg_SteelBlue1
-c_gitConflict=$fg_SolarRed
-c_gitChanged=$fg_Gold1
-c_gitUntracked=$fg_Orange1
-c_gitStashed=$fg_Orchid1
 
 # =============================================================================
 # SEGMENT GLYPHS
@@ -134,18 +141,11 @@ c_gitStashed=$fg_Orchid1
 # https://unicode-table.com/en/
 
 g_div=$'\uE0B0'          # solid triangle; requires powerline font
-g_thinDiv=$'\uE0B1'      # thin arrow; requires powerline font
 g_prompt="${g_div} "
 g_exitPrompt="${g_div} "
-
+g_thinDiv=$'\uE0B1'      # thin arrow; requires powerline font
 g_gitBranch=$'\uE0A0'    # branch symbol; alternatives: 2325, 2387
-g_gitPull=$'\u2193'      # down arrow
-g_gitPush=$'\u2191'      # up arrow
-g_gitStaged=$'\u2713'    # check mark
-g_gitConflict=$'\u2718'  # ballot cross mark
-g_gitChanged=$'\u002A'   # asterisk
-g_gitUntracked=$'\u2026' # ellipsis
-g_gitStashed=$'\u2691'   # flag
+
 
 # =============================================================================
 # HELPER FUNCTIONS
@@ -160,6 +160,7 @@ _build_div_segment() {
     echo "${c_bg} "
   fi
 }
+
 
 # =============================================================================
 # FUNCTIONS
@@ -195,7 +196,6 @@ build_cwd() {
   prior_segment=$_true
 }
 
-
 build_date() {
   local div datestamp
 
@@ -207,143 +207,44 @@ build_date() {
   prior_segment=$_true
 }
 
-
 build_exitstatus() {
-  local div status
-
+  local div
   exit_status=""
 
   if [[ $LAST_EXIT_STATUS -ne 0 ]]; then
     div="$(_build_div_segment "$c_error_bg")"
-    status="${c_error_bg}${c_error_fg}${LAST_EXIT_STATUS}"
-    exit_status="${div}${status} ${ResetColor}"
+    exit_status="${div}${c_error_bg}${c_error_fg}${LAST_EXIT_STATUS} ${ResetColor}"
   fi
 }
 
-
 build_git() {
-  local div
-
+  local div git_prompt prefix
   ps1_git_prompt=""
 
-  if git rev-parse --is-inside-work-tree >/dev/null 2>&1; then
-    if build_git_prompt; then
-      div="$(_build_div_segment "$c_git_bg")"
-      previous_bg=$c_git_div_fg
-      prior_segment=$_true
+  git_prompt="$(__git_ps1 "%s")"
+
+  if [[ -n $git_prompt ]]; then
+    if grep -Eq "[*|+|%]" <<< "$git_prompt"; then
+      prefix="${c_git_bg}${c_gitDirty_fg}${g_gitBranch}"
+    else
+      prefix="${c_git_bg}${c_gitClean_fg}${g_gitBranch}"
     fi
+
+    ps1_git_prompt="${prefix} ${git_prompt} ${ResetColor}"
+
+    div="$(_build_div_segment "$c_git_bg")"
+    previous_bg=$c_git_div_fg
+    prior_segment=$_true
   fi
 
   ps1_git_prompt="${div}${ps1_git_prompt}"
 }
 
-
-build_git_prompt() {
-  local branch="" origin ab_status ahead=0 behind=0 clean=0
-  local conflicts=0 staged=0 changed=0 untracked=0 stashed=0
-  local git_ahead="" git_behind="" git_remote="" git_changes=""
-  local _conflicts="" _staged="" _changed="" _untracked="" _stashed=""
-  local prefix metadata
-
-  if git_dir="$(git rev-parse --git-dir 2>/dev/null)"; then
-    # The .git config directory does not have any metadata, so exit
-    if [[ "$git_dir" == "." ]]; then
-      return 1
-    fi
-  else
-    return 1
-  fi
-
-  # retrieve Git status and metadata
-  branch="$(git symbolic-ref --short HEAD 2>/dev/null)"
-  origin="$(git rev-parse --abbrev-ref @\{upstream\} 2>/dev/null)"
-
-  if [[ -n $branch ]]; then
-    changed="$(git diff --name-only | wc -l)"
-    staged="$(git diff --staged --name-only | wc -l)"
-    untracked="$(git ls-files . --exclude-standard --others | wc -l)"
-    stashed="$(git stash list | wc -l)"
-    conflicts="$(git diff --name-status --diff-filter=U | wc -l)"
-  elif [[ -d "$(git rev-parse --git-path rebase-merge)" ]] || \
-       [[ -d "$(git rev-parse --git-path rebase-apply)" ]]; then
-    branch="REBASE"
-    clean=1
-  fi
-
-  # count commits ahead and behind of upstream
-  if [[ -n $origin ]]; then
-      ab_status="$(git rev-list --count --left-right "${origin}...HEAD" 2>/dev/null)"
-      behind="${ab_status%	*}"
-      ahead="${ab_status#*	}"
-  fi
-
-  if [[ "$staged" -ne 0 ]] || \
-     [[ "$changed" -ne 0 ]] || \
-     [[ "$untracked" -ne 0 ]] || \
-     [[ "$stashed" -ne 0 ]] || \
-     [[ "$conflicts" -ne 0 ]]; then
-    clean=1
-  fi
-
-  if [[ "$behind" -gt 0 ]]; then
-    git_behind=" ${c_gitPull}${g_gitPull}${behind}"
-    clean=1
-  fi
-
-  if [[ "$ahead" -gt 0 ]]; then
-    git_ahead=" ${c_gitPush}${g_gitPush}${ahead}"
-    clean=1
-  fi
-
-  git_remote="${git_behind}${git_ahead}"
-
-  # set the various repo indictors for any of the "dirty" statuses
-  if [[ "$clean" -eq 1 ]]; then
-    if [[ $staged -gt 0 ]]; then
-      _staged=" ${c_gitStaged}${g_gitStaged}${staged}"
-    fi
-
-    if [[ $conflicts -gt 0 ]]; then
-      _conflicts=" ${c_gitConflict}${g_gitConflict}${conflicts}"
-    fi
-
-    if [[ $changed -gt 0 ]]; then
-      _changed=" ${c_gitChanged}${g_gitChanged}${changed}"
-    fi
-
-    if [[ $untracked -gt 0 ]]; then
-      _untracked=" ${c_gitUntracked}${g_gitUntracked}${untracked}"
-    fi
-
-    if [[ $stashed -gt 0 ]]; then
-      _stashed=" ${c_gitStashed}${g_gitStashed}${stashed}"
-    fi
-
-    # combine all the changes into one string
-    git_changes="${_staged}${_conflicts}${_changed}${_untracked}${_stashed}"
-    git_changes="${c_git_bg}${git_changes}${ResetColor}"
-
-    # branch is dirty, color it yellow
-    prefix="${g_gitBranch} ${branch}"
-    prefix="${c_git_bg}${c_gitDirty_fg}${prefix}${ResetColor}"
-  else
-    # branch is clean, color is green
-    prefix="${c_git_bg}${c_gitClean_fg}${g_gitBranch} ${branch}${ResetColor}"
-  fi
-
-  # combine remote info with local changes
-  metadata="${git_remote}${git_changes}${c_git_bg} ${ResetColor}"
-
-  # build final git prompt
-  ps1_git_prompt="${prefix}${c_git_bg}${metadata}"
-}
-
-
 build_hostname() {
+  local div
   hostname=""
 
-  if [[ ( -n "$SSH_CONNECTION" && -z "$TMUX" ) ]] || \
-     [[ "$show_hostname" -eq 1 ]]; then
+  if [[ ( -n "$SSH_CONNECTION" && -z "$TMUX" ) ]] || [[ "$show_hostname" -eq 1 ]]; then
     div="$(_build_div_segment "$c_hostname_bg")"
     hostname="${div}${c_hostname_bg}${c_hostname_fg}\\h ${ResetColor}"
 
@@ -352,10 +253,8 @@ build_hostname() {
   fi
 }
 
-
 build_venv() {
   local div venv
-
   ps1_env_prompt=""
 
   if [[ -n $CONDA_DEFAULT_ENV ]]; then
@@ -373,7 +272,7 @@ build_venv() {
 # MAIN
 # -----------------------------------------------------------------------------
 
-build_ps1() {
+__my_prompt() {
   # Capture the exit status from the last command
   LAST_EXIT_STATUS="$?"
 
@@ -398,4 +297,4 @@ build_ps1() {
   export PS1="${_system}${_environ}${_shell}${_suffix}"
 }
 
-export -f build_ps1
+export -f __my_prompt

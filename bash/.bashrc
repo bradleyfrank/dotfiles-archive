@@ -1,6 +1,12 @@
 #!/bin/bash
 # ...declare as a Bash script for syntax coloring
 
+# Use the kernal name "Darwin" to identify MacOS
+case "$(uname -s)" in
+  Darwin) _os="macos" ;;
+  Linux ) _os="linux" ;;
+esac
+
 # Skip sourcing if not running interactively
 [[ $- != *i* ]] && return
 
@@ -31,13 +37,18 @@ alias weather='curl wttr.in'
 alias wget='wget -c'
 
 # Load SSH keys into ssh-agent
-eval "$(keychain --eval --ignore-missing --quiet --inherit any id_esai id_home id_develop id_rsa id_ed25519)"
+_keys="id_esai id_home id_develop id_rsa id_ed25519"
+case "$_os" in
+  macos) _flags="--inherit any" ;;
+  linux) _flags="" ;;
+esac
+eval "$(keychain --eval --ignore-missing --quiet "$_flags" "$_keys")"
 
 # Set default editors
 export VISUAL=vim
 export EDITOR=vim
 
-# Tab-completion and `cd` settings
+# Navigation settings (i.e. `cd` and tab-completion)
 shopt -s cdspell
 bind "set completion-ignore-case on"
 bind "set completion-map-case on"
@@ -130,4 +141,4 @@ youtube-dl-music() {
 
 # Customize ps1
 . "${HOME}"/.config/bashrc/ps1
-export PROMPT_COMMAND="build_ps1; history -a; history -n"
+export PROMPT_COMMAND="__my_prompt; history -a; history -n"
