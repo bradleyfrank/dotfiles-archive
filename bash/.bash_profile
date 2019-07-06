@@ -75,6 +75,10 @@ case "$_os" in
   linux) . /etc/profile.d/bash_completion.sh ;;
 esac
 
+# Source git-prompt if necessary
+_git_prompt="/usr/share/git-core/contrib/completion/git-prompt.sh"
+[[ -e "$_git_prompt" ]] && . "$_git_prompt"
+
 # Start tmux on remote connections
 if type tmux >/dev/null 2>&1 && [[ -n "$SSH_CONNECTION" ]]; then
   if ! tmux has -t main >/dev/null 2>&1; then
