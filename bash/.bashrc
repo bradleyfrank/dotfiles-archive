@@ -39,10 +39,10 @@ alias wget='wget -c'
 # Load SSH keys into ssh-agent
 _keys="id_esai id_home id_develop id_rsa id_ed25519"
 case "$_os" in
-  macos) _flags="--inherit any" ;;
-  linux) _flags="" ;;
+  macos) _keychain="keychain --eval --ignore-missing --quiet --inherit any $_keys" ;;
+  linux) _keychain="keychain --eval --ignore-missing --quiet $_keys" ;;
 esac
-eval "$(keychain --eval --ignore-missing --quiet "$_flags" "$_keys")"
+eval "$($_keychain)"
 
 # Set default editors
 export VISUAL=vim
@@ -113,7 +113,7 @@ mydots() {
   git pull
   generate-dotfiles
   git submodule update --init --recursive
-  for dir in */; do stow --restow "${dir%/}"; done
+  for dir in */; do stow --restow --no-folding "${dir%/}"; done
   popd >/dev/null 2>&1 || return 1
 }
 
