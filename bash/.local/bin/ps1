@@ -4,8 +4,10 @@
 # Instructions for use:
 #
 # (1) Add to ~/.bashrc ...
-# . /path/to/this/file/ps1
-# export PROMPT_COMMAND=build_ps1
+# __my_prompt() {
+#   /path/to/ps1
+# }
+# export PROMPT_COMMAND=__my_prompt
 #
 # (2) Use a powerline font for the terminal
 # https://github.com/powerline/fonts
@@ -13,6 +15,9 @@
 # (3) Current color selections adapted for Solarized Light
 # https://ethanschoonover.com/solarized/
 #
+
+# Capture the exit status from the last command
+LAST_EXIT_STATUS="$?"
 
 
 # =============================================================================
@@ -272,29 +277,22 @@ build_venv() {
 # MAIN
 # -----------------------------------------------------------------------------
 
-__my_prompt() {
-  # Capture the exit status from the last command
-  LAST_EXIT_STATUS="$?"
+# Set initial segment status
+prior_segment=$_false
 
-  # Set initial segment status
-  prior_segment=$_false
+# Save previous background color for dividers
+previous_bg=""
 
-  # Save previous background color for dividers
-  previous_bg=""
+build_hostname
+build_date
+build_cwd
+build_git
+build_venv
+build_exitstatus
 
-  build_hostname
-  build_date
-  build_cwd
-  build_git
-  build_venv
-  build_exitstatus
+_system="${hostname}${date}"
+_environ="${current_dir}${ps1_git_prompt}${ps1_env_prompt}"
+_shell="${exit_status}"
+_suffix="${c_prompt_bg}${previous_bg}${g_prompt}${ResetColor}"
 
-  _system="${hostname}${date}"
-  _environ="${current_dir}${ps1_git_prompt}${ps1_env_prompt}"
-  _shell="${exit_status}"
-  _suffix="${c_prompt_bg}${previous_bg}${g_prompt}${ResetColor}"
-
-  export PS1="${_system}${_environ}${_shell}${_suffix}"
-}
-
-export -f __my_prompt
+export PS1="${_system}${_environ}${_shell}${_suffix}"

@@ -143,5 +143,9 @@ youtube-dl-music() {
 }
 
 # Customize ps1
-. "${HOME}"/.config/bashrc/ps1
-export PROMPT_COMMAND="__my_prompt; history -a; history -n"
+__my_prompt() {
+  ps1
+  history -a
+  history -n
+}
+export PROMPT_COMMAND="__my_prompt"
