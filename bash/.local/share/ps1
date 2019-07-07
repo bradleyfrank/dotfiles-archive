@@ -4,9 +4,7 @@
 # Instructions for use:
 #
 # (1) Add to ~/.bashrc ...
-# __my_prompt() {
-#   /path/to/ps1
-# }
+# . /path/to/ps1
 # export PROMPT_COMMAND=__my_prompt
 #
 # (2) Use a powerline font for the terminal
@@ -15,9 +13,6 @@
 # (3) Current color selections adapted for Solarized Light
 # https://ethanschoonover.com/solarized/
 #
-
-# Capture the exit status from the last command
-LAST_EXIT_STATUS="$?"
 
 
 # =============================================================================
@@ -195,7 +190,7 @@ build_cwd() {
 
   # add the cwd back in so it's shown with a full name
   shortpwd="${shortpwd}${pathdirs[$numdirs]}"
-  current_dir="${div}${c_cwd_bg}${c_cwd_fg} ${shortpwd} ${ResetColor}"
+  _ps1_cwd="${div}${c_cwd_bg}${c_cwd_fg} ${shortpwd} ${ResetColor}"
 
   previous_bg=$c_cwd_div_fg
   prior_segment=$_true
@@ -206,7 +201,7 @@ build_date() {
 
   div="$(_build_div_segment "$c_date_bg")"
   datestamp="$(date +"${date_format}")"
-  date="${div}${c_date_bg}${c_date_fg}${datestamp} ${ResetColor}"
+  _ps1_date="${div}${c_date_bg}${c_date_fg}${datestamp} ${ResetColor}"
 
   previous_bg=$c_date_div_fg
   prior_segment=$_true
@@ -214,17 +209,17 @@ build_date() {
 
 build_exitstatus() {
   local div
-  exit_status=""
+  _ps1_exit=""
 
   if [[ $LAST_EXIT_STATUS -ne 0 ]]; then
     div="$(_build_div_segment "$c_error_bg")"
-    exit_status="${div}${c_error_bg}${c_error_fg}${LAST_EXIT_STATUS} ${ResetColor}"
+    _ps1_exit="${div}${c_error_bg}${c_error_fg}${LAST_EXIT_STATUS} ${ResetColor}"
   fi
 }
 
 build_git() {
   local div git_prompt prefix
-  ps1_git_prompt=""
+  _ps1_git=""
 
   git_prompt="$(__git_ps1 "%s")"
 
@@ -235,23 +230,23 @@ build_git() {
       prefix="${c_git_bg}${c_gitClean_fg}${g_gitBranch}"
     fi
 
-    ps1_git_prompt="${prefix} ${git_prompt} ${ResetColor}"
+    _ps1_git="${prefix} ${git_prompt} ${ResetColor}"
 
     div="$(_build_div_segment "$c_git_bg")"
     previous_bg=$c_git_div_fg
     prior_segment=$_true
   fi
 
-  ps1_git_prompt="${div}${ps1_git_prompt}"
+  _ps1_git="${div}${_ps1_git}"
 }
 
 build_hostname() {
   local div
-  hostname=""
+  _ps1_hostname=""
 
   if [[ ( -n "$SSH_CONNECTION" && -z "$TMUX" ) ]] || [[ "$show_hostname" -eq 1 ]]; then
     div="$(_build_div_segment "$c_hostname_bg")"
-    hostname="${div}${c_hostname_bg}${c_hostname_fg}\\h ${ResetColor}"
+    _ps1_hostname="${div}${c_hostname_bg}${c_hostname_fg}\\h ${ResetColor}"
 
     previous_bg=$c_hostname_div_fg
     prior_segment=$_true
@@ -260,12 +255,12 @@ build_hostname() {
 
 build_venv() {
   local div venv
-  ps1_env_prompt=""
+  _ps1_venv=""
 
   if [[ -n $CONDA_DEFAULT_ENV ]]; then
     div="$(_build_div_segment "$c_venv_bg")"
     venv="${c_venv_bg}${c_venv_fg}${CONDA_DEFAULT_ENV} ${ResetColor}"
-    ps1_env_prompt="${div}${venv}"
+    _ps1_venv="${div}${venv}"
 
     previous_bg=$c_venv_div_fg
     prior_segment=$_true
@@ -277,22 +272,29 @@ build_venv() {
 # MAIN
 # -----------------------------------------------------------------------------
 
-# Set initial segment status
-prior_segment=$_false
+__my_prompt() {
+  # Capture the exit status from the last command
+  LAST_EXIT_STATUS="$?"
 
-# Save previous background color for dividers
-previous_bg=""
+  # Set initial segment status
+  prior_segment=$_false
 
-build_hostname
-build_date
-build_cwd
-build_git
-build_venv
-build_exitstatus
+  # Save previous background color for dividers
+  previous_bg=""
 
-_system="${hostname}${date}"
-_environ="${current_dir}${ps1_git_prompt}${ps1_env_prompt}"
-_shell="${exit_status}"
-_suffix="${c_prompt_bg}${previous_bg}${g_prompt}${ResetColor}"
+  build_hostname
+  build_date
+  build_cwd
+  build_git
+  build_venv
+  build_exitstatus
 
-export PS1="${_system}${_environ}${_shell}${_suffix}"
+  _system="${_ps1_hostname}${_ps1_date}"
+  _environ="${_ps1_cwd}${_ps1_git}${_ps1_venv}"
+  _shell="${_ps1_exit}"
+  _suffix="${c_prompt_bg}${previous_bg}${g_prompt}${ResetColor}"
+
+  export PS1="${_system}${_environ}${_shell}${_suffix}"
+}
+
+export -f __my_prompt
