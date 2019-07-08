@@ -10,6 +10,16 @@ esac
 # Skip sourcing if not running interactively
 [[ $- != *i* ]] && return
 
+# Load Bash completions
+case "$_os" in
+  macos) . /usr/local/etc/profile.d/bash_completion.sh ;;
+  linux) . /etc/profile.d/bash_completion.sh ;;
+esac
+
+# Source git-prompt if necessary
+_git_prompt="/usr/share/git-core/contrib/completion/git-prompt.sh"
+[[ -e "$_git_prompt" ]] && . "$_git_prompt"
+
 # Aliases
 alias bb='bbedit'
 alias condense='grep -Erv "(^#|^$)"'
