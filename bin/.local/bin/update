@@ -1,9 +1,5 @@
 #!/usr/bin/env bash
 
-# Source custom functions
-# shellcheck disable=SC1090
-. "${HOME}"/.config/bashrc/functions
-
 # Show program help/usage
 usage() {
   echo "update -- UPDATE ALL THE THINGS!"
@@ -16,16 +12,14 @@ usage() {
   echo "  -b    update HomeBrew formulas and casks"
   echo "  -d    update dotfiles repo and restow packages"
   echo "  -p    Update user Python packages"
-  echo "  -r    update RVM and Ruby gems"
-  echo "  -s    regenerate bash_profile and bashrc"
   echo "  -y    download and update external RPMs (linux only)"
   echo
   exit 0
 }
 
 error() {
-  echo "Invalid option. Usage: update [$OPTIONS]"
-  exit 0
+  echo "Invalid option. Usage: update -[$OPTIONS]"
+  exit 1
 }
 
 # Define all options
@@ -38,8 +32,6 @@ while getopts ":${OPTIONS}" flag; do
     b ) steep ;;
     d ) mydots ;;
     p ) pup ;;
-    r ) shine ;;
-    s ) generate-dotfiles ;;
     y ) yum2 ;;
     \?) error ;;
     * ) error ;;
