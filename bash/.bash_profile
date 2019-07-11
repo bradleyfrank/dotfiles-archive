@@ -66,7 +66,7 @@ if [[ -n "$_brew" ]]; then
   export HOMEBREW_PREFIX="$_brew"
   export HOMEBREW_CELLAR="$_brew/Cellar"
   export HOMEBREW_REPOSITORY="$_brew/Homebrew"
-  export INFOPATH="$_brew/share/info:$INFOPATH"
+  export INFOPATH="$_brew/share/info:${INFOPATH:-}"
 fi
 
 # Start tmux on remote connections
