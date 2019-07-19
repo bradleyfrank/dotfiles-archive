@@ -15,7 +15,7 @@ from urllib.error import URLError
 
 PROJECTS = {
     'Mailspring': ['Foundry376', 'Mailspring'],
-    'VSCodium': ['Ulauncher', 'Ulauncher'],
+    'VSCodium': ['VSCodium', 'vscodium'],
 }
 DOWNLOAD_DIR = os.environ['HOME'] + '/Repos/Fedora'
 GITHUB_URL = 'https://api.github.com/repos/'
