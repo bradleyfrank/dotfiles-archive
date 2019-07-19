@@ -22,6 +22,7 @@ _git_prompt="/usr/share/git-core/contrib/completion/git-prompt.sh"
 
 # Aliases
 alias bb='bbedit'
+alias code='code || codium'
 alias condense='grep -Erv "(^#|^$)"'
 alias gdf='pydf'
 alias gdu='ncdu'
