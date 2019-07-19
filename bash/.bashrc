@@ -86,7 +86,7 @@ export CLICOLOR=1
 coil() {
   . /usr/local/anaconda3/bin/activate
   conda update -n base conda -y
-  conda update --prefix /usr/local/anaconda3 anaconda -y 
+  conda update --prefix /usr/local/anaconda3 anaconda -y
   conda clean --all -y
   conda deactivate
 }
@@ -121,7 +121,6 @@ mydots() {
   pushd "$HOME"/.dotfiles >/dev/null 2>&1 || return 1
   git stash
   git pull
-  git submodule update --init --recursive
   for dir in */; do stow --restow --no-folding "${dir%/}"; done
   popd >/dev/null 2>&1 || return 1
 }
