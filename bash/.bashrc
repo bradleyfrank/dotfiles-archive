@@ -154,5 +154,49 @@ youtube-dl-music() {
 }
 
 # Customize ps1
-. "$HOME"/.local/share/ps1
-export PROMPT_COMMAND="__my_prompt; history -a; history -n"
+__my_prompt() {
+  local ret=$? _err="" _host="" _cwd="" _time="" _venv=""
+  local reset="\[\e[0;0m\]" bold="\[\e[1m\]" \
+    blue="\[\e[38;5;33m\]" \
+    cyan="\[\e[38;5;37m\]" \
+    violet="\[\e[38;5;61m\]" \
+    green="\[\e[38;5;64m\]" \
+    magenta="\[\e[38;5;125m\]" \
+    red="\[\e[38;5;160m\]" \
+    orange="\[\e[38;5;166m\]"
+
+  # __git_prompt settings
+  GIT_PS1_SHOWDIRTYSTATE=true
+  GIT_PS1_SHOWSTASHSTATE=true
+  GIT_PS1_SHOWUNTRACKEDFILES=true
+  GIT_PS1_SHOWCOLORHINTS=true
+  GIT_PS1_SHOWUPSTREAM="auto verbose"
+
+  # show hostname only if remote session w/o tmux
+  [[ -n "$SSH_CONNECTION" && -z "$TMUX" ]] && _host="|${orange}\h${reset}"
+
+  # show anaconda or virtualenv if activated
+  [[ -n $VIRTUAL_ENV ]] && _venv=" (${cyan}$(basename "$VIRTUAL_ENV")${reset})"
+  [[ -n $CONDA_DEFAULT_ENV ]] && _venv=" (${cyan}${CONDA_DEFAULT_ENV}${reset})"
+
+  # show return value on error only
+  [[ $ret -gt 0 ]] && _err=" (${red}$ret${reset})"
+
+  # show time always
+  _time="${bold}${violet}\t${reset}"
+
+  # show cwd always (modified with PROMPT_DIRTRIM)
+  _cwd="${blue}\w${reset}"
+
+  if type __git_ps1 >/dev/null 2>&1; then
+    __git_ps1 "[${_time}${_host}] ${_cwd}" "${_venv}${_err} ≫ "
+  else
+    export PS1="[${_time}${_host}] ${_cwd}${_venv}${_err} ≫ "
+  fi
+
+  history -a
+  history -n
+}
+
+PROMPT_DIRTRIM=5
+PROMPT_COMMAND="__my_prompt"
