@@ -155,7 +155,7 @@ youtube-dl-music() {
 
 # Customize ps1
 __my_prompt() {
-  local ret=$? _err="" _host="" _cwd="" _time="" _venv=""
+  local ret=$? _err="" _host="" _cwd="" _time="" _venv="" _suffix=""
   local reset="\[\e[0;0m\]" bold="\[\e[1m\]" \
     blue="\[\e[38;5;33m\]" \
     cyan="\[\e[38;5;37m\]" \
@@ -188,10 +188,13 @@ __my_prompt() {
   # show cwd always (modified with PROMPT_DIRTRIM)
   _cwd="${blue}\w${reset}"
 
+  # colorize suffix
+  _suffix="${green} ≫ ${reset}"
+
   if type __git_ps1 >/dev/null 2>&1; then
-    __git_ps1 "[${_time}${_host}] ${_cwd}" "${_venv}${_err} ≫ "
+    __git_ps1 "[${_time}${_host}] ${_cwd}" "${_venv}${_err}${_suffix}"
   else
-    export PS1="[${_time}${_host}] ${_cwd}${_venv}${_err} ≫ "
+    export PS1="[${_time}${_host}] ${_cwd}${_venv}${_err}${_suffix}"
   fi
 
   history -a
