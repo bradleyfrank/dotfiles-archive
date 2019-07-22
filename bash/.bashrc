@@ -60,6 +60,7 @@ export VISUAL=vim
 export EDITOR=vim
 
 # Navigation settings (i.e. `cd` and tab-completion)
+shopt -s dotglob failglob
 shopt -s cdspell
 bind "set completion-ignore-case on"
 bind "set completion-map-case on"
