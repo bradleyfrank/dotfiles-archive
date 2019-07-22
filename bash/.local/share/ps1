@@ -57,7 +57,7 @@ ResetColor="\[\e[0;0m\]"
 #fg_SolarBase03="\[\e[38;5;234m\]"
 #bg_SolarBase03="\[\e[48;5;234m\]"
 #fg_SolarBase02="\[\e[38;5;235m\]"
-bg_SolarBase02="\[\e[48;5;235m\]"
+#bg_SolarBase02="\[\e[48;5;235m\]"
 fg_SolarBase01="\[\e[38;5;240m\]"
 bg_SolarBase01="\[\e[48;5;240m\]"
 #fg_SolarBase00="\[\e[38;5;241m\]"
@@ -66,14 +66,14 @@ bg_SolarBase01="\[\e[48;5;240m\]"
 #bg_SolarBase0="\[\e[48;5;244m\]"
 fg_SolarBase1="\[\e[38;5;245m\]"
 bg_SolarBase1="\[\e[48;5;245m\]"
-#fg_SolarBase2="\[\e[38;5;254m\]"
+fg_SolarBase2="\[\e[38;5;254m\]"
 #bg_SolarBase2="\[\e[48;5;254m\]"
 #fg_SolarBase3="\[\e[38;5;230m\]"
 #bg_SolarBase3="\[\e[48;5;230m\]"
 #bg_SolarOrange="\[\e[48;5;166m\]"
 #fg_SolarOrange="\[\e[38;5;166m\]"
-#bg_SolarRed="\[\e[48;5;160m\]"
-fg_SolarRed="\[\e[38;5;160m\]"
+bg_SolarRed="\[\e[48;5;160m\]"
+#fg_SolarRed="\[\e[38;5;160m\]"
 #bg_SolarYellow="\[\e[48;5;136m\]"
 #fg_SolarYellow="\[\e[38;5;136m\]"
 #bg_SolarMagenta="\[\e[48;5;125m\]"
@@ -130,8 +130,8 @@ c_venv_div_fg=$fg_SolarCyan
 
 # Suffix segment colors
 c_prompt_bg=""
-c_error_bg=$bg_SolarBase02
-c_error_fg=$fg_SolarRed
+c_error_bg=$bg_SolarRed
+c_error_fg=$fg_SolarBase2
 
 
 # =============================================================================
