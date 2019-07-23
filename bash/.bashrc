@@ -22,7 +22,6 @@ _git_prompt="/usr/share/git-core/contrib/completion/git-prompt.sh"
 
 # Aliases
 alias bb='bbedit'
-alias code='code 2> /dev/null || codium 2> /dev/null'
 alias condense='grep -Erv "(^#|^$)"'
 alias gdf='pydf'
 alias gdu='ncdu'
@@ -95,6 +94,15 @@ coil() {
 # Quick and dirty docker-compose linter
 clint() {
   docker-compose -f "$1" config --quiet
+}
+
+# Handles VSCodium across MacOS and Linux
+code() {
+  if type codium >/dev/null 2>&1; then
+    command codium "$1"
+  else
+    command code "$1"
+  fi
 }
 
 # Decrypt a file using openssl
