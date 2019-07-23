@@ -36,7 +36,7 @@ alias lsdev='lsblk -o "NAME,FSTYPE,SIZE,UUID,MOUNTPOINT"'
 alias lsmnt='mount | column -t'
 alias orch='javaws ~/.local/java/orchestrator.jnlp'
 alias pping='prettyping'
-alias proc='ps -e --forest -o pid,ppid,user,cmd'
+alias proc='ps -e --forest -o pid,ppid,user,time,cmd'
 alias pubip='dig myip.opendns.com @resolver1.opendns.com'
 alias safari='open -a Safari'
 alias sane='stty sane'
@@ -133,6 +133,15 @@ mydots() {
   git submodule update --init --recursive
   for dir in */; do stow --restow --no-folding "${dir%/}"; done
   popd >/dev/null 2>&1 || return 1
+}
+
+# Custom ps output
+fproc() {
+  local pid
+  if [[ "$1" =~ ^[0-9]+$ ]]; then pid="$(ps -o sid= -p "$1")"
+  else pid="$(pgrep "$1")"
+  fi
+  ps -e --forest -o pid,ppid,user,time,cmd -g "$pid"
 }
 
 # Update user Python packages
