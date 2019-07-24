@@ -206,7 +206,7 @@ __my_prompt() {
   _cwd="${blue}\w${reset}"
 
   # colorize suffix
-  _suffix="${green} ≫ ${reset}"
+  _suffix="${green} ≫ ${reset} "
 
   if type __git_ps1 >/dev/null 2>&1; then
     __git_ps1 "[${_time}${_host}] ${_cwd}" "${_venv}${_err}${_suffix}"
