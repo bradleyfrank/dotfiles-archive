@@ -60,6 +60,7 @@ export EDITOR=vim
 
 # Navigation settings (i.e. `cd` and tab-completion)
 shopt -s cdspell
+shopt -s dotglob failglob
 bind "set completion-ignore-case on"
 bind "set completion-map-case on"
 bind "set show-all-if-ambiguous on"
@@ -206,7 +207,7 @@ __my_prompt() {
   _cwd="${blue}\w${reset}"
 
   # colorize suffix
-  _suffix="${green} ≫ ${reset} "
+  _suffix="${green} $> ${reset}"
 
   if type __git_ps1 >/dev/null 2>&1; then
     __git_ps1 "[${_time}${_host}] ${_cwd}" "${_venv}${_err}${_suffix}"
