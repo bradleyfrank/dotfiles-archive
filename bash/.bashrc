@@ -60,7 +60,7 @@ export EDITOR=vim
 
 # Navigation settings (i.e. `cd` and tab-completion)
 shopt -s cdspell
-shopt -s dotglob failglob
+shopt -s dotglob
 bind "set completion-ignore-case on"
 bind "set completion-map-case on"
 bind "set show-all-if-ambiguous on"
