@@ -14,10 +14,9 @@ from urllib.error import HTTPError
 from urllib.error import URLError
 
 PROJECTS = {
-    'Mailspring': ['Foundry376', 'Mailspring'],
     'VSCodium': ['VSCodium', 'vscodium'],
 }
-DOWNLOAD_DIR = os.environ['HOME'] + '/Repos/Fedora'
+DOWNLOAD_DIR = '/usr/local/cache/yum2'
 GITHUB_URL = 'https://api.github.com/repos/'
 
 def get_latest_release(name, owner, repo, repolog):
