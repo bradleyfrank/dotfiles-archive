@@ -3,6 +3,8 @@ let g:airline_skip_empty_sections = 1
 let g:airline_powerline_fonts = 1
 
 syntax on
+set colorcolumn=80
+hi colorcolumn ctermbg=lightgrey guibg=lightgrey
 
 set tabstop=2 shiftwidth=2 expandtab smarttab autoindent
 set showmatch
