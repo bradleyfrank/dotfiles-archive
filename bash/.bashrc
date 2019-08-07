@@ -79,7 +79,7 @@ export HISTTIMEFORMAT='%F %T '
 bind "'\C-r': '\C-a hh -- \C-j'"
 export HH_CONFIG=hicolor
 
-# Load and enable solarized LS_COLORS
+# Load and enable solarized `ls`
 eval "$(dircolors "$HOME"/.dir_colors)"
 export CLICOLOR=1
 
@@ -173,7 +173,7 @@ youtube-dl-music() {
 
 # Customize ps1
 __my_prompt() {
-  local ret=$? _err="" _host="" _cwd="" _time="" _venv="" _suffix=""
+  local ret=$? _time="" _user="" _host="" _env="" _cwd="" _venv="" _err="" _suffix=""
   local reset="\[\e[0;0m\]" bold="\[\e[1m\]" \
     blue="\[\e[38;5;33m\]" \
     cyan="\[\e[38;5;37m\]" \
@@ -190,8 +190,20 @@ __my_prompt() {
   GIT_PS1_SHOWCOLORHINTS=true
   GIT_PS1_SHOWUPSTREAM="auto verbose"
 
+  # show time always
+  _time="${bold}${violet}\t${reset}"
+
+  # show username only if not me
+  [[ ! "$USER" =~ ^bfrank ]] && _user="${magenta}\u${reset}"
+
   # show hostname only if remote session w/o tmux
-  [[ -n "$SSH_CONNECTION" && -z "$TMUX" ]] && _host="|${orange}\h${reset}"
+  [[ -n "$SSH_CONNECTION" && -z "$TMUX" ]] && _host="@${orange}\h${reset}"
+
+  # combine username and hostname
+  [[ -n $_user || -n $_host ]] && _env="[${_user}${_host}]"
+
+  # show cwd always (modified with PROMPT_DIRTRIM)
+  _cwd="${blue}\w${reset}"
 
   # show anaconda or virtualenv if activated
   [[ -n $VIRTUAL_ENV ]] && _venv=" (${cyan}$(basename "$VIRTUAL_ENV")${reset})"
@@ -200,19 +212,13 @@ __my_prompt() {
   # show return value on error only
   [[ $ret -gt 0 ]] && _err=" (${red}$ret${reset})"
 
-  # show time always
-  _time="${bold}${violet}\t${reset}"
-
-  # show cwd always (modified with PROMPT_DIRTRIM)
-  _cwd="${blue}\w${reset}"
-
   # colorize suffix
   _suffix="${green} $> ${reset}"
 
   if type __git_ps1 >/dev/null 2>&1; then
-    __git_ps1 "[${_time}${_host}] ${_cwd}" "${_venv}${_err}${_suffix}"
+    __git_ps1 "[${_time}]${_env} ${_cwd}" "${_venv}${_err}${_suffix}"
   else
-    export PS1="[${_time}${_host}] ${_cwd}${_venv}${_err}${_suffix}"
+    export PS1="[${_time}]${_env} ${_cwd} ${_venv}${_err}${_suffix}"
   fi
 
   history -a
