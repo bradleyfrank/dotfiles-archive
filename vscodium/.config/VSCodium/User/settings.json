@@ -18,6 +18,7 @@
     "editor.fontFamily": "'Source Code Pro', Menlo, Monaco, monospace", 
     "editor.fontSize": 13,
     "editor.tabSize": 2,
+    "editor.rulers": [80],
     "editor.renderWhitespace": "none",
     "editor.tokenColorCustomizations": {
       "[Solarized Light]": {
@@ -31,7 +32,8 @@
     "breadcrumbs.enabled": true,
     "[python]": {
         "editor.wordWrap": "wordWrapColumn",
-        "editor.rulers": [80],
         "editor.tabSize": 4
-    }
+    },
+    "window.openFilesInNewWindow": "on",
+    "workbench.activityBar.visible": false
 }  
