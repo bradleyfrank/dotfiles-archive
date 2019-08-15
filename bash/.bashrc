@@ -197,15 +197,16 @@ __my_prompt() {
   [[ ! "$USER" =~ ^bfrank ]] && _user="${magenta}\u${reset}"
 
   # show hostname only if remote session w/o tmux
-  [[ -n "$SSH_CONNECTION" && -z "$TMUX" ]] && _host="@${orange}\h${reset}"
+  [[ -n "$SSH_CONNECTION" && -z "$TMUX" ]] && _host="${orange}\h${reset}"
 
   # combine username and hostname
   [[ -n $_user || -n $_host ]] && _env="[${_user}${_host}]"
+  [[ -n $_user && -n $_host ]] && _env="[${_user}@${_host}]"
 
   # show cwd always (modified with PROMPT_DIRTRIM)
   _cwd="${blue}\w${reset}"
 
-  # show anaconda or virtualenv if activated
+  # show anaconda _or_ virtualenv if activated
   [[ -n $VIRTUAL_ENV ]] && _venv=" (${cyan}$(basename "$VIRTUAL_ENV")${reset})"
   [[ -n $CONDA_DEFAULT_ENV ]] && _venv=" (${cyan}${CONDA_DEFAULT_ENV}${reset})"
 
