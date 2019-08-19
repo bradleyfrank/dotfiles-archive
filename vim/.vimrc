@@ -1,6 +1,5 @@
 let g:airline_theme='sol'
 let g:airline_skip_empty_sections = 1
-let g:airline_powerline_fonts = 1
 
 syntax on
 set colorcolumn=80
