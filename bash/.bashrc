@@ -132,7 +132,9 @@ mydots() {
   git stash
   git pull
   git submodule update --init --recursive
-  for dir in */; do stow --restow --no-folding "${dir%/}"; done
+  for dir in */; do
+    [[ ! $dir =~ ^\. ]] stow --restow --no-folding "${dir%/}"
+  done
   popd >/dev/null 2>&1 || return 1
 }
 
