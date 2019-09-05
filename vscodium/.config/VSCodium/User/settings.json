@@ -12,10 +12,12 @@
     },
     "workbench.startupEditor": "none",
     "workbench.statusBar.feedback.visible": false,
+    "workbench.editor.tabSizing": "shrink",
+    "workbench.activityBar.visible": false,
     "editor.wordWrap": "on",
     "editor.occurrencesHighlight": false,
     "editor.selectionHighlight": false,
-    "editor.fontFamily": "'Source Code Pro', Menlo, Monaco, monospace", 
+    "editor.fontFamily": "'Source Code Pro', Menlo, Monaco, monospace",
     "editor.fontSize": 13,
     "editor.tabSize": 2,
     "editor.rulers": [80],
@@ -34,6 +36,5 @@
         "editor.wordWrap": "wordWrapColumn",
         "editor.tabSize": 4
     },
-    "window.openFilesInNewWindow": "on",
-    "workbench.activityBar.visible": false
-}  
+    "window.openFilesInNewWindow": "on"
+}
