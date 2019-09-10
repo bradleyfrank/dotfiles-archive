@@ -168,7 +168,7 @@ youtube-dl-music() {
 
 # Customize ps1
 __my_prompt() {
-  local ret=$? _time="" _user="" _host="" _env="" _cwd="" _venv="" _err="" _suffix=""
+  local ret=$? _user="" _host="" _env="" _cwd="" _venv="" _err="" _suffix=""
   local reset="\[\e[0;0m\]" bold="\[\e[1m\]" \
     blue="\[\e[38;5;33m\]" \
     cyan="\[\e[38;5;37m\]" \
@@ -184,9 +184,6 @@ __my_prompt() {
   GIT_PS1_SHOWUNTRACKEDFILES=true
   GIT_PS1_SHOWCOLORHINTS=true
   GIT_PS1_SHOWUPSTREAM="auto verbose"
-
-  # show time always
-  _time="${bold}${violet}\t${reset}"
 
   # show username only if not me
   [[ ! "$USER" =~ ^bfrank ]] && _user="${magenta}\u${reset}"
@@ -212,9 +209,9 @@ __my_prompt() {
   _suffix="${green} $> ${reset}"
 
   if type __git_ps1 >/dev/null 2>&1; then
-    __git_ps1 "[${_time}]${_env} ${_cwd}" "${_venv}${_err}${_suffix}"
+    __git_ps1 "${_env} ${_cwd}" "${_venv}${_err}${_suffix}"
   else
-    export PS1="[${_time}]${_env} ${_cwd} ${_venv}${_err}${_suffix}"
+    export PS1="${_env} ${_cwd} ${_venv}${_err}${_suffix}"
   fi
 
   history -a
