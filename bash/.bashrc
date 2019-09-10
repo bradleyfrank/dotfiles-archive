@@ -80,7 +80,6 @@ bind "'\C-r': '\C-a hh -- \C-j'"
 export HH_CONFIG=hicolor
 
 # Load and enable solarized `ls`
-eval "$(dircolors "$HOME"/.dir_colors)"
 export CLICOLOR=1
 
 # Update Anaconda
