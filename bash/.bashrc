@@ -215,7 +215,7 @@ __my_prompt() {
   fi
 
   history -a
-  history -n
+  #history -n
 }
 
 PROMPT_DIRTRIM=5
