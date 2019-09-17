@@ -192,8 +192,8 @@ __my_prompt() {
   [[ -n "$SSH_CONNECTION" && -z "$TMUX" ]] && _host="${orange}\h${reset}"
 
   # combine username and hostname
-  [[ -n $_user || -n $_host ]] && _env="[${_user}${_host}]"
-  [[ -n $_user && -n $_host ]] && _env="[${_user}@${_host}]"
+  [[ -n $_user || -n $_host ]] && _env="[${_user}${_host}] "
+  [[ -n $_user && -n $_host ]] && _env="[${_user}@${_host}] "
 
   # show cwd always as prefixed path (e.g. ~/D/H/dotfiles)
   local _pwd="" _path="" _num_dirs=0
@@ -221,9 +221,9 @@ __my_prompt() {
 
   # build PS1 with or without Git prompt
   if type __git_ps1 >/dev/null 2>&1; then
-    __git_ps1 "${_env} ${_cwd}" "${_venv}${_err}${_suffix}"
+    __git_ps1 "${_env}${_cwd}" "${_venv}${_err}${_suffix}"
   else
-    export PS1="${_env} ${_cwd} ${_venv}${_err}${_suffix}"
+    export PS1="${_env}${_cwd} ${_venv}${_err}${_suffix}"
   fi
 
   # append to history (but don't read it into current list)
