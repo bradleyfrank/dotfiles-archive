@@ -195,8 +195,19 @@ __my_prompt() {
   [[ -n $_user || -n $_host ]] && _env="[${_user}${_host}]"
   [[ -n $_user && -n $_host ]] && _env="[${_user}@${_host}]"
 
-  # show cwd always (modified with PROMPT_DIRTRIM)
-  _cwd="${blue}\w${reset}"
+  # show cwd always as prefixed path (e.g. ~/D/H/dotfiles)
+  local _pwd="" _path="" _num_dirs=0
+  readarray -t _path <<< "$(echo "$PWD" | sed "s|^${HOME}|~|" | sed "s|/|\n|g")"
+  _num_dirs="${#_path[@]}"
+  ((_num_dirs--))
+
+  if [[ "$_num_dirs" -gt 0 ]]; then
+    for ((i=0;i<"${_num_dirs}";i++)); do
+      _pwd="${_pwd}${_path[$i]:0:1}/"
+    done
+  fi
+
+  _cwd="${blue}${_pwd}${_path[$_num_dirs]}${reset}"
 
   # show anaconda _or_ virtualenv if activated
   [[ -n $VIRTUAL_ENV ]] && _venv=" (${cyan}$(basename "$VIRTUAL_ENV")${reset})"
@@ -208,15 +219,15 @@ __my_prompt() {
   # colorize suffix
   _suffix="${green} ~> ${reset}"
 
+  # build PS1 with or without Git prompt
   if type __git_ps1 >/dev/null 2>&1; then
     __git_ps1 "${_env} ${_cwd}" "${_venv}${_err}${_suffix}"
   else
     export PS1="${_env} ${_cwd} ${_venv}${_err}${_suffix}"
   fi
 
+  # append to history (but don't read it into current list)
   history -a
-  #history -n
 }
 
-PROMPT_DIRTRIM=5
 PROMPT_COMMAND="__my_prompt"
