@@ -158,6 +158,11 @@ tardir() {
   tar -czf "${1%/}".tar.gz "$1"
 }
 
+# view cheat sheet for commands
+tldr() {
+  curl -s "cheat.sh/$1"
+}
+
 # Download YouTube video as music only
 youtube-dl-music() {
   case "$(uname -s)" in
