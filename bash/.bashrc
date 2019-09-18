@@ -160,7 +160,7 @@ tardir() {
 
 # view cheat sheet for commands
 tldr() {
-  curl -s "cheat.sh/$1"
+  curl -s "cheat.sh/$1?style=vs"
 }
 
 # Download YouTube video as music only
