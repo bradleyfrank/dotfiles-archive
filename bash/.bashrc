@@ -173,7 +173,7 @@ youtube-dl-music() {
 
 # Customize ps1
 __my_prompt() {
-  local ret=$? _user="" _host="" _env="" _cwd="" _venv="" _err="" _suffix=""
+  local ret=$? _user="" _host="" _env="" _cwd="" _venv="" _suffix=""
   local reset="\[\e[0;0m\]" bold="\[\e[1m\]" \
     blue="\[\e[38;5;33m\]" \
     cyan="\[\e[38;5;37m\]" \
@@ -218,18 +218,22 @@ __my_prompt() {
   [[ -n $VIRTUAL_ENV ]] && _venv=" (${cyan}$(basename "$VIRTUAL_ENV")${reset})"
   [[ -n $CONDA_DEFAULT_ENV ]] && _venv=" (${cyan}${CONDA_DEFAULT_ENV}${reset})"
 
-  # show return value on error only
-  [[ $ret -gt 0 ]] && _err=" (${red}$ret${reset})"
-
-  # colorize suffix
-  _suffix="${green} ~> ${reset}"
+  # colorize suffix based on return value
+  if [[ $ret -gt 0 ]]; then
+    _suffix="${bold}${red} > ${reset}"
+  else
+    _suffix="${bold}${green} > ${reset}"
+  fi
 
   # build PS1 with or without Git prompt
   if type __git_ps1 >/dev/null 2>&1; then
-    __git_ps1 "${_env}${_cwd}" "${_venv}${_err}${_suffix}"
+    __git_ps1 "${_env}${_cwd}" "${_venv}${_suffix}"
   else
-    export PS1="${_env}${_cwd} ${_venv}${_err}${_suffix}"
+    export PS1="${_env}${_cwd} ${_venv}${_suffix}"
   fi
+
+  # save the exit status
+  export EXIT_STATUS="$ret"
 
   # append to history (but don't read it into current list)
   history -a
