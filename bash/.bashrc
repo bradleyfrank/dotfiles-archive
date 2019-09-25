@@ -232,9 +232,6 @@ __my_prompt() {
     export PS1="${_env}${_cwd} ${_venv}${_suffix}"
   fi
 
-  # save the exit status
-  export EXIT_STATUS="$ret"
-
   # append to history (but don't read it into current list)
   history -a
 }
