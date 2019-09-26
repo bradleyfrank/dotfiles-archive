@@ -4,8 +4,12 @@
 	[
 	],
 	"installed_packages":
-	[
-		"Package Control",
-		"Solarized Color Scheme",
-	]
+  [
+    "Package Control",
+    "Puppet",
+    "Solarized Color Scheme",
+    "SublimeLinter",
+    "SublimeLinter-contrib-puppet-lint",
+    "SublimeLinter-shellcheck"
+  ]
 }
