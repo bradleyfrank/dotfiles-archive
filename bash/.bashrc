@@ -114,7 +114,7 @@ encrypt() {
 
 # Detach gedit from the terminal session and supress output
 gedit() {
-  nohup /usr/bin/gedit "$@" >/dev/null 2>&1
+  nohup /usr/bin/gedit "$@" >/dev/null 2>&1 &
 }
 
 # Show website http headers; follow redirects
