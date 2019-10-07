@@ -176,11 +176,10 @@ youtube-dl-music() {
 
 # Customize ps1
 __my_prompt() {
-  local ret=$? _user="" _host="" _env="" _cwd="" _venv="" _suffix=""
+  local _ret=$? _user="" _host="" _env="" _cwd="" _venv="" _suffix=""
   local reset="\[\e[0;0m\]" bold="\[\e[1m\]" \
     blue="\[\e[38;5;33m\]" \
     cyan="\[\e[38;5;37m\]" \
-    violet="\[\e[38;5;61m\]" \
     green="\[\e[38;5;64m\]" \
     magenta="\[\e[38;5;125m\]" \
     red="\[\e[38;5;160m\]" \
@@ -222,7 +221,7 @@ __my_prompt() {
   [[ -n $CONDA_DEFAULT_ENV ]] && _venv=" (${cyan}${CONDA_DEFAULT_ENV}${reset})"
 
   # colorize suffix based on return value
-  if [[ $ret -gt 0 ]]; then
+  if [[ ${_ret} -gt 0 ]]; then
     _suffix="${bold}${red} > ${reset}"
   else
     _suffix="${bold}${green} > ${reset}"
