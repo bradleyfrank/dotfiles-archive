@@ -69,7 +69,7 @@ shopt -s histappend
 export HISTFILESIZE=
 export HISTSIZE=
 export HISTCONTROL="erasedups:ignoreboth:ignorespace"
-export HISTIGNORE="&:[ ]*:exit:ls:bg:fg:history:clear"
+export HISTIGNORE="&:[ ]*:exit:ls:ll:bg:fg:history:clear"
 export HISTTIMEFORMAT='%F %T '
 
 # Settings for hstr
