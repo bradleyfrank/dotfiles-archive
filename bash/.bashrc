@@ -76,8 +76,11 @@ export HISTTIMEFORMAT='%F %T '
 bind "'\C-r': '\C-a hh -- \C-j'"
 export HH_CONFIG=hicolor
 
-# Load and enable solarized `ls`
-export CLICOLOR=1
+# Enable colorized ls output for Mac
+case "$_os" in
+  macos) export CLICOLOR=1 ;;
+esac
+
 
 # Update Anaconda
 coil() {
