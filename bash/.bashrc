@@ -21,6 +21,7 @@ _git_prompt="/usr/share/git-core/contrib/completion/git-prompt.sh"
 [[ -e "$_git_prompt" ]] && . "$_git_prompt"
 
 # Aliases
+alias black='black --line-length 79'
 alias condense='grep -Erv "(^#|^$)"'
 alias e='extract'
 alias ekans='. /usr/local/anaconda3/bin/activate'
@@ -32,6 +33,7 @@ alias ll='ls -lAhF --color=auto'
 alias lsdev='lsblk -o "NAME,FSTYPE,SIZE,UUID,MOUNTPOINT"'
 alias lsmnt='mount | column -t'
 alias mkpasswd='makepasswd'
+alias pipi='python3 -m pip install --user'
 alias please='sudo'
 alias pping='prettyping'
 alias proc='ps -e --forest -o pid,ppid,user,time,cmd'
