@@ -21,7 +21,6 @@ _git_prompt="/usr/share/git-core/contrib/completion/git-prompt.sh"
 [[ -e "$_git_prompt" ]] && . "$_git_prompt"
 
 # Aliases
-alias black='black --line-length 79'
 alias condense='grep -Erv "(^#|^$)"'
 alias e='extract'
 alias ekans='. /usr/local/anaconda3/bin/activate'
@@ -83,6 +82,11 @@ case "$_os" in
   macos) export CLICOLOR=1 ;;
 esac
 
+
+# Black formatter for Python
+black() {
+  command black --line-length 79 --diff "$@" | diff-so-fancy
+}
 
 # Update Anaconda
 coil() {
