@@ -84,8 +84,8 @@ esac
 
 
 # Black formatter for Python
-black() {
-  command black --line-length 79 --diff "$@" | diff-so-fancy
+blackdiff() {
+  black --line-length 79 --diff "$@" | diff-so-fancy
 }
 
 # Update Anaconda
