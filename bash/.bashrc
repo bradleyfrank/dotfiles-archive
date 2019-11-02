@@ -178,8 +178,8 @@ tldr() {
 # Download YouTube video as music only
 youtube-dl-music() {
   case "$(uname -s)" in
-    Darwin) youtube-dl -x --audio-format m4a --postprocessor-args "-strict experimental" "$1" ;;
-    Linux ) youtube-dl -x --audio-format m4a "$1" ;;
+    Darwin) youtube-dl --format bestaudio --extract-audio --audio-format mp3 --postprocessor-args "-strict experimental" "$1" ;;
+    Linux ) youtube-dl --format bestaudio --extract-audio --audio-format mp3 "$1" ;;
   esac
 }
 
