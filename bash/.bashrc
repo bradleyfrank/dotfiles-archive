@@ -152,6 +152,11 @@ fproc() {
   ps -e --forest -o pid,ppid,user,time,cmd -g "$pid"
 }
 
+genpasswd() {
+  if [[ -n $1 ]]; then local l=$1; else local l=8; fi
+  makepasswd -c "$(echo {A..Z} {a..z} {0..9} | tr -d ' ')" -l $l
+}
+
 # Update user Python packages
 pup() {
   pip_upgrade_outdated -3 --user --verbose
