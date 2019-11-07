@@ -105,9 +105,9 @@ clint() {
 # Handles VSCodium across MacOS and Linux
 code() {
   if type codium >/dev/null 2>&1; then
-    command codium "$@"
+    command codium -r "$@"
   else
-    command code "$@"
+    command code -r "$@"
   fi
 }
 
@@ -153,8 +153,7 @@ fproc() {
 }
 
 genpasswd() {
-  if [[ -n $1 ]]; then local l=$1; else local l=8; fi
-  makepasswd -c "$(echo {A..Z} {a..z} {0..9} | tr -d ' ')" -l $l
+  makepasswd -c "$(echo {A..Z} {a..z} {0..9} | tr -d ' ')" "$@"
 }
 
 # Update user Python packages
