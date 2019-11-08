@@ -5,6 +5,7 @@
     "workbench.colorTheme": "Solarized Light",
     "workbench.colorCustomizations": {
         "editorRuler.foreground": "#747474",
+        "editorIndentGuide.background": "#00000000",
         "[Solarized Light]": {
             "editor.selectionBackground": "#93a1a166",
             "editor.findMatchBackground": "#93a1a166"
@@ -14,6 +15,7 @@
     "workbench.statusBar.feedback.visible": false,
     "workbench.activityBar.visible": false,
     "workbench.statusBar.visible": true,
+    "workbench.tree.renderIndentGuides": "onHover",
     "editor.minimap.renderCharacters": false,
     "editor.minimap.maxColumn": 200,
     "editor.wordWrap": "on",
