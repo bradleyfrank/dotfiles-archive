@@ -103,9 +103,9 @@ clint() {
 # Handles VSCodium across MacOS and Linux
 code() {
   if type codium >/dev/null 2>&1; then
-    command codium -r "$@"
+    command codium "$@"
   else
-    command code -r "$@"
+    command code "$@"
   fi
 }
 
