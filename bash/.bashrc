@@ -78,9 +78,7 @@ bind "'\C-r': '\C-a hh -- \C-j'"
 export HH_CONFIG=hicolor
 
 # Enable colorized ls output for Mac
-case "$_os" in
-  macos) export CLICOLOR=1 ;;
-esac
+[[ "$_os" == "macos" ]] && export CLICOLOR=1
 
 
 # Black formatter for Python
