@@ -185,6 +185,14 @@ youtube-dl-music() {
   esac
 }
 
+# Run multiple updates
+upall() {
+  coil
+  mydots
+  pup
+  steep
+}
+
 # Customize ps1
 __my_prompt() {
   local _ret=$? _user="" _host="" _env="" _cwd="" _venv="" _suffix=""
