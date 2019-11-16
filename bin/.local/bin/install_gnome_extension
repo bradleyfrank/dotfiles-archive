@@ -6,7 +6,7 @@ cleanup() {
   rm -rf "$ext_version"
 }
 
-trap EXIT cleanup
+trap cleanup EXIT
 
 # static variables
 extension_path="$HOME/.local/share/gnome-shell/extensions"
