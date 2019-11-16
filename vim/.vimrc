@@ -6,6 +6,7 @@ syntax on
 set tabstop=2 shiftwidth=2 expandtab smarttab autoindent
 set showmatch
 set hlsearch incsearch
+hi Search ctermfg=White
 set linebreak
 set novisualbell noerrorbells
 set mouse=i
