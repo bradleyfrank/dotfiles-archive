@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# Adapted from github.com/NicolasBernaerts/ubuntu-scripts/blob/master/ubuntugnome/gnomeshell-extension-manage
+
 cleanup() {
   rm -rf "$ext_description"
   rm -rf "$ext_zipfile"
@@ -13,7 +15,7 @@ extension_path="$HOME/.local/share/gnome-shell/extensions"
 gnome_site="https://extensions.gnome.org"
 
 # get Gnome version
-target_version="$(DISPLAY=":0" gnome-shell --version | tr -cd "0-9." | cut -d'.' -f1,2)"
+target_version="$(gnome-shell --version | tr -cd "0-9." | cut -d'.' -f1,2)"
 current_version="${target_version}"
 
 # exit if no arguments given
