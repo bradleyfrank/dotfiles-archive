@@ -5,8 +5,6 @@ syntax on
 
 set tabstop=2 shiftwidth=2 expandtab smarttab autoindent
 set showmatch
-set hlsearch incsearch
-hi Search ctermfg=White
 set linebreak
 set novisualbell noerrorbells
 set mouse=i
@@ -17,6 +15,10 @@ set scrolloff=4
 
 set term=screen-256color
 set background=light
+
+set hlsearch incsearch
+hi Search ctermbg=DarkBlue ctermfg=White
+nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
 
 set colorcolumn=80
 hi colorcolumn ctermbg=lightgrey guibg=lightgrey
