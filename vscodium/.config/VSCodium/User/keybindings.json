@@ -5,7 +5,15 @@
         "command": "editor.action.startFindReplaceAction"
     },
     {
+        "key": "ctrl+f",
+        "command": "editor.action.startFindReplaceAction"
+    },
+    {
         "key": "cmd+h",
+        "command": "actions.find"
+    },
+    {
+        "key": "ctrl+h",
         "command": "actions.find"
     }
 ]
