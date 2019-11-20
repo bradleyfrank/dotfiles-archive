@@ -63,5 +63,5 @@ git submodule update --init --recursive || error "Problem updating submodules."
 stow --no-folding "${__packages[@]}" || prinf "Stow returned an error."
 
 # all done
-popd || error "Couldn't return to original directory."
+popd >/dev/null 2>&1 || error "Couldn't return to original directory."
 exit 0
