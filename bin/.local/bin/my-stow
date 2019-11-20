@@ -33,7 +33,7 @@ shopt -u nullglob extglob
 # make a backup of existing dotfiles
 if [[ "$__backup" -eq 0 ]]; then
   # create a new backup branch
-  git checkout --branch "backup-${__date}" || error "Could not create backup branch."
+  git checkout -B "backup-${__date}" || error "Could not create backup branch."
 
   # adopt all dotfiles so they become available for stowing
   stow --no-folding --adopt "${__packages[@]}" || error "Stow returned an error."
