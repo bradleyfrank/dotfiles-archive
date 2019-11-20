@@ -3,7 +3,7 @@
 set -eu
 
 error() {
-  printf "[ERROR] %s" "$1"
+  printf "[ERROR] %s\n" "$1"
   exit 1
 }
 
@@ -11,7 +11,7 @@ error() {
 __backup=1
 
 # set date for naming backup branch
-__date="$(date --iso-8601=seconds)"
+__date="$(date --iso-8601=seconds | tr -d ':')"
 
 while getopts ':b' flag; do
   case "${flag}" in
