@@ -1,0 +1,67 @@
+#!/usr/local/env bash
+
+set -eu
+
+error() {
+  printf "[ERROR] %s" "$1"
+  exit 1
+}
+
+# don't backup by default
+__backup=1
+
+# set date for naming backup branch
+__date="$(date --iso-8601=seconds)"
+
+while getopts ':b' flag; do
+  case "${flag}" in
+    b ) __backup=0 ;;
+    \?) error "Invalid argument." ;;
+    * ) error "Invalid argument." ;;
+  esac
+done
+
+# change directory to dotfiles
+pushd "$HOME/.dotfiles" >/dev/null 2>&1 || error "No dotfiles directory."
+
+# collect all package names
+shopt -s nullglob # an empty directly results in an empty array
+shopt -s extglob # allows extended globbing patterns
+__packages=(!(.*)/) # match only directories but skip hidden directories
+shopt -u nullglob extglob
+
+# make a backup of existing dotfiles
+if [[ "$__backup" -eq 0 ]]; then
+  # create a new backup branch
+  git checkout --branch "backup-${__date}" || error "Could not create backup branch."
+
+  # adopt all dotfiles so they become available for stowing
+  stow --no-folding --adopt "${__packages[@]}" || error "Stow returned an error."
+
+  # add any new files
+  git add -A || error "Could not add files to git repo."
+
+  # only commit if there are changes
+  if git commit --dry-run >/dev/null 2>&1; then
+    git commit -m "Backing up dotfiles for $__date."
+  fi
+fi
+
+# stash any active work
+git stash || error "Unable to stash changes."
+
+# ensure master branch is checked out
+git checkout master || error "Couldn't checkout master branch."
+
+# pull the latest changes
+git pull origin || error "Couldn't pull latest changes from origin."
+
+# update all submodules
+git submodule update --init --recursive || error "Problem updating submodules."
+
+# stow all packages
+stow --no-folding "${__packages[@]}" || prinf "Stow returned an error."
+
+# all done
+popd || error "Couldn't return to original directory."
+exit 0
