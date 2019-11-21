@@ -43,7 +43,7 @@ if [[ "$__backup" -eq 0 ]]; then
 
   # only commit if there are changes
   if git commit --dry-run >/dev/null 2>&1; then
-    git commit -m "Backing up dotfiles for $__date."
+    git commit -m "Backing up dotfiles for ${__date}."
   fi
 fi
 
@@ -60,7 +60,7 @@ git pull origin || error "Couldn't pull latest changes from origin."
 git submodule update --init --recursive || error "Problem updating submodules."
 
 # stow all packages
-stow --restow --no-folding "${__packages[@]}" || prinf "Stow returned an error."
+stow --restow --no-folding "${__packages[@]}" || error "Stow returned an error."
 
 # all done
 popd >/dev/null 2>&1 || error "Couldn't return to original directory."
