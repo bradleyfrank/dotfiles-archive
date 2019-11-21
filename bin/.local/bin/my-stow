@@ -60,7 +60,7 @@ git pull origin || error "Couldn't pull latest changes from origin."
 git submodule update --init --recursive || error "Problem updating submodules."
 
 # stow all packages
-stow --no-folding "${__packages[@]}" || prinf "Stow returned an error."
+stow --restow --no-folding "${__packages[@]}" || prinf "Stow returned an error."
 
 # all done
 popd >/dev/null 2>&1 || error "Couldn't return to original directory."
