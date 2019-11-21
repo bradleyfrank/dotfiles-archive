@@ -2,10 +2,17 @@
 
 set -eu
 
+# formats error messages and quits
 error() {
   printf "[ERROR] %s\n" "$1"
   exit 1
 }
+
+# wrapper function for stow
+_stow() {
+  command stow --no-folding --dotfiles "$@"
+}
+
 
 # don't backup by default
 __backup=1
@@ -20,6 +27,7 @@ while getopts ':b' flag; do
     * ) error "Invalid argument." ;;
   esac
 done
+
 
 # change directory to dotfiles
 pushd "$HOME/.dotfiles" >/dev/null 2>&1 || error "No dotfiles directory."
@@ -36,7 +44,7 @@ if [[ "$__backup" -eq 0 ]]; then
   git checkout -B "backup-${__date}" || error "Could not create backup branch."
 
   # adopt all dotfiles so they become available for stowing
-  stow --no-folding --adopt "${__packages[@]}" || error "Stow returned an error."
+  _stow --adopt "${__packages[@]}" || error "Stow returned an error."
 
   # add any new files
   git add -A || error "Could not add files to git repo."
@@ -60,7 +68,7 @@ git pull origin || error "Couldn't pull latest changes from origin."
 git submodule update --init --recursive || error "Problem updating submodules."
 
 # stow all packages
-stow --restow --no-folding "${__packages[@]}" || error "Stow returned an error."
+_stow --restow "${__packages[@]}" || error "Stow returned an error."
 
 # all done
 popd >/dev/null 2>&1 || error "Couldn't return to original directory."
