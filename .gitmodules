@@ -4,3 +4,15 @@
 [submodule "vim/.vim/pack/default/start/vim-airline"]
 	path = vim/.vim/pack/default/start/vim-airline
 	url = https://github.com/vim-airline/vim-airline.git
+[submodule "gnome/.local/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com"]
+	path = gnome/.local/share/gnome-shell/extensions/clipboard-indicator@tudmotu.com
+	url = https://github.com/Tudmotu/gnome-shell-extension-clipboard-indicator.git
+[submodule "gnome/.local/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com"]
+	path = gnome/.local/share/gnome-shell/extensions/dash-to-panel@jderose9.github.com
+	url = git@github.com:home-sweet-gnome/dash-to-panel.git
+[submodule "gnome/.local/share/gnome-shell/extensions/printers@linux-man.org"]
+	path = gnome/.local/share/gnome-shell/extensions/printers@linux-man.org
+	url = git@github.com:linux-man/gnome-shell-extension-printers.git
+[submodule "gnome/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com"]
+	path = gnome/.local/share/gnome-shell/extensions/system-monitor@paradoxxx.zero.gmail.com
+	url = git@github.com:paradoxxxzero/gnome-shell-system-monitor-applet.git
