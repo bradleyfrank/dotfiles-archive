@@ -31,7 +31,6 @@ alias ipca='ip -c a'
 alias ll='ls -lAhF --color=auto'
 alias lsdev='lsblk -o "NAME,FSTYPE,SIZE,UUID,MOUNTPOINT"'
 alias lsmnt='mount | column -t'
-alias mkpasswd='makepasswd'
 alias pipi='python3 -m pip install --user'
 alias please='sudo'
 alias pping='prettyping'
@@ -148,10 +147,6 @@ fproc() {
   else pid="$(pgrep "$1")"
   fi
   ps -e --forest -o pid,ppid,user,time,cmd -g "$pid"
-}
-
-genpasswd() {
-  makepasswd -c "$(echo {A..Z} {a..z} {0..9} | tr -d ' ')" "$@"
 }
 
 # Update user Python packages
