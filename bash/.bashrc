@@ -128,18 +128,6 @@ httptrace() {
   curl -s -L -D - "$1" -o /dev/null -w "%{url_effective}\n"
 }
 
-# Update dotfiles repo and restows all packages
-mydots() {
-  pushd "$HOME"/.dotfiles >/dev/null 2>&1 || return 1
-  git stash
-  git pull
-  git submodule update --init --recursive
-  for dir in */; do
-    [[ ! $dir =~ ^\. ]] && stow --restow --no-folding "${dir%/}"
-  done
-  popd >/dev/null 2>&1 || return 1
-}
-
 # Custom ps output
 fproc() {
   local pid
