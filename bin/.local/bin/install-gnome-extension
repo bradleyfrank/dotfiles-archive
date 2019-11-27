@@ -1,99 +1,84 @@
-#!/bin/bash
+#!/usr/bin/env python3
 
-# Adapted from github.com/NicolasBernaerts/ubuntu-scripts/blob/master/ubuntugnome/gnomeshell-extension-manage
+__author__ = "Bradley Frank"
 
-cleanup() {
-  rm -rf "$ext_description"
-  rm -rf "$ext_zipfile"
-  rm -rf "$ext_version"
-}
+import argparse
+import io
+import json
+import os
+import re
+import requests
+import sys
+import urllib.request
+import zipfile
+from subprocess import check_output
+from urllib.error import HTTPError
+from urllib.error import URLError
 
-trap cleanup EXIT
+GNOME_URL = "https://extensions.gnome.org/extension-info"
+INSTALL_LOC = os.path.expanduser("~") + "/.local/share/gnome-shell/extensions"
 
-# static variables
-extension_path="$HOME/.local/share/gnome-shell/extensions"
-gnome_site="https://extensions.gnome.org"
 
-# get Gnome version
-target_version="$(gnome-shell --version | tr -cd "0-9." | cut -d'.' -f1,2)"
-current_version="${target_version}"
+def get_extension_download_url(extension_id, system_gnome_version):
+    url = (
+        GNOME_URL
+        + "/?pk="
+        + extension_id
+        + "&shell_version="
+        + system_gnome_version
+    )
 
-# exit if no arguments given
-[[ "$#" -lt 1 ]] && echo "No extension IDs given, exiting."
+    try:
+        response = urllib.request.urlopen(url)
+    except HTTPError as e:
+        print("[ERROR] Could not download metadata.")
+        return False
+    except URLError as e:
+        print("[ERROR] Could not download metadata.")
+        return False
 
-for extension_id in "$@"; do
-  # skip if not a number
-  [[ "$extension_id" -gt 0 ]] || continue
+    data = response.readline().decode("utf-8")
+    metadata = json.loads(data)
 
-  ext_description=$(mktemp)
-  ext_zipfile=$(mktemp)
-  ext_version=$(mktemp)
+    if "download_url" not in metadata:
+        print("[ERROR] Could not find download url.")
+        return False
 
-  # get extension metadata
-  wget \
-    --quiet \
-    --header='Accept-Encoding:none' \
-    -O "${ext_description}" \
-    "${gnome_site}/extension-info/?pk=${extension_id}"
+    if system_gnome_version not in feed["shell_version_map"]:
+        print("[ERROR] No supported version found.")
+        return False
 
-  # get extension name
-  extension_name=$(sed 's/^.*name[\": ]*\([^\"]*\).*$/\1/' "${ext_description}")
+    return metadata["download_url"]
 
-  printf "Installing extension %s...\n" "$extension_name"
 
-  # get extension UUID
-  extension_uuid=$(sed 's/^.*uuid[\": ]*\([^\"]*\).*$/\1/' "${ext_description}")
+def download_extension(download_url):
+    r = requests.get(zip_file_url)
+    extension_zipfile = zipfile.ZipFile(io.BytesIO(r.content))
+    extension_zipfile.extractall(INSTALL_LOC)
 
-  # extract all available versions
-  sed "s/\([0-9]*\.[0-9]*[0-9\.]*\)/\n\1/g" "${ext_description}" \
-    | grep "pk" \
-    | grep "version" \
-    | sed "s/^\([0-9\.]*\).*$/\1/" \
-    | sort -V > "${ext_version}"
 
-  # look for latest version or for current one
-  if [[ "${target_version}" == "latest" ]]; then
-    version_available="$(tail -n 1 < "${ext_version}")"
-  else
-    version_available="$(grep "^${target_version}$" "${ext_version}")"
-  fi
+# Set available arguments
+parser = argparse.ArgumentParser(
+    description="Download and install Gnome extensions."
+)
+parser.add_argument(
+    "-x",
+    "--extension",
+    action="store_true",
+    help="The extension ID number to install.",
+)
+args = parser.parse_args()
 
-  # if no candidate version found, get the next one after current version
-  if [[ "${version_available}" == "" ]]; then
-	  # create a version list including current version
-	  cp "${ext_version}" "${ext_description}" 
-	  echo "${target_version}" >> "${ext_description}"
+# Get Gnome Shell version
+system_gnome_version = re.search(
+    r"([0-9]+\.[0-9]+)",
+    check_output(["gnome-shell", "--version"]).decode("utf-8"),
+).group(1)
 
-	  # sort by version and get next version available after current version
-	  version_available=$(sort -V <<< "${ext_description}" | sed "1,/${target_version}/d" | head -n 1)
-  fi
+# Get the extension download url for proper Gnome Shell version
+url = get_extension_download_url(args.extension, gnome_shell_version)
 
-  # if candidate version has been found, install
-  if [[ "${version_available}" != "" ]]; then
-	  # get extension description
-	  wget \
-      --quiet \
-      --header='Accept-Encoding:none' \
-      -O "${ext_description}" \
-      "${gnome_site}/extension-info/?pk=${extension_id}&shell_version=${version_available}"
+if not url:
+    sys.exit()
 
-	  # get extension download URL
-	  extension_url=$(sed 's/^.*download_url[\": ]*\([^\"]*\).*$/\1/' "${ext_description}")
-
-	  # download extension archive
-	  wget \
-      --quiet \
-      --header='Accept-Encoding:none' \
-      -O "${ext_zipfile}" \
-      "${gnome_site}${extension_url}"
-
-	  # unzip extension to installation folder
-	  mkdir -p "${extension_path}/${extension_uuid}"
-	  unzip -oq "${ext_zipfile}" -d "${extension_path}/${extension_uuid}"
-	  chmod +r "${extension_path}/${extension_uuid}/"*
-  else
-	  printf "[Error] No available version of %s for Gnome Shell version %s found." \
-      "${extension_name}" \
-      "${current_version}"
-  fi
-done
+download_extension(url)
