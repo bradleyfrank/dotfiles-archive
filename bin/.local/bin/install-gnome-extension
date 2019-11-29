@@ -7,7 +7,6 @@ import io
 import json
 import os
 import re
-import requests
 import sys
 import urllib.request
 import zipfile
@@ -16,22 +15,21 @@ from urllib.error import HTTPError
 from urllib.error import URLError
 
 GNOME_URL = "https://extensions.gnome.org"
-INSTALL_LOC = os.path.expanduser("~") + "/.local/share/gnome-shell/extensions"
+EXTENSION_DIR = os.path.expanduser("~") + "/.local/share/gnome-shell/extensions"
 
 
 def get_extension_download_url(extension_id, system_gnome_version):
     url = (
-        GNOME_URL + "/extension-info"
-        + "/?pk=" + extension_id
+        GNOME_URL + "/extension-info/?pk=" + extension_id
         + "&shell_version=" + system_gnome_version
     )
 
     try:
         response = urllib.request.urlopen(url)
-    except HTTPError as e:
+    except HTTPError:
         print("[ERROR] Could not download metadata.")
         return False
-    except URLError as e:
+    except URLError:
         print("[ERROR] Could not download metadata.")
         return False
 
@@ -50,30 +48,43 @@ def get_extension_download_url(extension_id, system_gnome_version):
 
 
 def download_extension(metadata):
-    download_url = metadata[0]
+    download_url = GNOME_URL + metadata[0]
     extension_uuid = metadata[1]
 
-    r = requests.get(GNOME_URL + download_url)
-    extension_zipfile = zipfile.ZipFile(io.BytesIO(r.content))
-    extension_zipfile.extractall(INSTALL_LOC + "/" + extension_uuid)
+    urllib.request.urlretrieve
+
+    extension_zipfile = zipfile.ZipFile(
+        io.BytesIO(
+            urllib.request.urlretrieve
+            requests.get(download_url).content
+        )
+    )
+
+    extension_zipfile.extractall(EXTENSION_DIR + "/" + extension_uuid)
 
 
-parser = argparse.ArgumentParser(
-    description="Download and install Gnome extensions."
-)
-parser.add_argument(
-    "-x", "--extension", type=str, help="The extension ID number to install.",
-)
-args = parser.parse_args()
+def main():
+    parser = argparse.ArgumentParser(description="Install a Gnome extension.")
+    parser.add_argument(
+        "-x", "--extension", type=str, help="The extension ID number to install.",
+    )
+    args = parser.parse_args()
 
-system_gnome_version = re.search(
-    r"([0-9]+\.[0-9]+)",
-    check_output(["gnome-shell", "--version"]).decode("utf-8"),
-).group(1)
+    gnome_shell_version = re.search(
+        r"([0-9]+\.[0-9]+)",
+        check_output(["gnome-shell", "--version"]).decode("utf-8"),
+    ).group(1)
 
-metadata = get_extension_download_url(args.extension, system_gnome_version)
+    extension_metadata = get_extension_download_url(
+        args.extension,
+        gnome_shell_version
+    )
 
-if not metadata:
-    sys.exit()
+    if not extension_metadata:
+        sys.exit()
 
-download_extension(metadata)
+    download_extension(extension_metadata)
+
+
+if __name__ == "__main__":
+    main()
