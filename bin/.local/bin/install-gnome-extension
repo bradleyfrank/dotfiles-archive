@@ -3,7 +3,6 @@
 __author__ = "Bradley Frank"
 
 import argparse
-import io
 import json
 import os
 import re
@@ -51,16 +50,12 @@ def download_extension(metadata):
     download_url = GNOME_URL + metadata[0]
     extension_uuid = metadata[1]
 
-    urllib.request.urlretrieve
+    install_location = EXTENSION_DIR + "/" + extension_uuid
 
-    extension_zipfile = zipfile.ZipFile(
-        io.BytesIO(
-            urllib.request.urlretrieve
-            requests.get(download_url).content
-        )
-    )
+    local_file, _ = urllib.request.urlretrieve(download_url)
 
-    extension_zipfile.extractall(EXTENSION_DIR + "/" + extension_uuid)
+    extension_zipfile = zipfile.ZipFile(local_file)
+    extension_zipfile.extractall(install_location)
 
 
 def main():
