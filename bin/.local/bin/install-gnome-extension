@@ -52,10 +52,12 @@ def download_extension(metadata):
 
     install_location = EXTENSION_DIR + "/" + extension_uuid
 
-    local_file, _ = urllib.request.urlretrieve(download_url)
+    fp, _ = urllib.request.urlretrieve(download_url)
 
-    extension_zipfile = zipfile.ZipFile(local_file)
+    extension_zipfile = zipfile.ZipFile(fp)
     extension_zipfile.extractall(install_location)
+
+    urllib.request.urlcleanup()
 
 
 def main():
