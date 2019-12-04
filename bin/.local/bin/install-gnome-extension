@@ -10,8 +10,6 @@ import sys
 import urllib.request
 import zipfile
 from subprocess import check_output
-from urllib.error import HTTPError
-from urllib.error import URLError
 
 GNOME_URL = "https://extensions.gnome.org"
 EXTENSION_DIR = os.path.expanduser("~") + "/.local/share/gnome-shell/extensions"
@@ -23,21 +21,9 @@ def get_extension_download_url(extension_id, system_gnome_version):
         + "&shell_version=" + system_gnome_version
     )
 
-    try:
-        response = urllib.request.urlopen(url)
-    except HTTPError:
-        print("[ERROR] Could not download metadata.")
-        return False
-    except URLError:
-        print("[ERROR] Could not download metadata.")
-        return False
-
+    response = urllib.request.urlopen(url)
     data = response.readline().decode("utf-8")
     metadata = json.loads(data)
-
-    if "download_url" not in metadata or "uuid" not in metadata:
-        print("[ERROR] Could not find extenstion metadata.")
-        return False
 
     if system_gnome_version not in metadata["shell_version_map"]:
         print("[ERROR] No supported version found.")
@@ -48,9 +34,7 @@ def get_extension_download_url(extension_id, system_gnome_version):
 
 def download_extension(metadata):
     download_url = GNOME_URL + metadata[0]
-    extension_uuid = metadata[1]
-
-    install_location = EXTENSION_DIR + "/" + extension_uuid
+    install_location = EXTENSION_DIR + "/" + metadata[1]
 
     fp, _ = urllib.request.urlretrieve(download_url)
 
