@@ -8,12 +8,13 @@ error() {
   exit 1
 }
 
-# finds all packages to stow in dotfiles repo
-packages_to_stow() {
-  shopt -s nullglob # an empty directly results in an empty array
-  shopt -s extglob # allows extended globbing patterns
-  __packages=(!(.*)/) # match only directories but skip hidden directories
-  shopt -u nullglob extglob
+# finds all packages and stow them
+_stow() {
+  local __packages
+  for dir in */; do
+    [[ ! $dir =~ ^\. ]] && __packages+=("${dir%/}")
+  done
+  command stow --no-folding --restow --dotfiles "$@" "${__packages[@]}"
 }
 
 
@@ -41,8 +42,7 @@ if [[ "$__backup" -eq 0 ]]; then
   git checkout -B "backup-${__date}" || error "Could not create backup branch."
 
   # adopt all dotfiles so they become available for stowing
-  packages_to_stow
-  stow --no-folding --adopt "${__packages[@]}" || error "Stow returned an error."
+  _stow --adopt || error "Stow returned an error."
 
   # add any new files
   git add -A || error "Could not add files to git repo."
@@ -66,8 +66,7 @@ git pull origin || error "Couldn't pull latest changes from origin."
 git submodule update --init --recursive || error "Problem updating submodules."
 
 # stow all packages
-packages_to_stow
-stow --no-folding --restow "${__packages[@]}" || error "Stow returned an error."
+_stow || error "Stow returned an error."
 
 # all done
 popd >/dev/null 2>&1 || error "Couldn't return to original directory."
