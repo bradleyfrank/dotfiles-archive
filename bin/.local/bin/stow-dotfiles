@@ -14,7 +14,7 @@ _stow() {
   for dir in */; do
     [[ ! $dir =~ ^\. ]] && __packages+=("${dir%/}")
   done
-  command stow --no-folding --restow --dotfiles "$@" "${__packages[@]}"
+  command stow --no-folding --dotfiles "$@" "${__packages[@]}"
 }
 
 
@@ -66,7 +66,7 @@ git pull origin || error "Couldn't pull latest changes from origin."
 git submodule update --init --recursive || error "Problem updating submodules."
 
 # stow all packages
-_stow || error "Stow returned an error."
+_stow --restow || error "Stow returned an error."
 
 # all done
 popd >/dev/null 2>&1 || error "Couldn't return to original directory."
