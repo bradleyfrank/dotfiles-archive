@@ -12,7 +12,13 @@ esac
 
 # Load Bash completions
 case "$_os" in
-  macos) . /usr/local/etc/profile.d/bash_completion.sh ;;
+  macos)
+    # Workaround a bug in bash-completion@2 2.10
+    # https://github.com/scop/bash-completion/issues/374
+    # https://github.com/Homebrew/homebrew-core/pull/47527
+    export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d" 
+    . /usr/local/etc/profile.d/bash_completion.sh
+    ;;
   linux) . /etc/profile.d/bash_completion.sh ;;
 esac
 
@@ -225,7 +231,7 @@ __my_prompt() {
   if type __git_ps1 >/dev/null 2>&1; then
     __git_ps1 "${_env}${_cwd}" "${_venv}${_suffix}"
   else
-    export PS1="${_env}${_cwd} ${_venv}${_suffix}"
+    export PS1="${_env}${_cwd}${_venv}${_suffix}"
   fi
 
   # append to history (but don't read it into current list)
