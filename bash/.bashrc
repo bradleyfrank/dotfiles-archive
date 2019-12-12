@@ -135,13 +135,13 @@ httptrace() {
   curl -s -L -D - "$1" -o /dev/null -w "%{url_effective}\n"
 }
 
-# Custom ps output
+# Find a process by name or pid and show only its group/children
 fproc() {
   local pid
   if [[ "$1" =~ ^[0-9]+$ ]]; then pid="$(ps -o sid= -p "$1")"
   else pid="$(pgrep "$1")"
   fi
-  ps -e --forest -o pid,ppid,user,time,cmd -g "$pid"
+  ps --forest -o pid,ppid,user,time,cmd -g "$pid"
 }
 
 # Update user Python packages
