@@ -1,25 +1,19 @@
 #!/bin/bash
 # ...declare as a Bash script for syntax coloring
 
-# Use the kernal name "Darwin" to identify MacOS
-case "$(uname -s)" in
-  Darwin) _os="macos" ;;
-  Linux ) _os="linux" ;;
-esac
-
 # Skip sourcing if not running interactively
 [[ $- != *i* ]] && return
 
 # Load Bash completions
-case "$_os" in
-  macos)
+case "$OSTYPE" in
+  darwin*)
     # Workaround a bug in bash-completion@2 2.10
     # https://github.com/scop/bash-completion/issues/374
     # https://github.com/Homebrew/homebrew-core/pull/47527
     export BASH_COMPLETION_COMPAT_DIR="/usr/local/etc/bash_completion.d" 
     . /usr/local/etc/profile.d/bash_completion.sh
     ;;
-  linux) . /etc/profile.d/bash_completion.sh ;;
+  linux* ) . /etc/profile.d/bash_completion.sh ;;
 esac
 
 # Source git-prompt if necessary
@@ -51,9 +45,9 @@ alias wget='wget -c'
 
 # Load SSH keys into ssh-agent
 _keys="id_esai id_home id_develop id_rsa id_ed25519"
-case "$_os" in
-  macos) _keychain="keychain --eval --ignore-missing --quiet --inherit any $_keys" ;;
-  linux) _keychain="keychain --eval --ignore-missing --quiet $_keys" ;;
+case "$OSTYPE" in
+  darwin*) _keychain="keychain --eval --ignore-missing --quiet --inherit any $_keys" ;;
+  linux* ) _keychain="keychain --eval --ignore-missing --quiet $_keys" ;;
 esac
 eval "$($_keychain)"
 
@@ -83,7 +77,7 @@ bind "'\C-r': '\C-a hh -- \C-j'"
 export HH_CONFIG=hicolor
 
 # Enable colorized ls output for Mac
-[[ "$_os" == "macos" ]] && export CLICOLOR=1
+[[ $OSTYPE =~ darwin* ]] && export CLICOLOR=1
 
 
 # Black formatter for Python
@@ -168,9 +162,10 @@ tldr() {
 
 # Download YouTube video as music only
 youtube-dl-music() {
-  case "$(uname -s)" in
-    Darwin) youtube-dl --format bestaudio --extract-audio --audio-format mp3 --postprocessor-args "-strict experimental" "$1" ;;
-    Linux ) youtube-dl --format bestaudio --extract-audio --audio-format mp3 "$1" ;;
+  case "$OSTYPE" in
+    darwin*) youtube-dl --format bestaudio --extract-audio --audio-format mp3 \
+      --postprocessor-args "-strict experimental" "$1" ;;
+    linux* ) youtube-dl --format bestaudio --extract-audio --audio-format mp3 "$1" ;;
   esac
 }
 
