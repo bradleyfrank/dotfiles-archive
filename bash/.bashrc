@@ -72,6 +72,13 @@ export HISTCONTROL="erasedups:ignoreboth:ignorespace"
 export HISTIGNORE="&:[ ]*:exit:ls:ll:bg:fg:history:clear"
 export HISTTIMEFORMAT='%F %T '
 
+# __git_prompt settings
+export GIT_PS1_SHOWDIRTYSTATE=true
+export GIT_PS1_SHOWSTASHSTATE=true
+export GIT_PS1_SHOWUNTRACKEDFILES=true
+export GIT_PS1_SHOWCOLORHINTS=true
+export GIT_PS1_SHOWUPSTREAM="auto verbose"
+
 # Settings for hstr
 bind "'\C-r': '\C-a hh -- \C-j'"
 export HH_CONFIG=hicolor
@@ -179,13 +186,6 @@ __my_prompt() {
     magenta="\[\e[38;5;125m\]" \
     red="\[\e[38;5;160m\]" \
     orange="\[\e[38;5;166m\]"
-
-  # __git_prompt settings
-  GIT_PS1_SHOWDIRTYSTATE=true
-  GIT_PS1_SHOWSTASHSTATE=true
-  GIT_PS1_SHOWUNTRACKEDFILES=true
-  GIT_PS1_SHOWCOLORHINTS=true
-  GIT_PS1_SHOWUPSTREAM="auto verbose"
 
   # show username only if not me
   [[ ! "$USER" =~ ^bfrank ]] && _user="${magenta}\u${reset}"
