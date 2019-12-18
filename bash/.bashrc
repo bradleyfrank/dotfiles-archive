@@ -40,7 +40,6 @@ alias sane='stty sane'
 alias tbrename='printf "\e]1;%s\a"'
 alias ttrename='printf "\e]2;%s\a"'
 alias typora='open -a typora'
-alias weather='curl wttr.in'
 alias wget='wget -c'
 
 # Load SSH keys into ssh-agent
@@ -162,7 +161,7 @@ tardir() {
   tar -czf "${1%/}".tar.gz "$1"
 }
 
-# view cheat sheet for commands
+# View cheat sheet for commands
 tldr() {
   curl -s "cheat.sh/$1?style=vs"
 }
