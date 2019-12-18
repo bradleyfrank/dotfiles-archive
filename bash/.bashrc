@@ -143,6 +143,12 @@ fproc() {
   ps --forest -o pid,ppid,user,time,cmd -g "$pid"
 }
 
+# Make and change into a new directory
+mkcd() {
+  mkdir -p "$1"
+  cd "$1"
+}
+
 # Update user Python packages
 pup() {
   pip_upgrade_outdated -3 --user --verbose
