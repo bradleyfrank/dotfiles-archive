@@ -1,6 +1,3 @@
 [submodule "vim/.vim/pack/default/start/vim-airline-themes"]
   path = vim/.vim/pack/default/start/vim-airline-themes
 	url = https://github.com/vim-airline/vim-airline-themes.git
-[submodule "vim/.vim/pack/default/start/vim-airline"]
-	path = vim/.vim/pack/default/start/vim-airline
-	url = https://github.com/vim-airline/vim-airline.git
