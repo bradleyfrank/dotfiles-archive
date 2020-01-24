@@ -4,6 +4,8 @@
 # Skip sourcing if not running interactively
 [[ $- != *i* ]] && return
 
+[[ -f "$HOME"/.dir_colors ]] && eval "$(dircolors "$HOME"/.dir_colors)"
+
 # Load Bash completions
 case "$OSTYPE" in
   darwin*)
