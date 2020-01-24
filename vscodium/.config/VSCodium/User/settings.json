@@ -21,7 +21,7 @@
     "editor.cursorBlinking": "phase",
     "editor.occurrencesHighlight": false,
     "editor.selectionHighlight": false,
-    "editor.fontFamily": "'Source Code Pro', Menlo, Monaco, monospace",
+    "editor.fontFamily": "'JetBrains Mono', 'Source Code Pro', 'Fira Mono', monospace",
     "editor.fontSize": 13,
     "editor.tabSize": 2,
     "editor.rulers": [80],
