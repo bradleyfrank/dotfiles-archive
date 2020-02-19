@@ -10,8 +10,11 @@ url="https://knapsu.eu/data/plex/latest"
 pmp_appimage="$HOME"/.local/bin/Plex_Media_Player.AppImage
 logfile="$HOME"/Downloads/pmp-updated
 
-wget --no-verbose --output-file="$tempfile" "$url" &> "$logfile".log
+wget --no-verbose --output-document="$tempfile" "$url" --output-file="${logfile}.log"
 plexmediaplayer="$(pgrep plexmediaplayer)" && kill "$plexmediaplayer"
-trash-put "$pmp_appimage" || echo 'trash-cli package not installed' > "$logfile".err ; exit 1
+if [[ -e "$pmp_appimage" ]]; then
+  type -p trash-put &> /dev/null || echo 'trash-cli package not installed' > "${logfile}.err" ; exit 1
+  trash-put "$pmp_appimage"
+fi
 cp "$tempfile" "$pmp_appimage"
 chmod 0755 "$pmp_appimage"
