@@ -21,9 +21,9 @@ __my_prompt() {
   _cwd="${blue}\W${reset}"
 
   # combine username, hostname, and cwd
-  [[ -n $_user || -n $_host ]] && _env="[${_user}${_host}:${_cwd}] "
-  [[ -n $_user && -n $_host ]] && _env="[${_user}@${_host}:${_cwd}] "
-  [[ -z $_user && -z $_host ]] && _env="[${_cwd}] "
+  [[ -n $_user || -n $_host ]] && _env="[${_user}${_host}:${_cwd}]"
+  [[ -n $_user && -n $_host ]] && _env="[${_user}@${_host}:${_cwd}]"
+  [[ -z $_user && -z $_host ]] && _env="[${_cwd}]"
 
   # show anaconda _or_ virtualenv if activated
   [[ -n $VIRTUAL_ENV ]] && _venv=" (${cyan}$(basename "$VIRTUAL_ENV")${reset})"
@@ -40,7 +40,7 @@ __my_prompt() {
   if type __git_ps1 >/dev/null 2>&1; then
     __git_ps1 "${_env}" "${_venv}${_suffix}"
   else
-    export PS1="${_env}${_venv}${_suffix}"
+    export PS1="${_env} ${_venv}${_suffix}"
   fi
 
   # append to history (but don't read it into current list)
