@@ -65,9 +65,6 @@ git pull origin || error "Couldn't pull latest changes from origin."
 # update all submodules
 git submodule update --init --recursive || error "Problem updating submodules."
 
-# update fonts cache
-[[ $OSTYPE =~ ^linux ]] && { fc-cache || error "Font caching failed." ; }
-
 # stow all packages
 _stow --restow || error "Stow returned an error."
 
