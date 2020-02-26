@@ -2,7 +2,6 @@
 	default = current
 [user]
 	name = Brad
-	email = bradley.frank@gmail.com
 [core]
 	excludesfile = /Users/bfrank/.gitignore
 	editor = vim
