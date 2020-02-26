@@ -38,7 +38,7 @@ __my_prompt() {
 
   # build PS1 with or without Git prompt
   if type __git_ps1 >/dev/null 2>&1; then
-    __git_ps1 "${_env}${_cwd}" "${_venv}${_suffix}"
+    __git_ps1 "${_env}" "${_venv}${_suffix}"
   else
     export PS1="${_env}${_venv}${_suffix}"
   fi
