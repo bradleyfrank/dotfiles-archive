@@ -11,12 +11,12 @@
 declare -a ssh_keys=(id_rsa id_ed25519)
 
 # Load user bashrc configs
-. ./.bashrc.d/[0-9][0-9]*.bashrc
+. "$HOME"/.bashrc.d/[0-9][0-9]*.bashrc
 
 # Load system-specific bashrc configs
 case "$OSTYPE" in
-  darwin*) . ./.bashrc.d/macos.bashrc ;;
-  linux* ) . ./.bashrc.d/linux.bashrc ;;
+  darwin*) . "$HOME"/.bashrc.d/macos.bashrc ;;
+  linux* ) . "$HOME"/.bashrc.d/linux.bashrc ;;
 esac
 
 # Aliases
