@@ -1,6 +1,7 @@
 #!/bin/bash
 
-# Customize ps1
+export PROMPT_DIRTRIM=5
+
 __my_prompt() {
   local _ret=$? _user="" _host="" _env="" _cwd="" _venv="" _suffix=""
   local reset="\[\e[0;0m\]" bold="\[\e[1m\]" \
@@ -17,8 +18,9 @@ __my_prompt() {
   # show hostname only if remote session w/o tmux
   [[ -n "$SSH_CONNECTION" && -z "$TMUX" ]] && _host="${orange}\h${reset}"
 
-  # colorize cwd
-  _cwd="${blue}\W${reset}"
+  # use CWD basename if in tmux session, otherwise use full CWD
+  [[ -n "$TMUX" ]] && _cwd="${blue}\W${reset}"
+  [[ -z "$TMUX" ]] && _cwd="${blue}\w${reset}"
 
   # combine username, hostname, and cwd
   [[ -n $_user || -n $_host ]] && _env="[${_user}${_host}:${_cwd}]"
