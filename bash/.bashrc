@@ -11,7 +11,7 @@
 declare -a ssh_keys=(id_rsa id_ed25519)
 
 # Load user bashrc configs
-for rc in "$HOME"/.bashrc.d; do
+for rc in "$HOME"/.bashrc.d/*; do
   [[ $rc =~ [0-9]{2}-.+\.bashrc ]] && . "$rc"
 done
 
