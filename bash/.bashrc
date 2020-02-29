@@ -11,14 +11,6 @@
 declare -a ssh_keys=(id_rsa id_ed25519)
 
 # Load user bashrc configs
-<<<<<<< HEAD
-. "$HOME"/.bashrc.d/[0-9][0-9]*.bashrc
-
-# Load system-specific bashrc configs
-case "$OSTYPE" in
-  darwin*) . "$HOME"/.bashrc.d/macos.bashrc ;;
-  linux* ) . "$HOME"/.bashrc.d/linux.bashrc ;;
-=======
 for rc in "$HOME"/.bashrc.d; do
   [[ $rc =~ [0-9]{2}-.+\.bashrc ]] && . "$rc"
 done
@@ -27,7 +19,6 @@ done
 case "$OSTYPE" in
   darwin*) . ./.bash.macos.rc ;;
   linux* ) . ./.bash.linux.rc ;;
->>>>>>> Refactor bashrc loading.
 esac
 
 # Aliases
