@@ -3,10 +3,6 @@
 # Load Bash completions
 . /etc/profile.d/bash_completion.sh
 
-# Source git-prompt if necessary
-_git_prompt="/usr/share/git-core/contrib/completion/git-prompt.sh"
-[[ -e "$_git_prompt" ]] && . "$_git_prompt"
-
 # Construct keychain eval statement for loading SSH keys into ssh-agent
 _keychain="keychain --eval --ignore-missing --quiet ${ssh_keys[*]}"
 

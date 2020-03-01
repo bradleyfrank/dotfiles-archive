@@ -1,5 +1,17 @@
 #!/bin/bash
 
+# Source git-prompt if necessary
+_git_prompt="/usr/share/git-core/contrib/completion/git-prompt.sh"
+[[ -e "$_git_prompt" ]] && . "$_git_prompt"
+
+# __git_prompt settings
+export GIT_PS1_SHOWDIRTYSTATE=true
+export GIT_PS1_SHOWSTASHSTATE=true
+export GIT_PS1_SHOWUNTRACKEDFILES=true
+export GIT_PS1_SHOWCOLORHINTS=true
+export GIT_PS1_SHOWUPSTREAM="auto verbose"
+
+# Bash CWD settings
 export PROMPT_DIRTRIM=5
 
 __my_prompt() {

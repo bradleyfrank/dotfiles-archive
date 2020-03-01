@@ -63,13 +63,6 @@ export HISTCONTROL="erasedups:ignoreboth:ignorespace"
 export HISTIGNORE="&:[ ]*:exit:ls:ll:bg:fg:history:clear"
 export HISTTIMEFORMAT='%F %T '
 
-# __git_prompt settings
-export GIT_PS1_SHOWDIRTYSTATE=true
-export GIT_PS1_SHOWSTASHSTATE=true
-export GIT_PS1_SHOWUNTRACKEDFILES=true
-export GIT_PS1_SHOWCOLORHINTS=true
-export GIT_PS1_SHOWUPSTREAM="auto verbose"
-
 # Black formatter for Python
 blackdiff() {
   black --line-length 79 --diff "$@" | diff-so-fancy
