@@ -64,18 +64,7 @@ export HISTIGNORE="&:[ ]*:exit:ls:ll:bg:fg:history:clear"
 export HISTTIMEFORMAT='%F %T '
 
 # Black formatter for Python
-blackdiff() {
-  black --line-length 79 --diff "$@" | diff-so-fancy
-}
-
-# Update Anaconda
-coil() {
-  . /usr/local/anaconda3/bin/activate
-  conda update -n base conda -y
-  conda update --prefix /usr/local/anaconda3 anaconda -y
-  conda clean --all -y
-  conda deactivate
-}
+blackdiff() { black --line-length 79 --diff "$@" | diff-so-fancy ; }
 
 # Quick and dirty docker-compose linter
 clint() { docker-compose -f "$1" config --quiet ; }
@@ -96,12 +85,7 @@ mkcd() { mkdir -p "$1" ; cd "$1" ; }
 pup() { pip_upgrade_outdated -3 --user --verbose ; }
 
 # Update HomeBrew packages and casks
-steep() {
-  brew update
-  brew upgrade
-  brew cask upgrade
-  brew cleanup
-}
+steep() { brew update ; brew upgrade ; brew cask upgrade ; brew cleanup ; }
 
 # tar and gzip a given directory
 tardir() { tar -czf "${1%/}".tar.gz "$1" ; }
