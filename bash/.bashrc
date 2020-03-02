@@ -17,8 +17,8 @@ done
 
 # Load system-specific bashrc configs
 case "$OSTYPE" in
-  darwin*) . ./.bash.macos.rc ;;
-  linux* ) . ./.bash.linux.rc ;;
+  darwin*) . "$HOME"/.bash.macos.rc ;;
+  linux* ) . "$HOME"/.bash.linux.rc ;;
 esac
 
 # Aliases
