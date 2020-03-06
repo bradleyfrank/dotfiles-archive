@@ -1,10 +1,10 @@
 [push]
-	default = current
+  default = current
 [include]
   path = ~/.gitconfig.local
 [core]
-	excludesfile = /Users/bfrank/.gitignore
-	editor = vim
+  excludesfile = /Users/bfrank/.gitignore
+  editor = vim
 [alias]
   mylog = "log --oneline --decorate --graph --all"
   brch = rev-parse --abbrev-ref HEAD
