@@ -14,7 +14,7 @@ _stow() {
   for dir in */; do
     [[ ! $dir =~ ^\. ]] && __packages+=("${dir%/}")
   done
-  command stow --no-folding --dotfiles "$@" "${__packages[@]}"
+  command stow --no-folding "$@" "${__packages[@]}"
 }
 
 
