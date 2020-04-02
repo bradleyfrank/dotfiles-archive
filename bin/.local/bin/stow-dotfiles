@@ -21,12 +21,16 @@ _stow() {
 # don't backup by default
 __backup=1
 
+# don't stow Nextcloud dotfiles by default
+__nc_dotfiles=1
+
 # set date for naming backup branch
 __date="$(date --iso-8601=seconds | tr -d ':')"
 
-while getopts ':b' flag; do
+while getopts ':be' flag; do
   case "${flag}" in
     b ) __backup=0 ;;
+    e ) __nc_dotfiles=0 ;;
     \?) error "Invalid argument." ;;
     * ) error "Invalid argument." ;;
   esac
@@ -70,4 +74,16 @@ _stow --restow || error "Stow returned an error."
 
 # all done
 popd >/dev/null 2>&1 || error "Couldn't return to original directory."
+
+if [[ "$__nc_dotfiles" -eq 0 ]]; then
+  # change directory to Nextcloud dotfiles
+  pushd "$HOME"/Nextcloud/Configs/dotfiles >/dev/null 2>&1 || error "No Nextcloud dotfiles directory."
+
+  # stow all packages
+  _stow --restow || error "Stow returned an error."
+
+  # all done
+  popd >/dev/null 2>&1 || error "Couldn't return to original directory."
+fi
+
 exit 0
