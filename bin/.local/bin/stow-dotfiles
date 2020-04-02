@@ -70,7 +70,7 @@ git pull origin || error "Couldn't pull latest changes from origin."
 git submodule update --init --recursive || error "Problem updating submodules."
 
 # stow all packages
-_stow --restow || error "Stow returned an error."
+_stow --restow -t "$HOME" || error "Stow returned an error."
 
 # all done
 popd >/dev/null 2>&1 || error "Couldn't return to original directory."
