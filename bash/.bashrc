@@ -22,6 +22,7 @@ case "$OSTYPE" in
 esac
 
 # Aliases
+alias bw="bitwise --no-color"
 alias condense='grep -Erv "(^#|^$)"'
 alias e='extract'
 alias ekans='. /usr/local/anaconda3/bin/activate'
