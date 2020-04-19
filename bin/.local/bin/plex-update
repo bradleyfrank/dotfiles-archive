@@ -1,0 +1,70 @@
+#!/usr/bin/env bash
+
+tempdir="$(mktemp -d)"
+logfile="$(mktemp)"
+
+# Cheat by getting the latest version of PlexAmp from Homebrew.
+if ! amp_ver="$(\
+  curl -fsSL \
+  https://raw.githubusercontent.com/Homebrew/homebrew-cask/master/Casks/plexamp.rb \
+  | grep -E '^\s+version' | awk '{print $2}' | tr -d "'")"
+then
+  exit 1
+fi
+
+pmp_url="https://knapsu.eu/data/plex/latest"
+amp_url="https://plexamp.plex.tv/plexamp.plex.tv/desktop/Plexamp-${amp_ver}.AppImage"
+
+pmp="$HOME"/.local/bin/Plex_Media_Player.AppImage
+amp="$HOME"/.local/bin/PlexAmp.AppImage
+
+md5_pmp_new="" md5_pmp_cur=""
+md5_amp_new="" md5_amp_cur=""
+
+
+if wget \
+  --output-document="$tempdir"/pmp \
+  --output-file="${logfile}"
+  "$pmp_url" &> /dev/null
+then
+  md5_pmp_new="$(md5sum "$tempdir"/pmp | awk '{print $1}')"
+  [[ -e "$pmp" ]] && md5_pmp_cur="$(md5sum "$pmp" | awk '{print $1}')"
+else
+  exit 1
+fi
+
+if wget \
+  --output-document="$tempdir"/amp \
+  --output-file="${logfile}"
+  "$amp_url" &> /dev/null
+then
+  md5_amp_new="$(md5sum "$tempdir"/amp | awk '{print $1}')"
+  [[ -e "$amp" ]] && md5_amp_cur="$(md5sum "$amp" | awk '{print $1}')"
+else
+  exit 1
+fi
+
+
+if [[ "$md5_pmp_new" != "$md5_pmp_cur" ]]; then
+  pmp_pid="$(pgrep plexmediaplayer)" && kill "$pmp_pid"
+  [[ -e "$pmp" ]] && rm "$pmp"
+  mv "$tempdir"/pmp "$pmp"
+  chmod 0755 "$pmp"
+fi
+
+if [[ "$md5_amp_new" != "$md5_amp_cur" ]]; then
+  amp_pid="$(pgrep plexamp)" && kill "$amp_pid"
+  [[ -e "$amp" ]] && rm "$amp"
+  mv "$tempdir"/amp "$amp"
+  chmod 0755 "$amp"
+fi
+
+
+/usr/local/bin/smtpmail \
+  -a "bradfrank@fastmail.com" \
+  -s "Updated Plex AppImages" \
+  -m "$logfile"
+
+rm -rf "$tempdir" "$logfile"
+
+exit 0
