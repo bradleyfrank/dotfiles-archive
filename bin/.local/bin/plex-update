@@ -24,7 +24,7 @@ md5_amp_new="" md5_amp_cur=""
 
 if wget \
   --output-document="$tempdir"/pmp \
-  --output-file="${logfile}"
+  --output-file="$logfile" \
   "$pmp_url" &> /dev/null
 then
   md5_pmp_new="$(md5sum "$tempdir"/pmp | awk '{print $1}')"
@@ -35,7 +35,7 @@ fi
 
 if wget \
   --output-document="$tempdir"/amp \
-  --output-file="${logfile}"
+  --output-file="$logfile" \
   "$amp_url" &> /dev/null
 then
   md5_amp_new="$(md5sum "$tempdir"/amp | awk '{print $1}')"
