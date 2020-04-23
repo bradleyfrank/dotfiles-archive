@@ -38,5 +38,6 @@
         "editor.wordWrap": "wordWrapColumn"
     },
     "window.openFilesInNewWindow": "on",
-    "update.mode": "none"
+    "update.mode": "none",
+    "shellcheck.customArgs": ["-x"]
 }
