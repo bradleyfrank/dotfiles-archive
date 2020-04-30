@@ -6,11 +6,13 @@
   excludesfile = /Users/bfrank/.gitignore
   editor = vim
 [alias]
-  mylog = "log --oneline --decorate --graph --all"
+  mylog = 'log --oneline --decorate --graph --all'
   sb = status -sb
   co = checkout
   cb = checkout -
   unstage = 'reset HEAD --'
+  history = 'log --full-history -- '
+  search = 'git log --all --grep= '
 [pager]
   diff = diff-so-fancy | less --tabs=1,5 -RFX
   show = diff-so-fancy | less --tabs=1,5 -RFX
