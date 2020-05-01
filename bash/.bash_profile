@@ -42,7 +42,7 @@ export PATH
 
 
 # Common MANPATH locations for MacOS & Linux
-MANPATH="$HOME/.local/share/man:$MANPATH"
+MANPATH="$HOME/.local/share/man"
 MANPATH="/usr/local/share/man:/usr/share/man:$MANPATH"
 
 if [[ "$OSTYPE" =~ darwin && -n "$_brew" ]]; then
