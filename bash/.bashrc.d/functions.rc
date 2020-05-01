@@ -1,0 +1,39 @@
+#!/bin/bash
+
+# Black formatter for Python
+blackdiff() { black --line-length 79 --diff "$@" | diff-so-fancy ; }
+
+# Quick and dirty docker-compose linter
+clint() { docker-compose -f "$1" config --quiet ; }
+
+# Decrypt a file using openssl
+decrypt() { openssl enc -d -aes-256-cbc -in "$1" -out "$1.decrypted" ; }
+
+# Encrypt a file using openssl
+encrypt() { openssl enc -aes-256-cbc -salt -in "$1" -out "$1.encrypted" ; }
+
+# Show website http headers; follow redirects
+httptrace() { curl -s -L -D - "$1" -o /dev/null -w "%{url_effective}\n" ; }
+
+# Make and change into a new directory
+mkcd() { mkdir -p "$1" ; cd "$1" ; }
+
+# Update user Python packages
+pup() { pip_upgrade_outdated -3 --user --verbose ; }
+
+# Update HomeBrew packages and casks
+steep() { brew update ; brew upgrade ; brew cask upgrade ; brew cleanup ; }
+
+# tar and gzip a given directory
+tardir() { tar -czf "${1%/}".tar.gz "$1" ; }
+
+# View cheat sheet for commands
+cheat() { curl -s "cheat.sh/$1?style=vs" ; }
+
+# Download a streaming video
+ytdl-video() {
+  youtube-dl \
+    --format "bestvideo+bestaudio[ext=m4a]/bestvideo+bestaudio/best" \
+    --merge-output-format mp4 \
+    -o "%(title)s.%(ext)s"
+}

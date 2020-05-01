@@ -26,6 +26,6 @@ fproc() {
 }
 
 # Download YouTube video as music only
-youtube-dl-music() {
+ytdl-music() {
   youtube-dl --format bestaudio --extract-audio --audio-format mp3 "$1"
 }
