@@ -12,8 +12,12 @@ PATH="$PATH:/usr/bin:/usr/sbin:/bin:/sbin"
 
 if [[ "$OSTYPE" =~ darwin ]]; then
   # Python 3 binaries
-  if _pypath="$(python3 -m site | sed -rn "s/^USER_BASE:\s'(.+)'\s\(exists\)$/\1/p")"
-  then PATH="$PATH:$_pypath/bin"
+  if _pypath="$(python3 -m site \
+    | grep -Eo "^USER_BASE:\s'.+'\s\(exists\)$" \
+    | awk '{print $2}' \
+    | tr -d "'")"
+  then
+    PATH="$PATH:$_pypath/bin"
   fi
 
   # X11 provided by XQuartz
