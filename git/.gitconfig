@@ -11,8 +11,7 @@
   co = checkout
   cb = checkout -
   unstage = 'reset HEAD --'
-  history = 'log --full-history -- '
-  search = 'git log --all --grep= '
+  history = 'log --full-history --'
 [pager]
   diff = diff-so-fancy | less --tabs=1,5 -RFX
   show = diff-so-fancy | less --tabs=1,5 -RFX
