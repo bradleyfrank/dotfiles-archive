@@ -1,8 +1,11 @@
 #!/bin/bash
 
 # Set Homebrew location
-[[ -x /usr/local/bin/brew ]] && _brew="/usr/local"
-[[ -x /home/linuxbrew/.linuxbrew/bin/brew ]] && _brew="/home/linuxbrew/.linuxbrew"
+if [[ -x /usr/local/bin/brew ]]; then
+  _brew="/usr/local"
+elif [[ -x /home/linuxbrew/.linuxbrew/bin/brew ]]; then
+  _brew="/home/linuxbrew/.linuxbrew"
+fi
 
 
 # Common PATH locations for MacOS & Linux
