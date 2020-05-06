@@ -21,6 +21,13 @@ mkcd() { mkdir -p "$1" ; cd "$1" || exit ; }
 # Update user Python packages
 pup() { pip_upgrade_outdated -3 --user --verbose ; }
 
+# Run all three Python linters at once
+pylinter() {
+  black --line-length 79 --diff "$@" | diff-so-fancy
+  pylint "$@"
+  pycodestyle "$@"
+}
+
 # Generate a SSH key programmatically
 sshgen() {
   local comment password keyfile
