@@ -6,6 +6,9 @@ blackdiff() { black --line-length 79 --diff "$@" | diff-so-fancy ; }
 # Quick and dirty docker-compose linter
 clint() { docker-compose -f "$1" config --quiet ; }
 
+# Generate a N length diceware password
+diceware() { keepassxc-cli diceware --words "${1:-5}" | tr " " "${2:- }" ; }
+
 # Decrypt a file using openssl
 decrypt() { openssl enc -d -aes-256-cbc -in "$1" -out "$1.decrypted" ; }
 
@@ -17,6 +20,9 @@ httptrace() { curl -s -L -D - "$1" -o /dev/null -w "%{url_effective}\n" ; }
 
 # Make and change into a new directory
 mkcd() { mkdir -p "$1" ; cd "$1" || exit ; }
+
+# Generate a random password
+mkpasswd() { keepassxc-cli generate -L "${1:-16}" -lUn --exclude-similar ; }
 
 # Update user Python packages
 pup() { pip_upgrade_outdated -3 --user --verbose ; }
