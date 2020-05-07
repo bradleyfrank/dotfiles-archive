@@ -44,9 +44,6 @@ sshgen() {
   echo "$keyfile : $password"
 }
 
-# Update HomeBrew packages and casks
-steep() { brew update ; brew upgrade ; brew cask upgrade ; brew cleanup ; }
-
 # tar and gzip a given directory
 tardir() { tar -czf "${1%/}".tar.gz "$1" ; }
 

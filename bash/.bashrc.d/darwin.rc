@@ -18,6 +18,9 @@ alias tbrename='printf "\e]1;%s\a"'
 alias ttrename='printf "\e]2;%s\a"'
 alias typora='open -a typora'
 
+# Update HomeBrew packages and casks
+steep() { brew update ; brew upgrade ; brew cask upgrade ; brew cleanup ; }
+
 # Download YouTube video as music only
 ytdl-music() {
   youtube-dl --format bestaudio --extract-audio --audio-format mp3 \
