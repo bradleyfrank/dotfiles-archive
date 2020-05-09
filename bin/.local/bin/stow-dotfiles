@@ -8,13 +8,31 @@ error() {
   exit 1
 }
 
-# finds all packages and stow them
+# find all directories excluding ".git"
+get_dirs() {
+  find . -maxdepth "$1" -mindepth "$2" -type d -not -path "./.git/*" -printf "%f\n"
+}
+
+# stows a package
 _stow() {
-  local __packages
-  for dir in */; do
-    [[ ! $dir =~ ^\. ]] && __packages+=("${dir%/}")
-  done
-  command stow --no-folding --target "$HOME" "$@" "${__packages[@]}"
+  local packages
+  readarray -t packages < <( get_dirs 1 1 )
+  command stow --no-folding --target "$HOME" "$@" "${packages[@]}"
+}
+
+# finds all broken symlinks in a given directory
+find_broken_symlinks() {
+  chkstow --target="$1" --badlinks | sed -rn 's/^Bogus link: (\/.+)/\1/p'
+}
+
+# removes broken symlinks
+remove_broken_symlinks() {
+  while read -r dir; do
+    while read -r file_to_rm; do
+      rm "$file_to_rm"
+      echo "Deleted bogus link: $file_to_rm"
+    done < <( find_broken_symlinks "$HOME/$dir" )
+  done < <( get_dirs 2 2 )
 }
 
 
@@ -35,8 +53,8 @@ while getopts ':be' flag; do
   case "${flag}" in
     b ) __backup=0 ;;
     e ) __nc_dotfiles=0 ;;
-    \?) error "Invalid argument." ;;
-    * ) error "Invalid argument." ;;
+    \?) error "Unknown argument." ;;
+    * ) error "Unknown argument." ;;
   esac
 done
 
@@ -76,6 +94,9 @@ git submodule update --init --recursive || error "Problem updating submodules."
 # stow all packages
 _stow --restow || error "Stow returned an error."
 
+# cleanup
+remove_broken_symlinks
+
 # all done
 popd &>/dev/null || error "Couldn't return to original directory."
 
@@ -86,6 +107,9 @@ if [[ "$__nc_dotfiles" -eq 0 ]]; then
 
   # stow all packages
   _stow --restow || error "Stow returned an error."
+
+  # cleanup
+  remove_broken_symlinks
 
   # all done
   popd &>/dev/null || error "Couldn't return to original directory."
