@@ -1,7 +1,5 @@
 #!/usr/bin/env bash
 
-set -eu
-
 # formats error messages and quits
 error() {
   printf "[ERROR] %s\n" "$1"
@@ -20,18 +18,13 @@ _stow() {
   command stow --no-folding --target "$HOME" "$@" "${packages[@]}"
 }
 
-# finds all broken symlinks in a given directory
-find_broken_symlinks() {
-  chkstow --target="$1" --badlinks | sed -rn 's/^Bogus link: (\/.+)/\1/p'
-}
-
 # removes broken symlinks
 remove_broken_symlinks() {
   while read -r dir; do
     while read -r file_to_rm; do
       rm "$file_to_rm"
       echo "Deleted bogus link: $file_to_rm"
-    done < <( find_broken_symlinks "$HOME/$dir" )
+    done < <( chkstow --target="$HOME/$dir" --badlinks | sed -rn 's/^Bogus link: (\/.+)/\1/p' )
   done < <( get_dirs 2 2 )
 }
 
