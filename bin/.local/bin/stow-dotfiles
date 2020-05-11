@@ -2,111 +2,99 @@
 
 # formats error messages and quits
 error() {
-  printf "[ERROR] %s\n" "$1"
+  printf "[ERROR] %s\n" "$1" 1>&2
   exit 1
 }
 
 # find all directories excluding ".git"
 get_dirs() {
-  find . -maxdepth "$1" -mindepth "$2" -type d -not -path "./.git/*" -printf "%f\n"
+  find . \
+    -maxdepth "$1" -mindepth "$2" -type d \
+    -not -name ".git" -not -path "*/.git/*" \
+    -printf "%f\n"
 }
 
-# stows a package
-_stow() {
+# stows all packages in dotfiles repo
+stow_repo() {
+  pushd "$1" &>/dev/null || error "No dotfiles directory."
+
+  if [[ -e ".git" ]]; then
+    # ensure git repo is up-to-date
+    git stash || error "Unable to stash changes."
+    git checkout master || error "Couldn't checkout master branch."
+    git pull origin || error "Couldn't pull latest changes from origin."
+  fi
+
+  command_stow --restow
+  remove_broken_symlinks
+
+  popd &>/dev/null || error "Cannot return to original directory."
+}
+
+# wrapper for stow command
+command_stow() {
   local packages
   readarray -t packages < <( get_dirs 1 1 )
-  command stow --no-folding --target "$HOME" "$@" "${packages[@]}"
+  if ! command stow --no-folding "$@" --target "$HOME" "${packages[@]}"
+  then
+    error "Stow returned an error."
+  fi
 }
 
-# removes broken symlinks
+# removes broken symlinks from package's file paths
 remove_broken_symlinks() {
+  local dir file_to_rm
+
   while read -r dir; do
     while read -r file_to_rm; do
-      rm "$file_to_rm"
+      command rm -f "$file_to_rm"
       echo "Deleted bogus link: $file_to_rm"
     done < <( chkstow --target="$HOME/$dir" --badlinks | sed -rn 's/^Bogus link: (\/.+)/\1/p' )
   done < <( get_dirs 2 2 )
 }
 
+# replaces existing dotfiles with repo's dotfiles
+adopt_and_replace() {
+  pushd "$1" &>/dev/null || error "No dotfiles directory."
 
-# don't backup by default
-__backup=1
-
-# don't stow Nextcloud dotfiles by default
-__nc_dotfiles=1
-
-# set date for naming backup branch
-__date="$(date --iso-8601=seconds | tr -d ':')"
-
-# dotfile directories
-__home_dotfiles_dir="$HOME"/.dotfiles
-__nc_dotfiles_dir="$HOME"/Nextcloud/Configs/dotfiles
-
-while getopts ':be' flag; do
-  case "${flag}" in
-    b ) __backup=0 ;;
-    e ) __nc_dotfiles=0 ;;
-    \?) error "Unknown argument." ;;
-    * ) error "Unknown argument." ;;
-  esac
-done
-
-
-# change directory to dotfiles
-pushd "$__home_dotfiles_dir" &>/dev/null || error "No dotfiles directory."
-
-# make a backup of existing dotfiles
-if [[ "$__backup" -eq 0 ]]; then
-  # create a new backup branch
-  git checkout -B "backup-${__date}" || error "Could not create backup branch."
-
-  # adopt all dotfiles so they become available for stowing
-  _stow --adopt || error "Stow returned an error."
-
-  # add any new files
-  git add -A || error "Could not add files to git repo."
-
-  # only commit if there are changes
-  if git commit --dry-run &>/dev/null; then
-    git commit -m "Backing up dotfiles for ${__date}."
+  if ! git checkout -B backup-"$(date --iso-8601=seconds | tr -d ':')"
+  then
+    error "Could not create backup branch."
   fi
-fi
 
-# stash any active work
-git stash || error "Unable to stash changes."
+  command_stow --adopt
 
-# ensure master branch is checked out
-git checkout master || error "Couldn't checkout master branch."
+  git add -A
+  if git commit --dry-run &>/dev/null; then
+    git commit -m "Backing up dotfiles."
+  fi
 
-# pull the latest changes
-git pull origin || error "Couldn't pull latest changes from origin."
+  popd &>/dev/null || error "Cannot return to original directory."
+}
 
-# update all submodules
-git submodule update --init --recursive || error "Problem updating submodules."
+main() {
+  # don't backup or stow Nextcloud dotfiles by default
+  local backup_dotfiles=1
+  local stow_nc_dotfiles=1
 
-# stow all packages
-_stow --restow || error "Stow returned an error."
+  # dotfile directories
+  local dotfiles_dir="$HOME"/.dotfiles
+  local nc_dotfiles_dir="$HOME"/Nextcloud/Configs/dotfiles
 
-# cleanup
-remove_broken_symlinks
+  while getopts ':be' flag; do
+    case "${flag}" in
+      b ) backup_dotfiles=0 ;;
+      e ) stow_nc_dotfiles=0 ;;
+      \?) error "Incorrect argument $OPTARG." ;;
+      : ) error "Missing argument." ;;
+      * ) error "Unknown argument $OPTARG." ;;
+    esac
+  done
 
-# all done
-popd &>/dev/null || error "Couldn't return to original directory."
+  [[ "$backup_dotfiles" -eq 0 ]] && adopt_and_replace "$dotfiles_dir"
+  stow_repo "$dotfiles_dir"
+  [[ "$stow_nc_dotfiles" -eq 0 ]] && stow_repo "$nc_dotfiles_dir"
+}
 
-
-if [[ "$__nc_dotfiles" -eq 0 ]]; then
-  # change directory to Nextcloud dotfiles
-  pushd "$__nc_dotfiles_dir" &>/dev/null || error "No Nextcloud dotfiles directory."
-
-  # stow all packages
-  _stow --restow || error "Stow returned an error."
-
-  # cleanup
-  remove_broken_symlinks
-
-  # all done
-  popd &>/dev/null || error "Couldn't return to original directory."
-fi
-
-
+main "$@"
 exit 0
