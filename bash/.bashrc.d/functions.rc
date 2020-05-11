@@ -7,7 +7,7 @@ blackdiff() { black --line-length 79 --diff "$@" | diff-so-fancy ; }
 clint() { docker-compose -f "$1" config --quiet ; }
 
 # Generate a N length diceware password
-diceware() { keepassxc-cli diceware --words "${1:-5}" | tr " " "${2:- }" ; }
+diceware() { keepassxc-cli diceware --words "${1:-5}" | tr " " "-" ; }
 
 # Decrypt a file using openssl
 decrypt() { openssl enc -d -aes-256-cbc -in "$1" -out "$1.decrypted" ; }
@@ -23,6 +23,16 @@ mkcd() { mkdir -p "$1" ; cd "$1" || exit ; }
 
 # Generate a random password
 mkpasswd() { keepassxc-cli generate -L "${1:-16}" -lUn --exclude-similar ; }
+
+# Generate a diceware passphrase with a numeric section
+numware() {
+  local length dice pin
+  length="${1:-5}"
+  [[ $length -lt 2 ]] && { echo "Segment count must be greater than 1." 1>&2 ; return 1 ; }
+  dice="$(keepassxc-cli diceware --words "$((length-1))" | tr " " "-")"
+  pin="$(keepassxc-cli generate -L "$length" -n)"
+  printf "%s-%s\n" "$dice" "$pin"
+}
 
 # Update user Python packages
 pup() { pip_upgrade_outdated -3 --user --verbose ; }
