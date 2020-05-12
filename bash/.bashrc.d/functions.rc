@@ -28,7 +28,7 @@ mkpasswd() { keepassxc-cli generate -L "${1:-16}" -lUn --exclude-similar ; }
 numware() {
   local length dice pin
   length="${1:-5}"
-  [[ $length -lt 2 ]] && { echo "Segment count must be greater than 1." 1>&2 ; return 1 ; }
+  [[ $length -lt 2 ]] && { echo "Segment count must be a higher number." 1>&2 ; return 1 ; }
   dice="$(keepassxc-cli diceware --words "$((length-1))" | tr " " "-")"
   pin="$(keepassxc-cli generate -L "$length" -n)"
   printf "%s-%s\n" "$dice" "$pin"
