@@ -6,8 +6,8 @@
 # Load Solarized Light LS_COLORS
 [[ -f "$HOME"/.dir_colors ]] && eval "$(dircolors "$HOME"/.dir_colors)"
 
-# SSH keys to load (assuming all private keys are prefixed with "id_")
-readarray -t ssh_keys < <( find "$HOME"/.ssh/ -name "id_*" | grep -v "pub" )
+# SSH keys to load
+readarray -t ssh_keys < <( find "$HOME"/.ssh/ -name 'id_*' -not -name '*.pub' )
 
 # Source system-specific bashrc configs
 # Note: `keychain` command is built here
