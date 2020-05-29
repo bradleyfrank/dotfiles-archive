@@ -17,6 +17,7 @@ export CLICOLOR=1
 alias tbrename='printf "\e]1;%s\a"'
 alias ttrename='printf "\e]2;%s\a"'
 alias typora='open -a typora'
+alias o='open -a'
 
 # Update HomeBrew packages and casks
 steep() { brew update ; brew upgrade ; brew cask upgrade ; brew cleanup ; }
