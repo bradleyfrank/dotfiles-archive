@@ -2,7 +2,7 @@
 
 __prompt_command() {
   local ret=$? cwd="" host="" pyenv="" suffix \
-       reset="\[\e[0;0m\]"
+       reset="\[\e[0;0m\]" \
         bold="\[\e[1m\]" \
         blue="\[\e[38;5;33m\]" \
         cyan="\[\e[38;5;37m\]" \
