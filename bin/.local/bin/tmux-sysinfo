@@ -1,0 +1,14 @@
+#!/usr/bin/env bash
+
+case "$OSTYPE" in
+  darwin*)
+    printf "macOS %s" "$(sw_vers | grep ProductVersion | cut -f2)"
+    ;;
+  linux*)
+    [[ -e "/etc/os-release" ]] && . "/etc/os-release"
+    printf "%s: %s" "$NAME" "$VERSION_ID"
+    ;;
+  *)
+    printf "Unkown OS"
+    ;;
+esac
