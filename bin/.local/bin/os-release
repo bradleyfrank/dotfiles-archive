@@ -6,7 +6,7 @@ case "$OSTYPE" in
     ;;
   linux*)
     [[ -e "/etc/os-release" ]] && . "/etc/os-release"
-    printf "%s: %s" "$NAME" "$VERSION_ID"
+    printf "%s: %s" "$ID" "$VERSION_ID"
     ;;
   *)
     printf "Unkown OS"
