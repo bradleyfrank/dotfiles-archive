@@ -5,10 +5,14 @@ case "$OSTYPE" in
     printf "macOS %s" "$(sw_vers | grep ProductVersion | cut -f2)"
     ;;
   linux*)
-    [[ -e "/etc/os-release" ]] && . "/etc/os-release"
-    printf "%s: %s" "$ID" "$VERSION_ID"
+    if [[ -e "/etc/os-release" ]]; then
+      . "/etc/os-release"
+      printf "%s %s" "$ID" "$VERSION_ID"
+    else
+      printf "Unknown OS"
+    fi
     ;;
   *)
-    printf "Unkown OS"
+    printf "Unknown OS"
     ;;
 esac
