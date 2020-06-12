@@ -12,11 +12,8 @@ __prompt_command() {
       orange="\[\e[38;5;166m\]"
 
   # use shorter CWD if tmux is active
-  [[ -n "$TMUX" ]] && export PROMPT_DIRTRIM=1
-  [[ -z "$TMUX" ]] && export PROMPT_DIRTRIM=5
-
-  # set cwd style
-  cwd="${blue}\w${reset}"
+  [[ -n "$TMUX" ]] && cwd="${blue}\W${reset}"
+  [[ -z "$TMUX" ]] && cwd="${blue}\w${reset}"
 
   # show hostname only if remote session w/o tmux
   [[ -n "$SSH_CONNECTION" && -z "$TMUX" ]] && host="${orange}\h${reset}:"
@@ -49,5 +46,7 @@ __prompt_command() {
 if [[ -e "/usr/share/git-core/contrib/completion/git-prompt.sh" ]]; then
   . "/usr/share/git-core/contrib/completion/git-prompt.sh"
 fi
+
+export PROMPT_DIRTRIM=5
 
 PROMPT_COMMAND='__prompt_command; history -a'
