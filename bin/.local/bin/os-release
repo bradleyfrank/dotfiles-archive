@@ -2,7 +2,9 @@
 
 case "$OSTYPE" in
   darwin*)
-    printf "macOS %s" "$(sw_vers | grep ProductVersion | cut -f2)"
+    printf "%s %s" \
+      "$(sw_vers | grep ProductName | cut -f2)" \
+      "$(sw_vers | grep ProductVersion | cut -f2)"
     ;;
   linux*)
     if [[ -e "/etc/os-release" ]]; then
