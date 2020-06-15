@@ -36,9 +36,9 @@ __prompt_command() {
     GIT_PS1_SHOWUNTRACKEDFILES=true
     GIT_PS1_SHOWCOLORHINTS=true
     GIT_PS1_SHOWUPSTREAM="auto verbose"
-    __git_ps1 "[${cwd}${host}]" "${pyenv}${suffix}"
+    __git_ps1 "[${host}${cwd}]" "${pyenv}${suffix}"
   else
-    PS1="[${cwd}${host}]${pyenv}${suffix}"
+    PS1="[${host}${cwd}]${pyenv}${suffix}"
   fi
 }
 
