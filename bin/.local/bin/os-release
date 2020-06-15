@@ -10,6 +10,12 @@ case "$OSTYPE" in
     if [[ -e "/etc/os-release" ]]; then
       . "/etc/os-release"
       printf "%s %s" "$ID" "$VERSION_ID"
+    elif [[ -e "/etc/redhat-release" ]]; then
+      printf "rhel %s" "$(sed -rn 's/.+([0-9]+\.[0-9]*).*/\1/p' /etc/redhat-release)"
+    elif [[ -e "/etc/centos-release" ]]; then
+      printf "centos %s" "$(sed -rn 's/.+([0-9]+\.[0-9]*).*/\1/p' /etc/centos-release)"
+    elif type lsb_release &>/dev/null; then
+      lsb_release -ds | sed 's/^\"//g;s/\"$//g'
     else
       printf "Unknown OS"
     fi
