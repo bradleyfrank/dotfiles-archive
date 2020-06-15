@@ -33,7 +33,7 @@
     "extensions.ignoreRecommendations": true,
     "git.confirmSync": false,
     "terminal.integrated.fontSize": 13,
-    "terminal.integrated.fontFamily": "JetBrains Mono",
+    "terminal.integrated.fontFamily": "SourceCode Pro",
     "[python]": {
         "editor.wordWrap": "wordWrapColumn"
     },
