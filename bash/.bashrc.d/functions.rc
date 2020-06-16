@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Black formatter for Python
-blackdiff() { black --line-length 79 --diff "$@" | diff-so-fancy ; }
+blackdiff() { black --line-length 100 --diff "$@" | diff-so-fancy ; }
 
 # Quick and dirty docker-compose linter
 clint() { docker-compose -f "$1" config --quiet ; }

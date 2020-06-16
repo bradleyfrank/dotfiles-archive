@@ -20,7 +20,7 @@ set hlsearch incsearch
 hi Search ctermbg=DarkBlue ctermfg=White
 nnoremap <silent> <Space> :nohlsearch<Bar>:echo<CR>
 
-set colorcolumn=80
+set colorcolumn=80,100
 hi colorcolumn ctermbg=lightgrey guibg=lightgrey
 
 " use hybrid line numbering by default with automatic toggling
