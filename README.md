@@ -1,3 +1,5 @@
+⚠ ***This repository is archived in favor of using Ansible to manage dotfiles.***
+
 # Brad's Configs & Scripts
 
 A collection of configuration files and scripts for macOS and [Fedora] Linux.
